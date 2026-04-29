@@ -16,8 +16,13 @@ public interface AiParseResultMapper extends BaseMapper<AiParseResultRecord> {
     @Delete("DELETE FROM t_ai_parse_result WHERE issue_key = #{issueKey}")
     int deleteByIssueKey(@Param("issueKey") String issueKey);
 
-    @Delete("DELETE FROM t_ai_parse_result WHERE raw_id IN (${rawIdList})")
-    int deleteByRawIds(@Param("rawIdList") String rawIdList);
+    @Delete("<script>" +
+            "DELETE FROM t_ai_parse_result WHERE raw_id IN " +
+            "<foreach collection='rawIds' item='rawId' open='(' separator=',' close=')'>" +
+            "   #{rawId}" +
+            "</foreach>" +
+            "</script>")
+    int deleteByRawIds(@Param("rawIds") List<Long> rawIds);
 
     /**
      * 查询指定期次、彩种下最新有效批次的成功解析记录

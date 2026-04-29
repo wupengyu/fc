@@ -18,10 +18,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -146,6 +149,7 @@ public class NormalizePersistService {
      */
     private void persistValidOrders(OrderRaw raw, List<AiParseResult> successItems, OrderParseBatch batch) {
         int itemNo = 1;
+        Map<StatKey, StatDelta> statDeltaMap = new LinkedHashMap<>();
         for (AiParseResult result : successItems) {
             AiParseResult.ParsedData data = result.getData();
             if (data == null) {
@@ -172,6 +176,7 @@ public class NormalizePersistService {
 
             String zone = data.getZone() != null ? data.getZone() : OrderConstant.ZONE_MAIN;
             List<String> statNumbers = numbers.stream()
+                    .filter(Objects::nonNull)
                     .sorted(Comparator.naturalOrder())
                     .toList();
 
@@ -181,25 +186,61 @@ public class NormalizePersistService {
             }
 
             // Gate check + stats upsert
-            int betCount = data.getBet() > 0 ? data.getBet() : 1;
+            int betCount = resolvePositiveInt(data.getBet(), 1);
             int updated = orderItemMapper.tryApplyStat(item.getId());
             if (updated > 0) {
                 for (String number : statNumbers) {
-                    numberStatsMapper.upsertStats(
+                    StatKey key = new StatKey(
                             item.getLotteryCategory(),
                             item.getGameType(),
                             item.getPlayType(),
                             item.getIssueKey(),
                             zone,
-                            number,
-                            betCount,
-                            allocPerNumber
+                            number
                     );
+                    statDeltaMap.computeIfAbsent(key, ignored -> new StatDelta())
+                            .merge(betCount, allocPerNumber);
                 }
             }
 
             itemNo++;
         }
+
+        applyStatDeltas(statDeltaMap);
+    }
+
+    private void applyStatDeltas(Map<StatKey, StatDelta> statDeltaMap) {
+        if (statDeltaMap.isEmpty()) {
+            return;
+        }
+
+        List<Map.Entry<StatKey, StatDelta>> entries = new ArrayList<>(statDeltaMap.entrySet());
+        entries.sort(Comparator
+                .comparing((Map.Entry<StatKey, StatDelta> entry) -> safeSort(entry.getKey().lotteryCategory()))
+                .thenComparing(entry -> safeSort(entry.getKey().gameType()))
+                .thenComparing(entry -> safeSort(entry.getKey().playType()))
+                .thenComparing(entry -> safeSort(entry.getKey().issueKey()))
+                .thenComparing(entry -> safeSort(entry.getKey().numberZone()))
+                .thenComparing(entry -> safeSort(entry.getKey().number())));
+
+        for (Map.Entry<StatKey, StatDelta> entry : entries) {
+            StatKey key = entry.getKey();
+            StatDelta delta = entry.getValue();
+            numberStatsMapper.upsertStats(
+                    key.lotteryCategory(),
+                    key.gameType(),
+                    key.playType(),
+                    key.issueKey(),
+                    key.numberZone(),
+                    key.number(),
+                    delta.betCount(),
+                    delta.amount()
+            );
+        }
+    }
+
+    private String safeSort(String value) {
+        return value == null ? "" : value;
     }
 
     /**
@@ -217,15 +258,19 @@ public class NormalizePersistService {
         item.setIssueKey(raw.getReceivedAt() != null
                 ? raw.getReceivedAt().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
                 : LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
-        item.setBetCount(data.getBet());
+        item.setBetCount(resolvePositiveInt(data.getBet(), 1));
         item.setGroupCount(1);  // 新结构中没有groupCount，默认为1
-        item.setMultiple(data.getMultiple() > 0 ? data.getMultiple() : 1);
+        item.setMultiple(resolvePositiveInt(data.getMultiple(), 1));
         item.setTotalAmount(data.getAmount() != null ? data.getAmount() : BigDecimal.ZERO);
         item.setAmountAllocMode(OrderConstant.ALLOC_SPLIT);
         item.setRawText(raw.getRawText());
         item.setStatApplied(OrderConstant.STAT_NOT_APPLIED);
         orderItemMapper.insert(item);
         return item;
+    }
+
+    private int resolvePositiveInt(Integer value, int fallback) {
+        return value != null && value > 0 ? value : fallback;
     }
 
     private OrderParseBatch saveParseBatch(OrderRaw raw, int status, String msg, String rawAiResponse) {
@@ -273,8 +318,8 @@ public class NormalizePersistService {
             record.setPlay(data.getPlay());
             record.setZone(data.getZone() != null ? data.getZone() : OrderConstant.ZONE_MAIN);
             record.setNumbers(data.getNumbers() != null ? JSON.toJSONString(data.getNumbers()) : null);
-            record.setBet(data.getBet());
-            record.setMultiple(data.getMultiple() > 0 ? data.getMultiple() : 1);
+            record.setBet(resolvePositiveInt(data.getBet(), 1));
+            record.setMultiple(resolvePositiveInt(data.getMultiple(), 1));
             record.setAmount(data.getAmount() != null ? data.getAmount() : BigDecimal.ZERO);
         } else {
             record.setBet(0);
@@ -388,6 +433,32 @@ public class NormalizePersistService {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    private record StatKey(String lotteryCategory,
+                           String gameType,
+                           String playType,
+                           String issueKey,
+                           String numberZone,
+                           String number) {
+    }
+
+    private static final class StatDelta {
+        private int betCount;
+        private BigDecimal amount = BigDecimal.ZERO;
+
+        private void merge(int deltaBetCount, BigDecimal deltaAmount) {
+            betCount += deltaBetCount;
+            amount = amount.add(deltaAmount == null ? BigDecimal.ZERO : deltaAmount);
+        }
+
+        private int betCount() {
+            return betCount;
+        }
+
+        private BigDecimal amount() {
+            return amount;
         }
     }
 

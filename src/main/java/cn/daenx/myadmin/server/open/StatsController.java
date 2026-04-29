@@ -17,6 +17,7 @@ import cn.daenx.myadmin.modules.domain.vo.StatsVO;
 import cn.daenx.myadmin.modules.domain.vo.TopSourceMessagePanelVO;
 import cn.daenx.myadmin.modules.service.AiParseService;
 import cn.daenx.myadmin.modules.service.MessageBufferService;
+import cn.daenx.myadmin.modules.service.NormalizePersistService;
 import cn.daenx.myadmin.modules.service.OrderBufferService;
 import cn.daenx.myadmin.modules.service.OrderReparseService;
 import cn.daenx.myadmin.modules.service.OrderWindowService;
@@ -39,9 +40,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -68,6 +71,9 @@ public class StatsController {
 
     @Autowired
     private OrderReparseService orderReparseService;
+
+    @Autowired
+    private NormalizePersistService normalizePersistService;
 
     @Autowired
     private MessageBufferService messageBufferService;
@@ -262,31 +268,14 @@ public class StatsController {
             List<OrderRaw> rawList = orderRawMapper.selectList(rawWrapper);
             List<Long> rawIds = rawList.stream().map(OrderRaw::getId).toList();
 
-            int batchDeleted = 0;
-            int parseResultDeleted = 0;
             if (!rawIds.isEmpty()) {
-                LambdaQueryWrapper<OrderParseBatch> batchWrapper = new LambdaQueryWrapper<>();
-                batchWrapper.in(OrderParseBatch::getRawId, rawIds);
-                List<OrderParseBatch> batches = orderParseBatchMapper.selectList(batchWrapper);
-                List<Long> batchIds = batches.stream().map(OrderParseBatch::getId).toList();
-                if (!batchIds.isEmpty()) {
-                    LambdaQueryWrapper<AiParseResultRecord> parseWrapper = new LambdaQueryWrapper<>();
-                    parseWrapper.in(AiParseResultRecord::getBatchId, batchIds);
-                    parseResultDeleted = aiParseResultMapper.delete(parseWrapper);
-                }
-                batchDeleted = orderParseBatchMapper.delete(batchWrapper);
+                normalizePersistService.cleanByRawIds(rawIds, date);
             }
 
-            LambdaQueryWrapper<AiParseResultRecord> parseByDateWrapper = new LambdaQueryWrapper<>();
-            parseByDateWrapper.ge(AiParseResultRecord::getCreatedAt, start);
-            parseByDateWrapper.lt(AiParseResultRecord::getCreatedAt, end);
-            parseResultDeleted += aiParseResultMapper.delete(parseByDateWrapper);
-            int rawDeleted = orderRawMapper.delete(rawWrapper);
-
-            log.info("delete date data: date={}, rawDeleted={}, batchDeleted={}, parseResultDeleted={}",
-                    date, rawDeleted, batchDeleted, parseResultDeleted);
-            return Result.ok("删除完成: date=" + date + ", 原始报单删除=" + rawDeleted +
-                    ", 解析批次删除=" + batchDeleted + ", 解析结果删除=" + parseResultDeleted);
+            log.info("reset date analysis data: date={}, rawKept={}, analysisCleaned={}",
+                    date, rawIds.size(), !rawIds.isEmpty());
+            return Result.ok("清理完成: date=" + date + ", 原始报单保留=" + rawIds.size() +
+                    ", 已清理解析批次/解析结果/订单明细/号码统计");
         } catch (Exception e) {
             log.error("删除日期数据失败", e);
             return Result.error(500, "删除失败: " + e.getMessage());
@@ -326,7 +315,7 @@ public class StatsController {
         }
     }
 
-    @GetMapping("/compare-raw-models")
+    @PostMapping("/compare-raw-models")
     public Result compareRawModels(@RequestParam Long rawId,
                                    @RequestParam(required = false) String otherModel,
                                    @RequestParam(required = false, defaultValue = "true") boolean applyPostCorrections) {
@@ -395,44 +384,62 @@ public class StatsController {
             }
             List<AiParseResultRecord> records = aiParseResultMapper.selectList(wrapper);
 
-            List<Long> invalidIds = new ArrayList<>();
+            Set<Long> invalidRawIds = new LinkedHashSet<>();
+            List<Long> orphanInvalidIds = new ArrayList<>();
+            int invalidRecordCount = 0;
             for (AiParseResultRecord record : records) {
-                if (record.getNumbers() == null || record.getNumbers().isBlank()) {
-                    invalidIds.add(record.getId());
+                if (!hasInvalidNumbers(record)) {
                     continue;
                 }
-                try {
-                    List<String> numbers = JSON.parseArray(record.getNumbers(), String.class);
-                    if (numbers == null || numbers.isEmpty()) {
-                        invalidIds.add(record.getId());
-                        continue;
-                    }
-                    for (String num : numbers) {
-                        if (!THREE_DIGIT.matcher(num).matches()) {
-                            invalidIds.add(record.getId());
-                            log.info("invalid parse result removed: id={}, numbers={}, play={}",
-                                    record.getId(), record.getNumbers(), record.getPlay());
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    invalidIds.add(record.getId());
+                invalidRecordCount++;
+                if (record.getRawId() != null) {
+                    invalidRawIds.add(record.getRawId());
+                } else {
+                    orphanInvalidIds.add(record.getId());
                 }
+                log.info("invalid parse result scheduled for cleanup: id={}, rawId={}, numbers={}, play={}",
+                        record.getId(), record.getRawId(), record.getNumbers(), record.getPlay());
             }
 
-            int deleted = 0;
-            if (!invalidIds.isEmpty()) {
-                for (Long id : invalidIds) {
+            int orphanDeleted = 0;
+            if (!orphanInvalidIds.isEmpty()) {
+                for (Long id : orphanInvalidIds) {
                     aiParseResultMapper.deleteById(id);
                 }
-                deleted = invalidIds.size();
+                orphanDeleted = orphanInvalidIds.size();
             }
 
-            log.info("cleanup invalid numbers finished: checked={}, deleted={}", records.size(), deleted);
-            return Result.ok("清理完成，检查 " + records.size() + " 条记录，删除 " + deleted + " 条无效数据");
+            if (!invalidRawIds.isEmpty()) {
+                normalizePersistService.cleanByRawIds(new ArrayList<>(invalidRawIds), null);
+            }
+
+            log.info("cleanup invalid numbers finished: checked={}, invalidRecords={}, cleanedRawIds={}, orphanDeleted={}",
+                    records.size(), invalidRecordCount, invalidRawIds.size(), orphanDeleted);
+            return Result.ok("清理完成，检查 " + records.size() + " 条记录，发现 " + invalidRecordCount +
+                    " 条无效解析，清理 rawId " + invalidRawIds.size() + " 个，孤立记录删除 " + orphanDeleted + " 条");
         } catch (Exception e) {
             log.error("cleanup invalid numbers failed", e);
             return Result.error(500, "清理失败: " + e.getMessage());
+        }
+    }
+
+    private boolean hasInvalidNumbers(AiParseResultRecord record) {
+        if (record.getNumbers() == null || record.getNumbers().isBlank()) {
+            return true;
+        }
+        try {
+            List<String> numbers = JSON.parseArray(record.getNumbers(), String.class);
+            if (numbers == null || numbers.isEmpty()) {
+                return true;
+            }
+            for (String num : numbers) {
+                if (num == null || !THREE_DIGIT.matcher(num.trim()).matches()) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            return true;
         }
     }
 

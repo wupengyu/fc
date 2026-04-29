@@ -3806,14 +3806,16 @@ public class AiParseService {
         }
 
         String text = extractPrimaryOrderText(raw.getRawText());
-        if (text.isBlank()
-                || containsMultipleLines(text)
-                || containsPermutationMarker(text)
-                || SIMPLE_DIRECT_UNSUPPORTED_HINT.matcher(text).find()) {
+        String candidateText = text.replaceAll("[\\r\\n]+", " ")
+                .replaceAll("\\s{2,}", " ")
+                .trim();
+        if (candidateText.isBlank()
+                || containsPermutationMarker(candidateText)
+                || SIMPLE_DIRECT_UNSUPPORTED_HINT.matcher(candidateText).find()) {
             return Collections.emptyList();
         }
 
-        List<DirectBetMatch> betMatches = extractExplicitDirectBetMatches(text);
+        List<DirectBetMatch> betMatches = extractExplicitDirectBetMatches(candidateText);
         if (betMatches.size() != 1) {
             return Collections.emptyList();
         }
@@ -3822,7 +3824,7 @@ public class AiParseService {
             return Collections.emptyList();
         }
 
-        String numberScope = text.substring(0, betMatch.start()).trim();
+        String numberScope = candidateText.substring(0, betMatch.start()).trim();
         if (numberScope.isBlank() || !isSimpleDirectNumberScope(numberScope)) {
             return Collections.emptyList();
         }
@@ -3832,14 +3834,14 @@ public class AiParseService {
             return Collections.emptyList();
         }
 
-        String suffix = text.substring(betMatch.end()).trim();
+        String suffix = candidateText.substring(betMatch.end()).trim();
         if (containsThreeDigitNumber(suffix)) {
             return Collections.emptyList();
         }
 
         List<CategoryGame> categories = forceTcByTargetGroupRule
                 ? List.of(new CategoryGame("TC", "P3"))
-                : detectCategories(text, raw);
+                : detectCategories(candidateText, raw);
         Integer explicitTotal = extractStrictSimpleDirectTotal(suffix);
         int computedTotal = numbers.size() * categories.size() * betMatch.bet() * 2;
         if (explicitTotal != null && explicitTotal > 0 && explicitTotal != computedTotal) {

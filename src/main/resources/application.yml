@@ -72,6 +72,7 @@ order:
   window-end: "21:35:00"
   trigger-count: 50
   trigger-wait: 500
+  persist-max-attempts: 8
   reparse-enabled: true
   reparse-schedule-delay: 5000
   reparse-batch-size: 30
@@ -100,8 +101,8 @@ ai:
   timeout: 120000
   temperature: 0.1
   max-tokens: 16000
-  parallel: 24
-  realtime-parallel: 24
+  parallel: 16
+  realtime-parallel: 16
   reparse-parallel: 2
   fast-path-simple-direct-enabled: true
   save-call-log: false
