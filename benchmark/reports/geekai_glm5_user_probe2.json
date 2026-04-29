@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-03-27 01:52:39",
+  "base_url": "https://geekai.dev/api/v1/chat/completions",
+  "api_format": "openai",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "glm-5"
+  ],
+  "run_label": "geekai_glm5_user_probe2",
+  "repeats": 1,
+  "prompt_placement": "user",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "reasoning_effort": null,
+  "retries": 2,
+  "summary_by_model": {
+    "glm-5": {
+      "run_count": 1,
+      "successful_run_count": 0,
+      "failed_run_count": 1,
+      "exact_match_count": 0,
+      "avg_latency_ms": null,
+      "min_latency_ms": null,
+      "max_latency_ms": null
+    }
+  },
+  "runs": [
+    {
+      "model": "glm-5",
+      "case_id": "raw_95_fc_multi_compact",
+      "repeat_index": 1,
+      "api_format": "openai",
+      "thinking": "auto",
+      "reasoning_effort": null,
+      "retries": 2,
+      "run_label": "geekai_glm5_user_probe2",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    }
+  ]
+}

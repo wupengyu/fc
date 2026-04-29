@@ -1,0 +1,108 @@
+{
+  "generated_at": "2026-03-27 02:02:44",
+  "base_url": "https://geekai.dev/api/v1/chat/completions",
+  "api_format": "openai",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "deepseek-v3.2:thinking"
+  ],
+  "run_label": "geekai_probe_deepseekv32thinking",
+  "repeats": 1,
+  "prompt_placement": "system",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "reasoning_effort": null,
+  "retries": 2,
+  "summary_by_model": {
+    "deepseek-v3.2:thinking": {
+      "run_count": 1,
+      "successful_run_count": 1,
+      "failed_run_count": 0,
+      "exact_match_count": 1,
+      "avg_latency_ms": 32468.0,
+      "min_latency_ms": 32468,
+      "max_latency_ms": 32468
+    }
+  },
+  "runs": [
+    {
+      "model": "deepseek-v3.2:thinking",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "api_format": "openai",
+      "thinking": "auto",
+      "reasoning_effort": null,
+      "retries": 2,
+      "run_label": "geekai_probe_deepseekv32thinking",
+      "status": "ok",
+      "latency_ms": 32468,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "prompt_tokens": 2594,
+        "completion_tokens": 628,
+        "total_tokens": 3222,
+        "prompt_tokens_details": {},
+        "completion_tokens_details": {
+          "reasoning_tokens": 531
+        }
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"147\"],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.00\n    }\n  }\n]",
+      "raw_response_json": {
+        "id": "32f5e588-ecb4-4a2d-8327-e990f889d016",
+        "created": 1774548143,
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"147\"],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.00\n    }\n  }\n]",
+              "reasoning_content": "首先，我需要分析消息列表。这里只有一条消息：[1] 147体彩五单。\n\n任务是判断每条是否为有效报单。有效报单必须包含：\n1. 彩种信息（明确或可推断）\n2. 投注号码（必须是三位数，如\"512\"、\"009\"、\"000\"）\n3. 注数（可从金额反推，每注固定2元）\n\n消息内容：\"147体彩五单\"\n- 包含数字\"147\"，这是三位数，符合号码要求。\n- 包含\"体彩\"，这是彩种关键词，根据彩种映射，\"体彩\"对应 TC + P3。\n- 包含\"五单\"，\"单\"意思是注，所以\"五单\"表示5注。\n\n所以，这是一个有效报单。\n\n现在，解析结构化数据：\n- category: \"体彩\" 对应 TC\n- game: 根据映射，TC 对应 P3\n- play: 玩法。消息中没有明确玩法关键词，但根据默认规则，无明确说明时默认为\"直选\"。这里\"五单\"只是注数，没有玩法词，所以默认为\"直选\"。\n- zone: 号码区域，对于3D/P3，是MAIN。\n- numbers: 号码必须是三位数数组。这里是\"147\"，所以数组包含一个元素[\"147\"]。\n- bet: 注数。\"五单\"表示5注。\n- multiple: 倍数。消息中没有指定倍数，默认为1。\n- amount: 总金额 = 注数 × 2元 = 5 × 2 = 10.00元。\n\n彩种简写识别：\"体彩\"明确为TC + P3，所以没问题。\n\n玩法识别：没有\"组选\"或\"独胆\"等关键词，所以是直选。\n\n金额规则：\"单\"=\"注\"，\"五单\"=5注。\n\n输出要求：返回JSON数组，每个消息对应一个或多个结果。这里只有一条消息，所以一个结果。如果是复式，可能需要展开，但这里没有复式关键词，是直选。\n\n确认号码：\"147\"是三位数，有效。\n\n因此，解析成功，status=\"SUCCESS\"。\n\n数据对象：\n- index: 消息索引是1\n- valid: true\n- status: \"SUCCESS\"\n- data: {\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"147\"],\"bet\":5,\"multiple\":1,\"amount\":10.00}\n\n现在，构建JSON数组。"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "model": "deepseek-v3.2:thinking",
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2594,
+          "completion_tokens": 628,
+          "total_tokens": 3222,
+          "prompt_tokens_details": {},
+          "completion_tokens_details": {
+            "reasoning_tokens": 531
+          }
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "147"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        }
+      ]
+    }
+  ]
+}

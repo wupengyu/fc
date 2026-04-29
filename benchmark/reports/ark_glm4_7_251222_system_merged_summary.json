@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-03-26 15:00:18",
+  "source_report": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\ark_glm4_7_251222_system_merged.json",
+  "model": "glm-4-7-251222",
+  "successful_case_count": 19,
+  "failed_case_count": 1,
+  "failed_case_ids": [
+    "raw_146_skip_group_mix"
+  ],
+  "strict": {
+    "relaxed": false,
+    "exact_match_count": 14,
+    "exact_match_ratio": 0.7368,
+    "total_expected": 70,
+    "total_matched": 54,
+    "item_level_recall": 0.7714,
+    "total_missing": 16,
+    "total_extra": 17
+  },
+  "relaxed": {
+    "relaxed": true,
+    "exact_match_count": 16,
+    "exact_match_ratio": 0.8421,
+    "total_expected": 70,
+    "total_matched": 57,
+    "item_level_recall": 0.8143,
+    "total_missing": 13,
+    "total_extra": 14
+  },
+  "avg_latency_ms": 67924.89,
+  "min_latency_ms": 20068,
+  "max_latency_ms": 158800,
+  "avg_prompt_tokens": 2670.32,
+  "avg_completion_tokens": 1782.68,
+  "avg_total_tokens": 4453.0
+}

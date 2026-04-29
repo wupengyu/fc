@@ -1,0 +1,884 @@
+{
+  "generated_at": "2026-03-26 15:24:40",
+  "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "glm-4-7-251222"
+  ],
+  "run_label": "ark_glm4_7_251222_retry_failed",
+  "repeats": 1,
+  "prompt_placement": "system",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "summary_by_model": {
+    "glm-4-7-251222": {
+      "run_count": 5,
+      "successful_run_count": 4,
+      "failed_run_count": 1,
+      "exact_match_count": 3,
+      "avg_latency_ms": 121585.75,
+      "min_latency_ms": 65975,
+      "max_latency_ms": 158800
+    }
+  },
+  "runs": [
+    {
+      "model": "glm-4-7-251222",
+      "case_id": "raw_59_dual_category_multi",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "ark_glm4_7_251222_retry_failed",
+      "status": "ok",
+      "latency_ms": 124460,
+      "comparison": {
+        "expected_count": 6,
+        "actual_count": 6,
+        "matched_count": 6,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 3236,
+        "prompt_tokens": 2670,
+        "total_tokens": 5906,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2912
+        }
+      },
+      "raw_response_text": "```json\n[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n]\n```",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "content": "```json\n[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n]\n```",
+              "reasoning_content": "1. **分析用户请求：**\n    *   **输入：** 消息列表：`[1] 体彩福彩\\n830，721，507十五单五组240米`\n    *   **角色：** 彩票报单解析专家。\n    *   **目标：** 将口语化报单解析为标准 JSON �输出。\n    *   **约束：** 严格遵守规则（彩种映射、号码格式、玩法、金额、输出格式）。\n\n2.  **分析输入消息：**\n    *   **索引 1：** `体彩福彩\\n830，721，507十五单五组240米`\n    *   **内容：** \"体彩福彩\"（彩种），\"830，721，507\"（号码），\"十五单\"（15注直选），\"五组\"（5注组选），\"240米\"（总金额）。\n\n3.  **逐步解析：**\n\n    *   **彩种识别：**\n        *   文本包含 \"体彩\" 和 \"福彩\"。\n        *   规则：\"体+福\"或\"福+体\"同时出现 → 生成两条报单记录，分别为 TC + P3 和 FC + 3D，号码、玩法、金额相同。\n        *   因此，我需要为体彩（TC/P3）和福彩（FC/3D）各生成一组数据。\n\n    *   **号码识别：**\n        *   文本：\"830，721，507\"\n        *   分隔符：逗号（，）。\n        *   号码：830, 721, 507。\n        *   验证：均为三位数。有效。\n\n    *   **玩法与注数识别：**\n        *   文本：\"十五单五组\"\n        *   \"十五单\"：15注，直选（\"单\"通常暗示直选/单式）。\n        *   \"五组\"：5注，组选（\"组\"暗示组选）。\n        *   规则检查：\"组选玩法不参与解析，遇到纯组选报单应跳过\"。\n        *   规则检查：\"混合报单（如'256四单一组总10'）：只解析直选部分（256直选4注），忽略组选部分\"。\n        *   操作：忽略 \"五组\"。仅解析 \"十五单\"。\n        *   每个号码的注数：15。\n\n    *   **金额识别：**\n        *   文本：\"240米\"。\n        *   \"米\" = 元。\n        *   总金额 = 240。\n        *   验证：3个号码 * 15注/号码 * 2元/注 = 90元。\n        *   等等，文本说是 \"240米\"。90 != 240。\n        *   让我们重读 \"包票金额计算\" 规则。\n        *   \"优先使用末尾指定的总金额... 总金额平均分配到每个号码\"。\n        *   然而，这里我们有明确的注数 \"十五单\"（15注）。\n        *   通常，如果指定了注数（\"十五单\"），则优先于从总金额反推。\n        *   让我们看看 \"混合报单\" 示例：\"256四单一组总10\" -> 256直选4注。它使用了明确的注数。\n        *   让我们看看 \"包票金额计算\"：\"体563十单两组24 = 总金额24元，2个号码，每个12元（6注）\"。这里 \"十单\"（10注）与 \"12元\"（6注）相矛盾。该示例暗示总金额覆盖了注数文本，或者 \"十单\" 指的是其他东西，或者示例逻辑是特定的。\n        *   让我们重新评估 \"十五单五组240米\"。\n        *   如果我遵循 \"十五单\"（15注）：3个号码 * 15注 * 2 = 90元。\n        *   如果我遵循 \"240米\" 总金额：240 / 3个号码 = 每个80元 = 每个40注。\n        *   哪个优先？\n        *   规则：\"注数（可从金额反推，每注固定2元）\"。\n        *   规则：\"包票金额计算：优先使用末尾指定的总金额... 总金额平均分配到每个号码\"。\n        *   \"十五单\" 是明确的注数。\"240米\" 是明确的总金额。\n        *   在 \"体563十单两组24\" 示例中，结果是 \"每个12元（6注）\"。这忽略了 \"十单\"（10注）并使用了总金额。\n        *   因此，**总金额优先于明确的注数文本**。\n        *   计算：总金额 240元。号码：3。每个号码的金额 = 240 / 3 = 80元。每个号码的注数 = 80 / 2 = 40注。\n        *   等等，\"十五单\" 可能意味着 \"15注\" 吗？如果用户说 \"15注\" 但支付了 \"240元\"，通常金额是事实依据，或者 \"15单\" 指的是其他东西（比如15个号码？不，只有3个号码）。\n        *   让我们坚持 \"包票金额计算\" 规则：\"优先使用末尾指定的总金额\"。\n        *   所以，每个号码的注数 = 40。\n\n    *   **构建数据：**\n        *   彩种 1：TC（体彩），P3。\n        *   彩种 2：FC（福彩），3D。\n        *   号码：830, 721, 507。\n        *   玩法：直选（源自 \"单\"）。\n        *   每个号码的注数：40。\n        *   每个号码的金额：80。\n\n    *   **生成 JSON 条目：**\n        *   索引 1（TC）：\n            *   号码 830：bet=40, amount=80。\n            *   号码 721：bet=40, amount=80。\n            *   号码 507：bet=40, amount=80。\n        *   索引 1（FC）：\n            *   号码 830：bet=40, amount=80。\n            *   号码 721：bet=40, amount=80。\n            *   号码 507：bet=40, amount=80。\n\n    *   **等等，让我们再次检查 \"十五单\" 的解释。**\n        *   \"十五单\" 可能意味着 \"15注\" 吗？\n        *   如果我使用 15注：3 * 15 * 2 = 90元。\n        *   文本说 \"240米\"。\n        *   也许 \"十五单\" 意味着 \"15个号码\"？不，只列出了3个。\n        *   也许 \"十五单\" 意味着 \"15元\"？不，\"单\" 通常意味着注。\n        *   让我们再次看规则：\"体563十单两组24 = 总金额24元，2个号码，每个12元（6注）\"。\n        *   在这个示例中，\"十单\"（10注）被忽略，取而代之的是从总金额得出的6注。\n        *   所以我必须遵循这个先例。总金额优先。\n        *   总金额 240 / 3个号码 = 每个80元 = 每个40注。\n\n    *   **等等，\"十五单\" 可能是 \"15元\" 吗？**\n        *   不，\"单\" 在 \"注数\" 规则中被定义为 \"注\"。\n        *   \"单\"=\"注\"。\n        *   所以 \"十五单\" = 15注。\n        *   但总金额规则说 \"优先使用末尾指定的总金额\"。\n        *   所以我坚持 40注。\n\n    *   **让我们重新考虑 \"十五单五组\" 的结构。**\n        *   也许 \"十五单\" 意味着 \"15注\" 而 \"五组\" 意味着 \"5注\"。\n        *   总注数 = 15 + 5 = 20？\n        *   3个号码 * 20注 * 2 = 120元。仍然不是 240。\n        *   也许 \"十五单\" 意味着 \"15元\"（口语）？15/2 = 7.5注。不太可能。\n        *   也许 \"十五单\" 意味着 \"15倍\"？\n        *   让我们坚持明确的规则：\"优先使用末尾指定的总金额\"。\n        *   总金额 = 240。\n        *   号码 = 3。\n        *   每个 = 80元 = 40注。\n\n    *   **格式化输出：**\n        *   索引 1。\n        *   两个彩种（TC 和 FC）。\n        *   3个号码。\n        *   总共 6 个 JSON 对象。\n\n4.  **起草 JSON：**\n\n    *   **对象 1（TC, 830）：**\n        ```json\n        {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n        ```\n    *   **对象 2（TC, 721）：**\n        ```x-json\n        {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n        ```\n    *   **对象 3（TC, 507）：**\n        ```x-json\n        {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n        ```\n    *   **对象 4（FC, 830）：**\n        ```x-json\n        {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n        ```\n    *   **对象 5（FC, 721）：**\n        ```x-json\n        {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n        ```\n    *   **对象 6（FC, 507）：**\n        ```x-json\n        {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n        ```\n\n5.  **最终审查：**\n    *   输入：`[1] 体彩福彩\\n830，721，507十五单五组240米`\n    *   彩种：体彩（TC/P3）和福彩（FC/3D）。正确。\n    *   号码：830, 721, 507。正确。\n    *   玩法：\"十五单\" -> 直选。\"五组\" -> 组选（已忽略）。正确。\n    *   金额：240米。3个号码。每个80元。40注。正确。\n    *   输出格式：JSON 数组。正确。\n\n    *   *自我修正/细化：* \"十五单\" 是否可能意味着 \"15元\"？\n        *   规则：\"单\"=\"注\"。\n        *   规则：\"金额前有'共'字时取后面的\"（如果金额前有 \"共\" 字，取后面的）。这里没有 \"共\"。\n        *   规则：\"包票金额计算：优先使用末尾指定的总金额\"。\n        *   示例 \"体563十单两组24\" 证实了总金额覆盖了 \"十单\"。\n        *   所以 40注是正确的解释。\n\n    *   *细化：* \"十五单\" 是否可能意味着 \"15倍\"？\n        *   通常倍数是 \"倍\" 或 \"X\"。\"单\" 是注。\n        *   即使是倍数，15倍 * 1注 * 2元 = 30元/号码。总计 90。仍然不是 240。\n        *   所以总金额规则是唯一能得出一致数字的规则。\n\n    *   *细化：* \"十五单\" 是否可能意味着 \"15个号码\"？\n        *   不，只列出了3个号码。\n\n    *   *细化：* \"五组\" 是否可能影响计算？\n        *   规则：\"混合报单...只解析直选部分...忽略组选部分\"。\n        *   所以 \"五组\" 被忽略。\n\n    *   *结论：* 逻辑成立。",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774508618,
+        "id": "021774508494412c2c2346a8f7f450117997084af59f03ef95070",
+        "model": "glm-4-7-251222",
+        "service_tier": "default",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 3236,
+          "prompt_tokens": 2670,
+          "total_tokens": 5906,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2912
+          }
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "830"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "721"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "507"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "830"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "721"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "507"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "glm-4-7-251222",
+      "case_id": "raw_93_fc_multiline_bundle",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "ark_glm4_7_251222_retry_failed",
+      "status": "ok",
+      "latency_ms": 137108,
+      "comparison": {
+        "expected_count": 6,
+        "actual_count": 6,
+        "matched_count": 0,
+        "missing_count": 6,
+        "extra_count": 6,
+        "accuracy_ratio": 0.0,
+        "exact_match": false,
+        "missing_items": [
+          "{\"data\": {\"amount\": \"16.00\", \"bet\": 8, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"210\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"16.00\", \"bet\": 8, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"310\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"16.00\", \"bet\": 8, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"816\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"16.00\", \"bet\": 8, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"176\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"16.00\", \"bet\": 8, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"097\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"16.00\", \"bet\": 8, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"409\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}"
+        ],
+        "extra_items": [
+          "{\"data\": {\"amount\": \"40.00\", \"bet\": 20, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"210\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"40.00\", \"bet\": 20, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"310\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"40.00\", \"bet\": 20, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"816\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"40.00\", \"bet\": 20, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"176\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"40.00\", \"bet\": 20, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"097\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"40.00\", \"bet\": 20, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"409\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 2957,
+        "prompt_tokens": 2676,
+        "total_tokens": 5633,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2510
+        }
+      },
+      "raw_response_text": "```json\n[\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"210\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"310\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"816\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"176\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"097\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"409\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}}\n]\n```",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "content": "```json\n[\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"210\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"310\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"816\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"176\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"097\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"409\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}}\n]\n```",
+              "reasoning_content": "用户希望我解析一条彩票报单消息。\n\n**输入消息：**\n`[1] 福 210 310 816 176 097 409 各八单十二组 合计240`\n\n**分析：**\n\n1.  **索引：** 1\n2.  **内容：** `福 210 310 816 176 097 409 各八单十二组 合计240`\n\n**步骤 1：识别彩种**\n*   关键词：\"福\"\n*   映射：\"福\" -> FC + 3D\n*   结果：category=\"FC\", game=\"3D\"\n\n**步骤 2：识别号码**\n*   候选号码：210, 310, 816, 176, 097, 409\n*   验证：均为三位数。有效。\n*   数量：6个号码。\n\n**步骤 3：识别玩法**\n*   文本：\"各八单十二组\"\n*   \"八单\"：通常意味着每个号码8注（\"单\" = 注）。\n*   \"十二组\"：这有点棘手。通常\"组\"可能指组选，但这里它跟在\"各八单\"后面。\n*   让我们看看\"合计240\"。\n*   如果每个号码8注：6个号码 * 8注/号码 * 2元/注 = 96元。这与240不符。\n*   让我们重读\"各八单十二组\"。\n    *   \"各\"：每个。\n    *   \"八单\"：8注。\n    *   \"十二组\"：12组？还是12注？\n    *   也许\"八单\"是8注，\"十二组\"是12注？不，这说不通。\n    *   也许\"八单\"意味着8注，而\"十二组\"意味着12组（每组8注？）。\n    *   让我们看看总金额：240元。\n    *   240元 / 6个号码 = 每个号码40元。\n    *   40元 / 2元 = 每个号码20注。\n    *   所以，每个号码20注。\n    *   \"八单十二组\"如何等于20注？\n    *   也许\"八单\" = 8注。\"十二组\" = 12注？8+12=20。\n    *   或者\"十二组\"意味着12组，每组1注？不。\n    *   让我们看看\"包票格式识别\"规则。\n        *   \"各X组\"：通常暗示分组。\n        *   \"各五组560\"示例：7个号码，560元。560/7 = 80元/号码 = 40注/号码。文本说\"各五组\"。40注 vs \"五组\"。也许\"五组\"意味着5组，每组8注？或者\"五组\"只是文本，数字来自其他地方？\n        *   让我们看看\"体563十单两组24\"示例。2个号码，24元。12元/号码 = 6注/号码。文本：\"十单两组\"。10注 vs 6注。不匹配。\n        *   等等，\"体563十单两组24\" -> \"十单\"（10注）+ \"两组\"（2组？）。如果10注，金额是20元。总共24元。也许\"两组\"意味着2组，每组2元？不。\n        *   让我们重新考虑\"各八单十二组\"。\n        *   也许\"八单\"是8注。\n        *   也许\"十二组\"意味着12组。\n        *   总注数 = 8 + 12 = 20？\n        *   20注 * 2元 = 40元/号码。\n        *   6个号码 * 40元 = 240元。\n        *   这与\"合计240\"完全匹配。\n    *   所以，每个号码的注数 = 20。\n    *   玩法：\"直选\"（默认，因为未指定组选/复式）。\n\n**步骤 4：构建数据**\n*   彩种：FC, 3D\n*   玩法：直选\n*   区域：MAIN\n*   号码：[\"210\"], [\"310\"], [\"816\"], [\"176\"], [\"097\"], [\"409\"]\n*   注数：20\n*   倍数：1（隐含，除非另有说明，通常注数 = 倍数 * 1注，但这里我们直接计算注数）\n*   金额：40.00\n\n**步骤 5：格式化输出**\n*   索引：1\n*   有效：true\n*   状态：SUCCESS\n*   数据：6个对象。\n\n**优化逻辑：**\n*   输入：`福 210 310 816 176 097 409 各八单十二组 合计240`\n*   彩种：福 -> FC, 3D\n*   号码：210, 310, 816, 176, 097, 409\n*   金额/注数逻辑：\n    *   总金额：240\n    *   号码数量：6\n    *   每个号码金额：240 / 6 = 40\n    *   每个号码注数：40 / 2 = 20\n    *   文本分析：\"各八单十二组\"。\n        *   \"八单\" -> 8注。\n        *   \"十二组\" -> 12注（假设\"组\"在这里作为单位，或者只是加法）。\n        *   8 + 12 = 20。匹配。\n*   玩法：直选（默认）。\n\n**最终 JSON 结构：**\n```json\n[\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"210\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"310\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"816\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"176\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"097\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}},\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"FC\", \"game\": \"3D\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"409\"], \"bet\": 20, \"multiple\": 1, \"amount\": 40.00}}\n]\n```\n\n等等，让我再次检查\"倍数\"（multiple）字段。\n通常，`bet` 是注数。`multiple` 是倍数。\n如果用户说\"20注\"，通常意味着 `bet=20, multiple=1`。\n如果用户说\"10倍\"，通常意味着 `bet=10, multiple=10`（金额20）。\n这里，\"各八单十二组\"暗示了总注数。所以 `bet=20` 是正确的。`multiple` 默认为1，除非明确指定了\"倍\"。\n提示说：\"bet字段为该号码的注数（可以是1注或多注）\"。\n所以 `bet=20` 是正确的。\n\n让我们再次检查\"各八单十二组\"的解释。\n\"八单\" = 8注。\n\"十二组\" = 12注？\n在彩票行话中，\"组\"通常指\"组选\"（Group selection）。然而，提示说：\"组选玩法不参与解析... 遇到组选报单应跳过\"。\n但是，提示也说：\"混合报单（如'256四单一组总10'）：只解析直选部分（256直选4注），忽略组选部分\"。\n所以，如果\"十二组\"意味着\"12注组选\"，我们应该忽略它。\n如果\"十二组\"意味着\"12注直选\"，我们保留它。\n鉴于总金额240，6个号码 -> 40元/号码 -> 20注/号码。\n如果我们只取\"八单\"（8注），总金额将是96。与240不符。\n如果我们取\"八单\"（8注）+ \"十二组\"（12注），总计20注。与240相符。\n所以\"十二组\"在这里必须被视为有效的注数，可能是\"12组直选\"或者只是\"12注\"的行话。\n或者也许\"组\"意味着\"组\"，而\"十二组\"意味着12组，每组1注？\n无论如何，数学计算（240 / 6 / 2 = 20）是确定注数的最强信号。\n所以 `bet=20`。\n\n一个细节：提示说\"复式玩法需展开为多条记录\"。这不是复式。\n提示说\"包票格式识别\"。\n\"各八单十二组\"符合\"各X组\"模式。\n\"各五组560\"示例：7个号码，560元。560/7 = 80元/号码 = 40注/号码。\n\"五组\" -> 40注？也许\"五组\"意味着5组，每组8注？或者\"五组\"只是文本，数字来自其他地方？\n实际上，在\"各五组560\"中，\"五\"是5，\"560\"是总金额。560/7=80。80/2=40。5和40之间没有明显的联系，除非\"五组\"意味着5组，每组8注（5*8=40）。\n让我们将此逻辑应用于\"各八单十二组\"。\n\"八单\" -> 8注。\n\"十二组\" -> 12组？如果1组=1注，那么12注。总计20。\n如果1组=其他东西？\n让我们坚持总金额计算。这是最可靠的。\n总金额240。6个号码。每个40元。每个20注。\n\n结果看起来很可靠。\n\n一个边缘情况：\"福\"是单独的一行吗？\n输入：`[1] 福 210 310 816 176 097 409 各八单十二组 合计240`\n它看起来像是一个单独的文本块。\n索引是1。\n\n最终检查 JSON 格式。\n`amount` 应该是数字（浮点数）。40.00。\n`bet` 是整数。20。\n`multiple` 是整数。1。\n\n输出应该是 JSON 数组。",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774508755,
+        "id": "021774508618853aa217d69610ee25a790bc2771c7afc7b31ad74",
+        "model": "glm-4-7-251222",
+        "service_tier": "default",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 2957,
+          "prompt_tokens": 2676,
+          "total_tokens": 5633,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2510
+          }
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "210"
+            ],
+            "bet": 20,
+            "multiple": 1,
+            "amount": "40.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "310"
+            ],
+            "bet": 20,
+            "multiple": 1,
+            "amount": "40.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "816"
+            ],
+            "bet": 20,
+            "multiple": 1,
+            "amount": "40.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "176"
+            ],
+            "bet": 20,
+            "multiple": 1,
+            "amount": "40.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "097"
+            ],
+            "bet": 20,
+            "multiple": 1,
+            "amount": "40.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "409"
+            ],
+            "bet": 20,
+            "multiple": 1,
+            "amount": "40.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "glm-4-7-251222",
+      "case_id": "raw_69_fc_fushi_dual",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "ark_glm4_7_251222_retry_failed",
+      "status": "ok",
+      "latency_ms": 158800,
+      "comparison": {
+        "expected_count": 12,
+        "actual_count": 12,
+        "matched_count": 12,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 3968,
+        "prompt_tokens": 2661,
+        "total_tokens": 6629,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 3326
+        }
+      },
+      "raw_response_text": "```json\n[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"267\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"276\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"627\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"672\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"726\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"762\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"278\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"287\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"728\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"782\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"827\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"872\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}\n]\n```",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "content": "```json\n[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"267\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"276\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"627\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"672\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"726\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"762\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"278\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"287\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"728\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"782\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"827\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"872\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}\n]\n```",
+              "reasoning_content": "1. **分析用户请求：**\n    *   输入：`[1] 267 278复试一倍24`\n    *   角色：彩票报单解析专家。\n    *   目标：将输入解析为标准JSON输出。\n\n2.  **分析输入消息：**\n    *   索引：1\n    *   内容：`267 278复试一倍24`\n\n3.  **应用报单识别标准：**\n    *   **彩种信息：** 未明确提及（如“福”、“体”、“3D”、“P3”）。\n        *   规则：“无彩种标识时 → 默认 FC + 3D”。\n        *   因此，类别 = \"FC\"，游戏 = \"3D\"。\n    *   **投注号码：** \"267\", \"278\"。两者均为三位数。有效。\n    *   **注数/金额：** \"一倍24\"。\n        *   \"一倍\"通常意味着倍数 = 1。\n        *   \"24\"通常指总金额或总注数。鉴于上下文“24”跟在“一倍”之后，且通常金额在最后，让我们假设总金额 = 24元。\n        *   等等，让我们看看结构：`号码1 号码2 复试 一倍 24`。\n        *   \"复试\"（复式）。\n        *   \"一倍\"（1倍）。\n        *   \"24\"（金额）。\n    *   **玩法：** \"复试\"（复式）。\n\n4.  **详细解析逻辑：**\n    *   **彩种：** 默认 FC 3D。\n    *   **玩法：** 复式。\n    *   **号码：** \"267\", \"278\"。\n    *   **复式处理：**\n        *   提示词说：“复式玩法详解 - 格式2：[号码1] [号码2] [号码3] 复式[倍数]（多号码复式）”。\n        *   示例2：\"066 166 266 复式30倍\"。\n        *   我的输入：\"267 278 复试一倍24\"。\n        *   \"复试\"是\"复式\"的错别字/变体。应视为复式。\n        *   \"一倍\"意味着倍数 = 1。\n        *   \"24\"是总金额。\n        *   有多少个号码？2个号码（\"267\", \"278\"）。\n        *   总金额 = 24元。\n        *   每个号码的金额 = 24 / 2 = 12元。\n        *   每注价格 = 2元。\n        *   每个号码的注数 = 12 / 2 = 6注。\n        *   等等，让我们重读复式规则。\n        *   规则：“格式2：[号码1] [号码2] [号码3] 复式[倍数]... 每个号码内部数字进行全排列，生成所有不重复的组合”。\n        *   规则：“每个组合的注数为指定的注数或倍数”。\n        *   让我们看看示例2：\"066 166 266 复式30倍\"。\n            *   066 -> 0,6,6 -> 排列：066, 606, 660（3种组合）。\n            *   每种组合30注。\n        *   我的输入：\"267 278 复试一倍24\"。\n            *   \"一倍\"通常意味着倍数 = 1。\n            *   \"24\"是总金额。\n            *   让我们计算组合。\n            *   号码1：\"267\"。数字：2,6,7。全排列：267, 276, 627, 672, 726, 762（6种组合）。\n            *   号码2：\"278\"。数字：2,7,8。全排列：278, 287, 728, 782, 827, 872（6种组合）。\n            *   总组合数 = 6 + 6 = 12。\n            *   总金额 = 24元。\n            *   每注价格 = 2元。\n            *   总注数 = 24 / 2 = 12注。\n            *   每个组合的注数 = 总注数 / 总组合数 = 12 / 12 = 1注。\n            *   这与“一倍”相符。\n            *   所以，逻辑是：将总金额（24）除以总组合数（12）得到每个组合的注数（1）。\n\n    *   **构建输出：**\n        *   索引：1\n        *   类别：FC\n        *   游戏：3D\n        *   玩法：复式\n        *   区域：MAIN\n        *   倍数：1（源自“一倍”）\n        *   每个组合的注数：1\n        *   每个组合的金额：2.00\n\n    *   **生成记录：**\n        *   **来自 267：**\n            1.  267, bet=1, amount=2\n            2.  276, bet=1, amount=2\n            3.  627, bet=1, amount=2\n            4.  672, bet=1, amount=2\n            5.  726, bet=1, amount=2\n            6.  762, bet=1, amount=2\n        *   **来自 278：**\n            1.  278, bet=1, amount=2\n            2.  287, bet=1, amount=2\n            3.  728, bet=1, amount=2\n            4.  782, bet=1, amount=2\n            5.  827, bet=1, amount=2\n            6.  872, bet=1, amount=2\n\n5.  **验证：**\n    *   输入：`267 278复试一倍24`\n    *   解析：\n        *   彩种：默认 FC 3D。\n        *   玩法：复式（识别出“复试”）。\n        *   号码：267, 278。\n        *   倍数/金额：“一倍”（1倍），“24”（24元）。\n        *   逻辑：复式展开。\n        *   267 -> 6种排列。\n        *   278 -> 6种排列。\n        *   总共12种组合。\n        *   总金额24元 -> 每种组合2元 -> 每种组合1注。\n        *   输出：12条记录。\n\n6.  **格式化JSON：**\n    *   需要生成12个JSON对象。\n    *   所有对象的索引均为1。\n    *   类别：FC，游戏：3D，玩法：复式，区域：MAIN。\n    *   Bet：1，Multiple：1，Amount：2.00。\n\n    *   *自我修正/完善：*\n        *   \"复试\"是否严格意味着复式？是的，在彩票语境中，\"复试\"是\"复式\"的常见错别字。\n        *   \"一倍\"是否意味着倍数？是的。\n        *   \"24\"是否意味着金额？是的，通常在末尾。\n        *   计算是否成立？12种组合 * 2元 = 24元。是的。\n\n7.  **最终JSON构建：**\n    *   列表：\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"267\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"276\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"627\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"672\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"726\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"762\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"278\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"287\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"728\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"782\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"827\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n        *   `{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"872\"],\"bet\":1,\"multiple\":1,\"amount\":2.00}}`\n\n8.  **最终审查：**\n    *   输入：`[1] 267 278复试一倍24`\n    *   解析：\n        *   彩种：默认 FC 3D。\n        *   玩法：复式（识别出“复试”）。\n        *   号码：267, 278。\n        *   倍数/金额：“一倍”（1倍），“24”（24元）。\n        *   逻辑：复式展开。\n        *   267 -> 6种排列。\n        *   278 -> 6种排列。\n        *   总共12种组合。\n        *   总金额24元 -> 每种组合2元 -> 每种组合1注。\n        *   输出：12条记录。\n\n    *   等等，\"复试\"是否可能意味着“重新测试”？不，在彩票报单语境下，它绝对是“复式”的错别字。\n    *   \"一倍\"是否可能意味着“1注”？通常“倍”意味着倍数。“单”意味着注数。所以倍数=1是正确的。\n    *   \"24\"是否可能意味着“24注”？如果24注，总金额=48元。但通常末尾的数字是总金额。鉴于“一倍”，如果倍数=1，且总金额=24，则注数=12。如果“24”是注数，则金额=48。标准惯例：末尾数字 = 总金额。我将坚持总金额=24。\n\n    *   让我们再次检查“复式玩法详解”规则。\n    *   “格式2：[号码1] [号码2] [号码3] 复式[倍数]（多号码复式）”\n    *   “示例2：\"066 166 266 复式30倍\" ... 每种30注”\n    *   在示例2中，“30倍”意味着倍数=30。它没有指定总金额。它指定了倍数。\n    *   我的输入：“复试一倍24”。\n    *   “一倍” = 倍数 = 1。\n    *   “24” = 总金额。\n    *   所以，倍数 = 1。总金额 = 24。\n    *   总组合数 = 12。\n    *   每个组合的注数 = 总金额 / (组合数 * 2) = 24 / 12 = 2？不。\n    *   金额 = 注数 * 2 * 倍数。\n    *   24 = 注数 * 2 * 1。\n    *   总注数 = 12。\n    *   每个组合的注数 = 12 / 12 = 1。\n    *   所以每个组合的金额 = 1 * 2 * 1 = 2。\n    *   这看起来是一致的。\n\n    *   等等，如果“24”是注数呢？“24单”？不，它说的是“24”。\n    *   如果“24”是倍数呢？“24倍”？不，它说的是“一倍”。\n    *   所以“24”必须是金额。\n\n    *   结果：12条记录，每条bet=1，amount=2。\n\n    *   一个边缘情况：“复试”是否可能意味着“直选”？不，“复式”是关键词。\n    *   “267 278”是否可能只是两个直选号码，而“复试”是其他东西的错别字？\n    *   如果是直选：2个号码。总金额24。每个号码12元 -> 每个号码6注。\n    *   但“复试”非常具体。它映射到“复式”。\n    *   我将继续进行复式展开。\n\n    *   排列：\n    *   267: 267, 276, 627, 672, 726, 762\n    *   278: 278, 287, 728, 782, 827, 872\n\n    *   JSON生成。",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774508914,
+        "id": "021774508755896e577630002db537cb4c69978019db15bf1196d",
+        "model": "glm-4-7-251222",
+        "service_tier": "default",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 3968,
+          "prompt_tokens": 2661,
+          "total_tokens": 6629,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3326
+          }
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "267"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "276"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "627"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "672"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "726"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "762"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "278"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "287"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "728"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "782"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "827"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "872"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "glm-4-7-251222",
+      "case_id": "raw_126_tc_all_baozi",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "ark_glm4_7_251222_retry_failed",
+      "status": "ok",
+      "latency_ms": 65975,
+      "comparison": {
+        "expected_count": 10,
+        "actual_count": 10,
+        "matched_count": 10,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 2162,
+        "prompt_tokens": 2662,
+        "total_tokens": 4824,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1632
+        }
+      },
+      "raw_response_text": "```json\n[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"000\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"111\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"222\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"333\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"444\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"555\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"666\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"777\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"888\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"999\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}}\n]\n```",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "content": "```json\n[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"000\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"111\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"222\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"333\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"444\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"555\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"666\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"777\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"888\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"999\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}}\n]\n```",
+              "reasoning_content": "1. **分析用户请求：**\n    *   输入：消息列表 `[1] 体彩全包豹子10单 合计200`。\n    *   角色：彩票报单解析专家。\n    *   目标：将消息解析为标准 JSON 输出。\n\n2. **分析输入消息：**\n    *   消息内容：`体彩全包豹子10单 合计200`\n    *   索引：1\n\n3. **应用报单识别标准：**\n    *   **彩种信息：** \"体彩\" -> 映射到 `TC` + `P3`。\n    *   **投注号码：** \"全包豹子\"（全包豹子）。根据规则，\"豹子全包\"或\"三匹全包\"意味着 000, 111, 222, 333, 444, 555, 666, 777, 888, 999。这些是有效的三位数。\n    *   **注数/金额：** \"10单\" -> 10 注。\"合计200\" -> 总金额 200 元。\n        *   检查一致性：10 个号码 * 10 注/号码 * 2 元/注 = 200 元。一致。\n\n4. **应用玩法识别：**\n    *   \"全包豹子\"暗示特定的号码集。通常，这些被视为直选投注，除非另有说明。提示说“默认玩法：无明确说明 -> 直选”。虽然“豹子”是一种特定类型，但在这种语境下，它通常被视为直选投注列表。\n    *   等等，让我们检查一下“包票格式识别”规则。\n        *   \"豹子全包一倍福体\" -> 000...999 各 1 注。\n        *   \"豹子全包X倍\" -> 每个 X 注。\n    *   这里我们有 \"体彩全包豹子10单\"。\n    *   彩种：TC (P3)。\n    *   号码：000, 111, 222, 333, 444, 555, 666, 777, 888, 999。\n    *   注数：10。\n    *   玩法：直选（默认）。\n\n5. **构建数据结构：**\n    *   索引：1\n    *   有效：true\n    *   状态：SUCCESS\n    *   数据：\n        *   category: \"TC\"\n        *   game: \"P3\"\n        *   play: \"直选\"\n        *   zone: \"MAIN\"\n        *   numbers: [\"000\"], [\"111\"] 等（每个号码单独的记录）。\n        *   bet: 10\n        *   multiple: 1（由“10单”暗示，通常倍数是 1，除非指定了“倍”，但“10单”意味着 10 注。如果“10单”意味着 10 倍，那就是 10 注。让我们假设“10单”= 10 注）。\n        *   amount: 10 * 2 = 20.00（每个号码）。\n\n6. **细化“10单”的解释：**\n    *   \"单\" = \"注\"。\n    *   所以 \"10单\" = 10 注。\n    *   总金额 = 200。\n    *   号码数量 = 10。\n    *   每个号码的注数 = 200 / (10 * 2) = 10。匹配。\n\n7. **生成 JSON 输出：**\n    *   需要为 10 个豹子号码中的每一个生成 10 个 JSON 对象。\n    *   号码：000, 111, 222, 333, 444, 555, 666, 777, 888, 999。\n\n    *   记录 1：`{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"000\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}}`\n    *   记录 2：`{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"111\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}}`\n    *   ... 依此类推直到 999。\n\n8. **最终审查：**\n    *   输入：`[1] 体彩全包豹子10单 合计200`\n    *   解析逻辑：\n        *   彩种：体彩 -> TC, P3。\n        *   内容：全包豹子 -> 000, 111...999。\n        *   注数：10单 -> 10 注。\n        *   金额：200（验证：10 个号码 * 10 注 * 2 = 200）。\n    *   输出格式：JSON 数组。\n\n9. **构建 JSON：**\n    ```json\n    [\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"000\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"111\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"222\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"333\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"444\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"555\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"666\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"777\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"888\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n      {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"999\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}}\n    ]\n    ```",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774508980,
+        "id": "021774508914792a9c6544091777d16bd21be5aab8209d3c27a5e",
+        "model": "glm-4-7-251222",
+        "service_tier": "default",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 2162,
+          "prompt_tokens": 2662,
+          "total_tokens": 4824,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1632
+          }
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "000"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "111"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "222"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "333"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "444"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "555"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "666"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "777"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "888"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "999"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "glm-4-7-251222",
+      "case_id": "raw_146_skip_group_mix",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "ark_glm4_7_251222_retry_failed",
+      "status": "error",
+      "error": "The read operation timed out"
+    }
+  ]
+}

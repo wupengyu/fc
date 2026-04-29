@@ -1,0 +1,167 @@
+# Redis 消息队列接口文档
+
+## 概述
+
+`redis_store` 模块在每条微信消息被监听到时，将其异步写入 Redis List，作为 SSE 推送的可靠旁路通道。消费者可通过标准 Redis 命令消费消息，队列整体 TTL 为 **3天（259200秒）**，每次有新消息写入时自动刷新。
+
+---
+
+## 配置
+
+在 `config.json` 中添加 `redis` 字段：
+
+```json
+{
+    "redis": {
+        "host": "127.0.0.1",
+        "port": 6379,
+        "password": "",
+        "db": 0,
+        "queue_name": "wechat_messages",
+        "ttl": 259200
+    }
+}
+```
+
+| 字段 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| `host` | string | `127.0.0.1` | Redis 服务地址 |
+| `port` | int | `6379` | Redis 端口 |
+| `password` | string | `""` | Redis 密码，无密码留空 |
+| `db` | int | `0` | Redis 数据库编号 |
+| `queue_name` | string | `wechat_messages` | List 键名 |
+| `ttl` | int | `259200` | 队列生命周期（秒），默认3天 |
+
+> 若 `redis` 字段不存在或为空，模块静默跳过，不影响其他功能。
+
+---
+
+## 队列结构
+
+- **Redis 数据结构**：List（`LPUSH` 写入，队列头为最新消息）
+- **键名**：由 `queue_name` 配置，默认 `wechat_messages`
+- **单条消息**：UTF-8 编码的 JSON 字符串
+- **TTL 机制**：每次写入后调用 `EXPIRE queue_name ttl`，刷新整个 List 的过期时间
+
+---
+
+## 消息字段
+
+每条消息为一个 JSON 对象，字段与 SSE 推送和 MySQL 存储完全一致：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `timestamp` | int | Unix 时间戳（秒） |
+| `time` | string | 消息时间，格式 `HH:MM:SS` |
+| `chat` | string | 会话名称（联系人昵称或群名） |
+| `username` | string | 微信 username 或 chatroom id |
+| `is_group` | bool | 是否群聊 |
+| `sender` | string | 发送人微信昵称（群聊时有值，私聊为空） |
+| `type` | string | 消息类型文字，如 `文字`、`图片`、`语音` 等 |
+| `type_icon` | string | 消息类型图标 Emoji |
+| `content` | string | 消息内容或摘要（文本消息为正文，其他类型为描述） |
+| `local_id` | string | 本地消息 ID（可选，部分消息有值） |
+| `server_id` | string | 服务器消息 ID（可选） |
+| `sort_seq` | string | 排序序列号（可选） |
+| `decrypt_ms` | float | 解密耗时（毫秒） |
+| `pages` | int | 本次解密的 WAL 页数 |
+
+### 示例消息
+
+```json
+{
+    "timestamp": 1720000000,
+    "time": "14:26:40",
+    "chat": "张三",
+    "username": "wxid_abc123",
+    "is_group": false,
+    "sender": "",
+    "type": "文字",
+    "type_icon": "💬",
+    "content": "你好",
+    "local_id": "12345",
+    "server_id": "67890",
+    "sort_seq": "",
+    "decrypt_ms": 8.3,
+    "pages": 2
+}
+```
+
+---
+
+## 消费者接入示例
+
+### Python（阻塞消费，推荐）
+
+```python
+import redis
+import json
+
+client = redis.Redis(host='127.0.0.1', port=6379, db=0, decode_responses=True)
+QUEUE = 'wechat_messages'
+
+print('等待消息...')
+while True:
+    # BRPOP 阻塞等待，timeout=0 表示永久等待
+    result = client.brpop(QUEUE, timeout=0)
+    if result:
+        _, payload = result
+        msg = json.loads(payload)
+        print(f"[{msg['time']}] {msg['chat']}: {msg['content']}")
+```
+
+### Python（批量读取历史消息）
+
+```python
+import redis
+import json
+
+client = redis.Redis(host='127.0.0.1', port=6379, db=0, decode_responses=True)
+QUEUE = 'wechat_messages'
+
+# 读取最新100条（index 0 为最新）
+rows = client.lrange(QUEUE, 0, 99)
+for payload in rows:
+    msg = json.loads(payload)
+    print(f"[{msg['time']}] [{msg['chat']}] {msg.get('sender', '')} {msg['content']}")
+```
+
+### Node.js（ioredis，阻塞消费）
+
+```javascript
+const Redis = require('ioredis');
+const client = new Redis({ host: '127.0.0.1', port: 6379, db: 0 });
+const QUEUE = 'wechat_messages';
+
+async function consume() {
+    console.log('等待消息...');
+    while (true) {
+        const result = await client.brpop(QUEUE, 0);
+        if (result) {
+            const msg = JSON.parse(result[1]);
+            console.log(`[${msg.time}] ${msg.chat}: ${msg.content}`);
+        }
+    }
+}
+
+consume().catch(console.error);
+```
+
+---
+
+## 注意事项
+
+1. **只写普通消息**：SSE 中的控制帧（图片更新 `image_update`、富媒体更新 `rich_update` 等含 `event` 字段的消息）不会写入 Redis 队列，仅写入完整的聊天消息。
+
+2. **队列方向**：使用 `LPUSH` 写入、`BRPOP`/`RPOP` 消费，即先进先出（FIFO）。`LRANGE 0 -1` 查看时 index 0 为最新消息。
+
+3. **TTL 刷新**：每次写入都会重置整个 List 的过期时间。若长时间无消息（超过 `ttl` 秒），队列键会自动删除。
+
+4. **多消费者**：多个消费者同时 `BRPOP` 时，每条消息只会被一个消费者取到。如需广播给多个消费者，建议使用 Redis Pub/Sub 或 Stream，可基于本模块扩展。
+
+5. **断线重连**：`redis_store` 写入失败时会自动尝试重连并重试3次，失败消息会被丢弃（不影响 SSE 和 MySQL 通道）。
+
+6. **安装依赖**：
+   ```bash
+   pip install redis>=5.0
+   ```

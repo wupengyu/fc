@@ -1,0 +1,108 @@
+{
+  "generated_at": "2026-03-26 14:25:33",
+  "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "glm-4-7-251222"
+  ],
+  "run_label": "ark_probe_system",
+  "repeats": 1,
+  "prompt_placement": "system",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "summary_by_model": {
+    "glm-4-7-251222": {
+      "run_count": 1,
+      "successful_run_count": 1,
+      "failed_run_count": 0,
+      "exact_match_count": 1,
+      "avg_latency_ms": 29120.0,
+      "min_latency_ms": 29120,
+      "max_latency_ms": 29120
+    }
+  },
+  "runs": [
+    {
+      "model": "glm-4-7-251222",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "ark_probe_system",
+      "status": "ok",
+      "latency_ms": 29120,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 1020,
+        "prompt_tokens": 2657,
+        "total_tokens": 3677,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 919
+        }
+      },
+      "raw_response_text": "```json\n[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"147\"\n      ],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.00\n    }\n  }\n]\n```",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "content": "```json\n[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"147\"\n      ],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.00\n    }\n  }\n]\n```",
+              "reasoning_content": "1. **分析请求：**\n    *   **角色：** 彩票报单解析专家。\n    *   **任务：** 分析消息列表，判断每条是否为有效报单，如果是则解析为标准 JSON 输出。\n    *   **输入消息：** `[1] 147体彩五单`\n    *   **约束与规则：**\n        *   有效报单必须包含：彩种信息、投注号码（必须是三位数）、注数（可从金额反推，每注固定2元）。\n        *   号码必须严格是三位数。\n        *   彩种映射：3D/福彩 -> FC/3D；排列三/体彩 -> TC/P3。\n        *   玩法识别：直选/直/三单/三双 -> 直选；复式 -> 复式；组选/独胆 -> 跳过。\n        *   金额规则：每注固定2元。\n        *   输出格式：JSON 数组。\n\n2.  **分析输入消息：** `[1] 147体彩五单`\n    *   **索引：** 1\n    *   **内容：** `147体彩五单`\n\n3.  **逐步解析：**\n    *   **彩种识别：**\n        *   关键词：\"体彩\"。\n        *   映射：\"体彩\" -> TC + P3。\n        *   结果：category=\"TC\", game=\"P3\"。\n\n    *   **号码识别：**\n        *   扫描数字：\"147\"。\n        *   检查长度：3位数字。有效。\n        *   结果：numbers=[\"147\"]。\n\n    *   **玩法与注数识别：**\n        *   关键词：\"五单\"。\n        *   \"五单\"通常意味着“5注”（五单 = 5 units/bets）。\n        *   检查玩法类型：\"单\"通常指直选（单式投注）。它不是组选或独胆。\n        *   玩法映射：\"单\" -> 直选。\n        *   注数提取：\"五\" -> 5。\n        *   结果：play=\"直选\", bet=5。\n\n    *   **金额计算：**\n        *   公式：金额 = 注数 * 2。\n        *   计算：5 * 2 = 10。\n        *   结果：amount=10.00。\n\n    *   **区域：**\n        *   P3 是 3D 彩种 -> zone=\"MAIN\"。\n\n    *   **倍数：**\n        *   未指定，默认为 1。\n\n4.  **构建输出对象：**\n    *   `index`: 1\n    *   `valid`: true\n    *   `status`: \"SUCCESS\"\n    *   `data`:\n        *   `category`: \"TC\"\n        *   `game`: \"P3\"\n        *   `play`: \"直选\"\n        *   `zone`: \"MAIN\"\n        *   `numbers`: [\"147\"]\n        *   `bet`: 5\n        *   `multiple`: 1\n        *   `amount`: 10.00\n\n5.  **最终 JSON 格式化：**\n    ```json\n    [\n      {\n        \"index\": 1,\n        \"valid\": true,\n        \"status\": \"SUCCESS\",\n        \"data\": {\n          \"category\": \"TC\",\n          \"game\": \"P3\",\n          \"play\": \"直选\",\n          \"zone\": \"MAIN\",\n          \"numbers\": [\"147\"],\n          \"bet\": 5,\n          \"multiple\": 1,\n          \"amount\": 10.00\n        }\n      }\n    ]\n    ```\n\n6.  **验证：**\n    *   是否符合“严格三位数”规则？是（\"147\"）。\n    *   彩种是否正确？是（\"体彩\" -> TC/P3）。\n    *   玩法是否正确？是（\"五单\" -> 5注，直选）。\n    *   金额是否正确？是（5 * 2 = 10）。\n    *   输出是否为纯 JSON？是。\n\n7.  **生成输出。**",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774506333,
+        "id": "0217745063051490d8b6629036fcd55e170152fff40cb907ac163",
+        "model": "glm-4-7-251222",
+        "service_tier": "default",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 1020,
+          "prompt_tokens": 2657,
+          "total_tokens": 3677,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 919
+          }
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "147"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-03-26 14:09:58",
+  "source_report": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\packy_gpt52_compare_user_prompt.json",
+  "note": "Prompt placed into user message because this provider route under-followed system prompt instructions.",
+  "strict": [
+    {
+      "model": "gpt-5.2-medium",
+      "relaxed": false,
+      "case_count": 20,
+      "exact_match_count": 10,
+      "exact_match_ratio": 0.5,
+      "total_expected": 71,
+      "total_matched": 46,
+      "item_level_recall": 0.6479,
+      "total_missing": 25,
+      "total_extra": 40,
+      "avg_latency_ms": 14762.8,
+      "min_latency_ms": 4935,
+      "max_latency_ms": 29140,
+      "avg_prompt_tokens": 557.75,
+      "avg_completion_tokens": 539.3,
+      "avg_total_tokens": 1097.05
+    },
+    {
+      "model": "gpt-5.2-high",
+      "relaxed": false,
+      "case_count": 20,
+      "exact_match_count": 9,
+      "exact_match_ratio": 0.45,
+      "total_expected": 71,
+      "total_matched": 45,
+      "item_level_recall": 0.6338,
+      "total_missing": 26,
+      "total_extra": 41,
+      "avg_latency_ms": 18669.4,
+      "min_latency_ms": 5044,
+      "max_latency_ms": 44778,
+      "avg_prompt_tokens": 596.15,
+      "avg_completion_tokens": 730.25,
+      "avg_total_tokens": 1326.4
+    }
+  ],
+  "relaxed": [
+    {
+      "model": "gpt-5.2-medium",
+      "relaxed": true,
+      "case_count": 20,
+      "exact_match_count": 13,
+      "exact_match_ratio": 0.65,
+      "total_expected": 71,
+      "total_matched": 49,
+      "item_level_recall": 0.6901,
+      "total_missing": 22,
+      "total_extra": 37,
+      "avg_latency_ms": 14762.8,
+      "min_latency_ms": 4935,
+      "max_latency_ms": 29140,
+      "avg_prompt_tokens": 557.75,
+      "avg_completion_tokens": 539.3,
+      "avg_total_tokens": 1097.05
+    },
+    {
+      "model": "gpt-5.2-high",
+      "relaxed": true,
+      "case_count": 20,
+      "exact_match_count": 12,
+      "exact_match_ratio": 0.6,
+      "total_expected": 71,
+      "total_matched": 48,
+      "item_level_recall": 0.6761,
+      "total_missing": 23,
+      "total_extra": 38,
+      "avg_latency_ms": 18669.4,
+      "min_latency_ms": 5044,
+      "max_latency_ms": 44778,
+      "avg_prompt_tokens": 596.15,
+      "avg_completion_tokens": 730.25,
+      "avg_total_tokens": 1326.4
+    }
+  ]
+}

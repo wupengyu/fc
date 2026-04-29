@@ -1,0 +1,331 @@
+{
+  "generated_at": "2026-03-27 02:31:27",
+  "source_report": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\geekai_glm47_deepseekv32thinking_compare_system.json",
+  "note": "Same mixed20 dataset, geekai.dev OpenAI-compatible route, prompt placed in system, retries=2.",
+  "api_format": "openai",
+  "retries": 2,
+  "strict": [
+    {
+      "model": "glm-4.7",
+      "relaxed": false,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 13,
+      "exact_match_ratio": 0.65,
+      "total_expected": 71,
+      "total_matched": 54,
+      "item_level_recall": 0.7606,
+      "total_missing": 17,
+      "total_extra": 35,
+      "avg_latency_ms": 28230.0,
+      "min_latency_ms": 3364,
+      "max_latency_ms": 95504,
+      "avg_prompt_tokens": 2670.0,
+      "avg_completion_tokens": 2554.95,
+      "avg_total_tokens": 5224.95
+    },
+    {
+      "model": "deepseek-v3.2:thinking",
+      "relaxed": false,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 14,
+      "exact_match_ratio": 0.7,
+      "total_expected": 71,
+      "total_matched": 59,
+      "item_level_recall": 0.831,
+      "total_missing": 12,
+      "total_extra": 10,
+      "avg_latency_ms": 52282.7,
+      "min_latency_ms": 12621,
+      "max_latency_ms": 124316,
+      "avg_prompt_tokens": 2604.6,
+      "avg_completion_tokens": 1639.15,
+      "avg_total_tokens": 4243.75
+    }
+  ],
+  "relaxed": [
+    {
+      "model": "glm-4.7",
+      "relaxed": true,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 16,
+      "exact_match_ratio": 0.8,
+      "total_expected": 71,
+      "total_matched": 57,
+      "item_level_recall": 0.8028,
+      "total_missing": 14,
+      "total_extra": 32,
+      "avg_latency_ms": 28230.0,
+      "min_latency_ms": 3364,
+      "max_latency_ms": 95504,
+      "avg_prompt_tokens": 2670.0,
+      "avg_completion_tokens": 2554.95,
+      "avg_total_tokens": 5224.95
+    },
+    {
+      "model": "deepseek-v3.2:thinking",
+      "relaxed": true,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 17,
+      "exact_match_ratio": 0.85,
+      "total_expected": 71,
+      "total_matched": 62,
+      "item_level_recall": 0.8732,
+      "total_missing": 9,
+      "total_extra": 7,
+      "avg_latency_ms": 52282.7,
+      "min_latency_ms": 12621,
+      "max_latency_ms": 124316,
+      "avg_prompt_tokens": 2604.6,
+      "avg_completion_tokens": 1639.15,
+      "avg_total_tokens": 4243.75
+    }
+  ],
+  "non_exact_cases_by_model": {
+    "glm-4.7": [
+      {
+        "case_id": "raw_93_fc_multiline_bundle",
+        "latency_ms": 32377,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        }
+      },
+      {
+        "case_id": "raw_18_mixed_success_and_skip",
+        "latency_ms": 64734,
+        "strict": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 8,
+          "missing": 7,
+          "extra": 7
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 8,
+          "missing": 7,
+          "extra": 7
+        }
+      },
+      {
+        "case_id": "raw_149_skip_stop_command",
+        "latency_ms": 4873,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_146_skip_group_mix",
+        "latency_ms": 95504,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 18
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 18
+        }
+      },
+      {
+        "case_id": "raw_123_skip_double_fly",
+        "latency_ms": 18026,
+        "strict": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 1
+        }
+      },
+      {
+        "case_id": "raw_122_skip_dudan",
+        "latency_ms": 18733,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_106_skip_chat_none",
+        "latency_ms": 3364,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      }
+    ],
+    "deepseek-v3.2:thinking": [
+      {
+        "case_id": "raw_59_dual_category_multi",
+        "latency_ms": 124316,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        }
+      },
+      {
+        "case_id": "raw_18_mixed_success_and_skip",
+        "latency_ms": 89095,
+        "strict": {
+          "exact_match": false,
+          "matched": 6,
+          "expected": 8,
+          "missing": 2,
+          "extra": 0
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 6,
+          "expected": 8,
+          "missing": 2,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_153_skip_chat_result",
+        "latency_ms": 12621,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_149_skip_stop_command",
+        "latency_ms": 17278,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_117_skip_position_single",
+        "latency_ms": 71440,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        }
+      },
+      {
+        "case_id": "raw_106_skip_chat_none",
+        "latency_ms": 15011,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      }
+    ]
+  }
+}

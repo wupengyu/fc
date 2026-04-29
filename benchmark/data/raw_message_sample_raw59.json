@@ -1,0 +1,15 @@
+{
+  "database": "wechat_msg",
+  "table": "t_order_raw",
+  "exported_on": "2026-03-26",
+  "sample": {
+    "id": 59,
+    "msg_id": "dadf85658cd1386be8b1af90af6f47fa3ad835950c20eedfb998c9cb8503f02d",
+    "source": "SSE",
+    "from_wxid": "49792312233@chatroom",
+    "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+    "raw_text": "体彩福彩\n830，721，507十五单五组240米",
+    "received_at": "2026-03-25 21:07:19",
+    "created_at": "2026-03-25 21:07:25.859000"
+  }
+}

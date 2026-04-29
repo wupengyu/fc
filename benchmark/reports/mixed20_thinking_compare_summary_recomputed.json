@@ -1,0 +1,440 @@
+{
+  "generated_at": "2026-03-26 13:10:17",
+  "note": "Expected benchmark indexes normalized to 1 because each benchmark request contains a single message.",
+  "source_reports": {
+    "thinking_off": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\mixed20_thinking_off_recomputed.json",
+    "thinking_on": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\mixed20_thinking_on_recomputed.json"
+  },
+  "summary": {
+    "thinking_off": {
+      "thinking": "off",
+      "case_count": 20,
+      "exact_match_count": 8,
+      "exact_match_ratio": 0.4,
+      "item_level_recall": 0.2535,
+      "total_expected": 71,
+      "total_matched": 18,
+      "total_missing": 53,
+      "total_extra": 71,
+      "avg_latency_ms": 5794.5,
+      "min_latency_ms": 1381,
+      "max_latency_ms": 24736
+    },
+    "thinking_on": {
+      "thinking": "on",
+      "case_count": 20,
+      "exact_match_count": 15,
+      "exact_match_ratio": 0.75,
+      "item_level_recall": 0.5352,
+      "total_expected": 71,
+      "total_matched": 38,
+      "total_missing": 33,
+      "total_extra": 33,
+      "avg_latency_ms": 25932.95,
+      "min_latency_ms": 14738,
+      "max_latency_ms": 41691
+    }
+  },
+  "case_diffs": [
+    {
+      "case_id": "raw_59_dual_category_multi",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "latency_ms": 9952
+      },
+      "thinking_on": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "latency_ms": 28620
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 18668
+      }
+    },
+    {
+      "case_id": "raw_22_dual_category_single",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 2,
+        "latency_ms": 2706
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 2,
+        "expected": 2,
+        "latency_ms": 32849
+      },
+      "delta": {
+        "exact_match_change": 1,
+        "matched_change": 2,
+        "latency_delta_ms": 30143
+      }
+    },
+    {
+      "case_id": "raw_130_tc_simple_single",
+      "thinking_off": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 3285
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 23130
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 19845
+      }
+    },
+    {
+      "case_id": "raw_91_fc_simple_single",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "latency_ms": 2711
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 21895
+      },
+      "delta": {
+        "exact_match_change": 1,
+        "matched_change": 1,
+        "latency_delta_ms": 19184
+      }
+    },
+    {
+      "case_id": "raw_143_tc_multi_compact",
+      "thinking_off": {
+        "exact_match": true,
+        "matched": 3,
+        "expected": 3,
+        "latency_ms": 3942
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 3,
+        "expected": 3,
+        "latency_ms": 25044
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 21102
+      }
+    },
+    {
+      "case_id": "raw_95_fc_multi_compact",
+      "thinking_off": {
+        "exact_match": true,
+        "matched": 3,
+        "expected": 3,
+        "latency_ms": 4671
+      },
+      "thinking_on": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 3,
+        "latency_ms": 23104
+      },
+      "delta": {
+        "exact_match_change": -1,
+        "matched_change": -3,
+        "latency_delta_ms": 18433
+      }
+    },
+    {
+      "case_id": "raw_93_fc_multiline_bundle",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "latency_ms": 8440
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 6,
+        "expected": 6,
+        "latency_ms": 31516
+      },
+      "delta": {
+        "exact_match_change": 1,
+        "matched_change": 6,
+        "latency_delta_ms": 23076
+      }
+    },
+    {
+      "case_id": "raw_142_tc_multi_bundle",
+      "thinking_off": {
+        "exact_match": true,
+        "matched": 5,
+        "expected": 5,
+        "latency_ms": 4841
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 5,
+        "expected": 5,
+        "latency_ms": 24705
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 19864
+      }
+    },
+    {
+      "case_id": "raw_69_fc_fushi_dual",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 12,
+        "latency_ms": 9466
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 12,
+        "expected": 12,
+        "latency_ms": 41691
+      },
+      "delta": {
+        "exact_match_change": 1,
+        "matched_change": 12,
+        "latency_delta_ms": 32225
+      }
+    },
+    {
+      "case_id": "raw_126_tc_all_baozi",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 10,
+        "latency_ms": 8443
+      },
+      "thinking_on": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 10,
+        "latency_ms": 36171
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 27728
+      }
+    },
+    {
+      "case_id": "raw_131_tc_fushi_single",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "latency_ms": 10195
+      },
+      "thinking_on": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "latency_ms": 32960
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 22765
+      }
+    },
+    {
+      "case_id": "raw_18_mixed_success_and_skip",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 1,
+        "expected": 8,
+        "latency_ms": 7911
+      },
+      "thinking_on": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 8,
+        "latency_ms": 26216
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": -1,
+        "latency_delta_ms": 18305
+      }
+    },
+    {
+      "case_id": "raw_153_skip_chat_result",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "latency_ms": 2404
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 14738
+      },
+      "delta": {
+        "exact_match_change": 1,
+        "matched_change": 1,
+        "latency_delta_ms": 12334
+      }
+    },
+    {
+      "case_id": "raw_149_skip_stop_command",
+      "thinking_off": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 2307
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 23236
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 20929
+      }
+    },
+    {
+      "case_id": "raw_146_skip_group_mix",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "latency_ms": 24736
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 22541
+      },
+      "delta": {
+        "exact_match_change": 1,
+        "matched_change": 1,
+        "latency_delta_ms": -2195
+      }
+    },
+    {
+      "case_id": "raw_123_skip_double_fly",
+      "thinking_off": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 2521
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 23509
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 20988
+      }
+    },
+    {
+      "case_id": "raw_122_skip_dudan",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 1801
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 22000
+      },
+      "delta": {
+        "exact_match_change": 1,
+        "matched_change": 0,
+        "latency_delta_ms": 20199
+      }
+    },
+    {
+      "case_id": "raw_117_skip_position_single",
+      "thinking_off": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "latency_ms": 2556
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 24750
+      },
+      "delta": {
+        "exact_match_change": 1,
+        "matched_change": 1,
+        "latency_delta_ms": 22194
+      }
+    },
+    {
+      "case_id": "raw_92_skip_position_double",
+      "thinking_off": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 1381
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 23397
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 22016
+      }
+    },
+    {
+      "case_id": "raw_106_skip_chat_none",
+      "thinking_off": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 1621
+      },
+      "thinking_on": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "latency_ms": 16587
+      },
+      "delta": {
+        "exact_match_change": 0,
+        "matched_change": 0,
+        "latency_delta_ms": 14966
+      }
+    }
+  ]
+}

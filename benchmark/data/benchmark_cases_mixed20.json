@@ -1,0 +1,1539 @@
+[
+  {
+    "case_id": "raw_59_dual_category_multi",
+    "description": "????????????????? 6 ???",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 59,
+      "batch_id": 59,
+      "msg_id": "dadf85658cd1386be8b1af90af6f47fa3ad835950c20eedfb998c9cb8503f02d",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:07:19",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体彩福彩\n830，721，507十五单五组240米"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "830"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "721"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "507"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "830"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "721"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "507"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_22_dual_category_single",
+    "description": "?????????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 22,
+      "batch_id": 22,
+      "msg_id": "af771af727411ac2d3c51237bcebd3d238277f4d16c0ec8c076311612d7eb60b",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 20:46:32",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "749福体十单五组"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "749"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "749"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_130_tc_simple_single",
+    "description": "????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 130,
+      "batch_id": 130,
+      "msg_id": "97b220404e10ae6b7795afc9933f5737a0607bc910034a46241c820555925a67",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:27:25",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "147体彩五单"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "147"
+          ],
+          "bet": 5,
+          "multiple": 1,
+          "amount": 10.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_91_fc_simple_single",
+    "description": "????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 91,
+      "batch_id": 91,
+      "msg_id": "91e3a35bc8c7e866baca8bfac09562fd82dcd2d0fd90c154dcf54034ee5f6d82",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:15:15",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "福：150—10单一组（合22）"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "150"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_143_tc_multi_compact",
+    "description": "?????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 143,
+      "batch_id": 143,
+      "msg_id": "df7e17f218f6af6be2aef26a442dce99d3f3ddbe9fd9f5efc772b85566d16bab",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:31:17",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体:792，367，762，各3单2组"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "792"
+          ],
+          "bet": 3,
+          "multiple": 1,
+          "amount": 6.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "367"
+          ],
+          "bet": 3,
+          "multiple": 1,
+          "amount": 6.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "762"
+          ],
+          "bet": 3,
+          "multiple": 1,
+          "amount": 6.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_95_fc_multi_compact",
+    "description": "?????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 95,
+      "batch_id": 95,
+      "msg_id": "b1355d4d534743d75d62003796924f4c821602fd112fb0a753193522d5374f22",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:16:22",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "福彩823.813.843各4单1组30"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "823"
+          ],
+          "bet": 4,
+          "multiple": 1,
+          "amount": 8.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "813"
+          ],
+          "bet": 4,
+          "multiple": 1,
+          "amount": 8.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "843"
+          ],
+          "bet": 4,
+          "multiple": 1,
+          "amount": 8.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_93_fc_multiline_bundle",
+    "description": "????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 93,
+      "batch_id": 93,
+      "msg_id": "b10d4ed457abb0a4a0755fba689dd18bd390f03af5f2b0d13217e78aaca77e70",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:15:45",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "福\n210\n310\n816\n176\n097\n409\n各八单十二组\n合计240"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "210"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "310"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "816"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "176"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "097"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "409"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_142_tc_multi_bundle",
+    "description": "?????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 142,
+      "batch_id": 142,
+      "msg_id": "34134f12789ffbf10d9a70fa67f6d74bc75196bf44e0bbbe00fb3ee1286c46f0",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:31:11",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体:390，360，792，380，716各3单2组"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "390"
+          ],
+          "bet": 3,
+          "multiple": 1,
+          "amount": 6.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "360"
+          ],
+          "bet": 3,
+          "multiple": 1,
+          "amount": 6.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "792"
+          ],
+          "bet": 3,
+          "multiple": 1,
+          "amount": 6.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "380"
+          ],
+          "bet": 3,
+          "multiple": 1,
+          "amount": 6.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "716"
+          ],
+          "bet": 3,
+          "multiple": 1,
+          "amount": 6.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_69_fc_fushi_dual",
+    "description": "?????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 69,
+      "batch_id": 68,
+      "msg_id": "f4189ac69b9c237699478af14b97e4c081eebd316fe617213502077c080386c2",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:10:00",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "267 278复试一倍24"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "267"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "276"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "627"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "672"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "726"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "762"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "278"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "287"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "728"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "782"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "827"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "872"
+          ],
+          "bet": 1,
+          "multiple": 1,
+          "amount": 2.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_126_tc_all_baozi",
+    "description": "??????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 126,
+      "batch_id": 126,
+      "msg_id": "a389aa8709762eb8aebc92a178fb85c493e682459f1658bd52c0740cb55f08bc",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:26:23",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体彩全包豹子10单\n合计200"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "000"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "111"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "222"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "333"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "444"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "555"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "666"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "777"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "888"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "999"
+          ],
+          "bet": 10,
+          "multiple": 1,
+          "amount": 20.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_131_tc_fushi_single",
+    "description": "?????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 131,
+      "batch_id": 131,
+      "msg_id": "7645b74aabd38ce716880d3e72233a93cdca762756d7215af1637a594be7f3e5",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:27:31",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体490五十复式"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "049"
+          ],
+          "bet": 50,
+          "multiple": 1,
+          "amount": 100.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "094"
+          ],
+          "bet": 50,
+          "multiple": 1,
+          "amount": 100.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "409"
+          ],
+          "bet": 50,
+          "multiple": 1,
+          "amount": 100.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "490"
+          ],
+          "bet": 50,
+          "multiple": 1,
+          "amount": 100.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "904"
+          ],
+          "bet": 50,
+          "multiple": 1,
+          "amount": 100.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "复式",
+          "zone": "MAIN",
+          "numbers": [
+            "940"
+          ],
+          "bet": 50,
+          "multiple": 1,
+          "amount": 100.0
+        }
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_18_mixed_success_and_skip",
+    "description": "?????????????????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 18,
+      "batch_id": 18,
+      "msg_id": "e1411014269a0baa6b7ea2cea057147f8bff06bb55135dc9f57275c5491eab8b",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 20:44:01",
+      "parse_status": 1,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "2345-23459组六30组三20\n554-455-552-225-224-442各8单2组\n54/52组三各30"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "号码格式不符，必须为三位数"
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "554"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "455"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "552"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "225"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "224"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "442"
+          ],
+          "bet": 8,
+          "multiple": 1,
+          "amount": 16.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "号码格式不符，必须为三位数"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_153_skip_chat_result",
+    "description": "????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 153,
+      "batch_id": 151,
+      "msg_id": "7f92e7839ad54753d3f4204aaae8cf63da50705455028c49c3525394e5a09b4b",
+      "sender_wxid": "晨曦",
+      "received_at": "2026-03-25 21:35:32",
+      "parse_status": 4,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "最后一个开了"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "闲聊"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_149_skip_stop_command",
+    "description": "????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 149,
+      "batch_id": 149,
+      "msg_id": "988634352966b1f403c6991174b1327655bed9a314cfb55bdb1e1cb117ca856a",
+      "sender_wxid": "小蚂蚁🐜",
+      "received_at": "2026-03-25 21:33:17",
+      "parse_status": 4,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体停"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "非报单消息"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_146_skip_group_mix",
+    "description": "?????????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 146,
+      "batch_id": 146,
+      "msg_id": "9bd97273d4eeccf80c56623853448bbafe501648a9b5d53458df602472a76d77",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:33:02",
+      "parse_status": 4,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "167，367，137复试五倍组三30"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "组选玩法暂不支持"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_123_skip_double_fly",
+    "description": "????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 123,
+      "batch_id": 122,
+      "msg_id": "da9f99567657a6370f2258bd6dcd085e41eb36aee6dab39bb42917f25e40a375",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:25:25",
+      "parse_status": 4,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体双飞\n26 27各300"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "号码格式不符，必须为三位数"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_122_skip_dudan",
+    "description": "??/????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 122,
+      "batch_id": 121,
+      "msg_id": "3202ad0aa9eb3368154c8d916799bfce6052185ec88957294b3d0b4a56bca192",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:25:07",
+      "parse_status": 4,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "毒胆 4 组六（36注）\n014 024 034 045 046 047 048 049 124 134 145 146 147 148 149 234 245 246 247 248 249 345 346 347 348 349 456 457 458 459 467 468 469 478 479 489\n组三（18注）\n004 044 114"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "组选玩法暂不支持"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_117_skip_position_single",
+    "description": "????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 117,
+      "batch_id": 117,
+      "msg_id": "5025f67a0dfed0651ed92b23361004f23270efdfccb74495c7fe7a533c862f20",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:24:13",
+      "parse_status": 4,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体一码定位 百位十位个位6. 各1000共3000"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "号码格式不符，必须为三位数"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_92_skip_position_double",
+    "description": "????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 92,
+      "batch_id": 92,
+      "msg_id": "6133664b0943260e3a0882f89630c15d54ee61e0a307de5a601c15fdb2991bfe",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:15:22",
+      "parse_status": 4,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "两码定位十位8，个位6，10"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "号码格式不符，必须为三位数"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  },
+  {
+    "case_id": "raw_106_skip_chat_none",
+    "description": "?????????",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 106,
+      "batch_id": 106,
+      "msg_id": "a2912a008e9674ca3c0d26f58c814809d039ebece7680ffb45df402d369f9baf",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "received_at": "2026-03-25 21:18:54",
+      "parse_status": 4,
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "没有了"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": false,
+        "status": "SKIP",
+        "reason": "非报单消息"
+      }
+    ],
+    "benchmark_meta": {
+      "single_message_index_normalized": true
+    }
+  }
+]

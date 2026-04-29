@@ -1,0 +1,112 @@
+{
+  "generated_at": "2026-03-27 02:02:20",
+  "base_url": "https://geekai.dev/api/v1/chat/completions",
+  "api_format": "openai",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "glm-4.7"
+  ],
+  "run_label": "geekai_probe_glm47",
+  "repeats": 1,
+  "prompt_placement": "system",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "reasoning_effort": null,
+  "retries": 2,
+  "summary_by_model": {
+    "glm-4.7": {
+      "run_count": 1,
+      "successful_run_count": 1,
+      "failed_run_count": 0,
+      "exact_match_count": 1,
+      "avg_latency_ms": 9425.0,
+      "min_latency_ms": 9425,
+      "max_latency_ms": 9425
+    }
+  },
+  "runs": [
+    {
+      "model": "glm-4.7",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "api_format": "openai",
+      "thinking": "auto",
+      "reasoning_effort": null,
+      "retries": 2,
+      "run_label": "geekai_probe_glm47",
+      "status": "ok",
+      "latency_ms": 9425,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "prompt_tokens": 2657,
+        "completion_tokens": 1183,
+        "total_tokens": 3840,
+        "prompt_tokens_details": {
+          "cached_tokens": 2
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1078
+        }
+      },
+      "raw_response_text": "```json\n[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"147\"\n      ],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.00\n    }\n  }\n]\n```",
+      "raw_response_json": {
+        "id": "aff2c35f-2ed4-4458-aa21-4dd7dabfcbb9",
+        "created": 1774548140,
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "```json\n[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"147\"\n      ],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.00\n    }\n  }\n]\n```",
+              "reasoning_content": "用户希望我解析一条彩票报单消息：“[1] 147体彩五单”。\n\n1.  **分析输入：**\n    *   索引：1\n    *   内容：“147体彩五单”\n\n2.  **检查报单识别标准：**\n    *   **彩种信息：**“体彩”。映射到 `TC` / `P3`。\n    *   **投注号码：**“147”。这是一个三位数。\n    *   **注数/金额：**“五单”。在彩票报单中，“单”通常指“注”（例如，10单 = 10注）。所以“五单” = 5注。\n    *   **有效性：**它包含彩种、号码和注数。这是一条有效报单。\n\n3.  **提取具体数据：**\n    *   **Category/Game:** “体彩” -> category: \"TC\", game: \"P3\"。\n    *   **号码：**“147” -> numbers: [\"147\"]。\n    *   **玩法：**“五单”。“单”在这里通常指单注数量，但根据玩法识别规则：\n        *   关键词：直选、组选、复式、独胆。\n        *   如果未明确说明，默认为“直选”。虽然“单”通常意味着单式投注，但在此语境下“五单”明确指数量（5注）。“单”本身并不定义特定的玩法类型（如组选 vs 复式），除非是“组选”或“复式”。根据规则：“无明确说明 -> 直选”。所以 play = \"直选\"。\n    *   **Zone:** \"MAIN\"（因为它是 TC P3）。\n    *   **投注（数量）：**“五单” -> 5。\n    *   **金额（总计）：**5 * 2元 = 10.00元。\n\n4.  **检查边缘情况/约束：**\n    *   是否为三位数？是（147）。\n    *   是否为组选？“五单”意味着5注。它没有说“组五”或“组三”。它只是意味着投注5注。即使是组选玩法，提示说“组选玩法不参与解析”。然而，“五单”通常在口语中仅意味着“5注直选”（直选5注）或者有时用于计算倍数。鉴于“组选/组三/组六/组”是组选的特定关键词，而“五单”是数量描述符，它符合直选（标准单式）的数量描述。\n    *   “五单”是指“组选5”吗？不，标准的3D/P3组选注数是固定的（组三：2注/组，组六：6注/组）。通常不会像“组选5注”那样下注，除非是特定规则，但标准解析将数量视为直选注数或倍数。提示说：“组选玩法不参与解析”。“五单”在关键词表中*不是*组选的关键词（那是“组选/组三/组六/组”）。因此，它被视为直选数量。\n\n5.  **构建JSON：**\n    *   index: 1\n    *   valid: true\n    *   status: \"SUCCESS\"\n    *   data:\n        *   category: \"TC\"\n        *   game: \"P3\"\n        *   play: \"直选\"\n        *   zone: \"MAIN\"\n        *   numbers: [\"147\"]\n        *   bet: 5\n        *   multiple: 1（通常除非指定为“倍”，否则隐含为1，但这里“5单”是bet（投注数）。实际上，5注可以是bet=5, multiple=1 或 bet=1, multiple=5。提示说“注数可从金额反推”。5注就是bet=5。）\n        *   amount: 10.00\n\n6.  **最终验证：**\n    *   输入：[1] 147体彩五单\n    *   解析：号码147，彩种TC，投注5。\n    *   输出格式：JSON数组。\n\n    让我们再次检查金额规则。\n    “五单” = 5注。\n    金额 = 5 * 2 = 10。\n\n    让我们再次检查彩种映射。\n    “体彩” -> TC, P3。\n\n    让我们再次检查号码。\n    “147” -> 3位数字。OK。\n\n    看起来正确。\n\n    JSON结构：\n    ```json\n    [\n      {\n        \"index\": 1,\n        \"valid\": true,\n        \"status\": \"SUCCESS\",\n        \"data\": {\n          \"category\": \"TC\",\n          \"game\": \"P3\",\n          \"play\": \"直选\",\n          \"zone\": \"MAIN\",\n          \"numbers\": [\"147\"],\n          \"bet\": 5,\n          \"multiple\": 1,\n          \"amount\": 10.00\n        }\n      }\n    ]\n    ```"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "model": "glm-4.7",
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2657,
+          "completion_tokens": 1183,
+          "total_tokens": 3840,
+          "prompt_tokens_details": {
+            "cached_tokens": 2
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1078
+          }
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "147"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        }
+      ]
+    }
+  ]
+}

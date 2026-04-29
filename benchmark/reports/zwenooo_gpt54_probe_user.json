@@ -1,0 +1,93 @@
+{
+  "generated_at": "2026-03-26 16:19:12",
+  "base_url": "https://api-s.zwenooo.link/v1/chat/completions",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "gpt-5.4"
+  ],
+  "run_label": "zwenooo_gpt54_probe_user",
+  "repeats": 1,
+  "prompt_placement": "user",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "summary_by_model": {
+    "gpt-5.4": {
+      "run_count": 1,
+      "successful_run_count": 1,
+      "failed_run_count": 0,
+      "exact_match_count": 1,
+      "avg_latency_ms": 6008.0,
+      "min_latency_ms": 6008,
+      "max_latency_ms": 6008
+    }
+  },
+  "runs": [
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_probe_user",
+      "status": "ok",
+      "latency_ms": 6008,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 138,
+        "prompt_tokens": 2613,
+        "total_tokens": 2751
+      },
+      "raw_response_text": "**Parsing message details**\n\nI see that I need to parse the message \"147体彩五单\". It looks like it indicates a category, which is TC P3, and it suggests a default play type of 直选. The number mentioned is 147, with a bet amount of 5 and a total amount of 10. I’ll make sure to clearly organize these details for clarity as I work through this parsing task![\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"147\"],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.00\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "**Parsing message details**\n\nI see that I need to parse the message \"147体彩五单\". It looks like it indicates a category, which is TC P3, and it suggests a default play type of 直选. The number mentioned is 147, with a bet amount of 5 and a total amount of 10. I’ll make sure to clearly organize these details for clarity as I work through this parsing task![\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"147\"],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.00\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513152,
+        "id": "resp_00a018f4c86b81fd0169c4ebfd68808198a1ae99c124d00f37",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 138,
+          "prompt_tokens": 2613,
+          "total_tokens": 2751
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "147"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        }
+      ]
+    }
+  ]
+}

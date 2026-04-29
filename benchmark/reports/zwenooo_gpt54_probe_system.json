@@ -1,0 +1,93 @@
+{
+  "generated_at": "2026-03-26 16:19:13",
+  "base_url": "https://api-s.zwenooo.link/v1/chat/completions",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "gpt-5.4"
+  ],
+  "run_label": "zwenooo_gpt54_probe_system",
+  "repeats": 1,
+  "prompt_placement": "system",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "summary_by_model": {
+    "gpt-5.4": {
+      "run_count": 1,
+      "successful_run_count": 1,
+      "failed_run_count": 0,
+      "exact_match_count": 1,
+      "avg_latency_ms": 7082.0,
+      "min_latency_ms": 7082,
+      "max_latency_ms": 7082
+    }
+  },
+  "runs": [
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_probe_system",
+      "status": "ok",
+      "latency_ms": 7082,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 130,
+        "prompt_tokens": 2590,
+        "total_tokens": 2720
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"147\"],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.0\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"147\"],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.0\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513153,
+        "id": "resp_0bde86d4d9a14a490169c4ebfd64988199abcb42bccd9937ec",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 130,
+          "prompt_tokens": 2590,
+          "total_tokens": 2720
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "147"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        }
+      ]
+    }
+  ]
+}

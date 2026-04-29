@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-03-26 16:24:23",
+  "source_report": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\zwenooo_gpt54_system.json",
+  "model": "gpt-5.4",
+  "successful_case_count": 20,
+  "failed_case_count": 0,
+  "strict": {
+    "exact_match_count": 14,
+    "exact_match_ratio": 0.7,
+    "total_expected": 71,
+    "total_matched": 60,
+    "item_level_recall": 0.8451,
+    "total_missing": 11,
+    "total_extra": 26
+  },
+  "relaxed": {
+    "exact_match_count": 17,
+    "exact_match_ratio": 0.85,
+    "total_expected": 71,
+    "total_matched": 63,
+    "item_level_recall": 0.8873,
+    "total_missing": 8,
+    "total_extra": 23
+  },
+  "avg_latency_ms": 12896.55,
+  "min_latency_ms": 4531,
+  "max_latency_ms": 27212,
+  "avg_prompt_tokens": 2600.95,
+  "avg_completion_tokens": 458.45,
+  "avg_total_tokens": 3059.4
+}

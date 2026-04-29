@@ -1,0 +1,284 @@
+{
+  "generated_at": "2026-03-26",
+  "dataset": {
+    "case_file": "data/benchmark_cases_mixed20.json",
+    "case_count": 20,
+    "expected_item_count": 71,
+    "success_item_count": 61,
+    "skip_item_count": 10,
+    "pure_success_case_count": 11,
+    "pure_skip_case_count": 8,
+    "mixed_case_count": 1,
+    "source_exports": [
+      "data/raw_message_sample_raw59.json",
+      "data/expected_result_set_raw59.json"
+    ]
+  },
+  "evaluation": {
+    "ranking_metric": "strict.item_level_recall",
+    "strict": "Compare full normalized output, including reason text for non-SUCCESS items.",
+    "relaxed": "Ignore reason text on non-SUCCESS items while keeping index, valid, and status constraints."
+  },
+  "leaderboard": [
+    {
+      "rank": 1,
+      "provider": "zwenooo",
+      "base_url": "https://api-s.zwenooo.link/v1/chat/completions",
+      "model": "gpt-5.4",
+      "prompt_placement": "system",
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "failed_case_ids": [],
+      "strict": {
+        "exact_match_count": 14,
+        "exact_match_ratio": 0.7,
+        "total_expected": 71,
+        "total_matched": 60,
+        "item_level_recall": 0.8451,
+        "total_missing": 11,
+        "total_extra": 26
+      },
+      "relaxed": {
+        "exact_match_count": 17,
+        "exact_match_ratio": 0.85,
+        "total_expected": 71,
+        "total_matched": 63,
+        "item_level_recall": 0.8873,
+        "total_missing": 8,
+        "total_extra": 23
+      },
+      "latency": {
+        "avg_ms": 12896.55,
+        "min_ms": 4531,
+        "max_ms": 27212
+      },
+      "source_files": {
+        "raw_report": "reports/zwenooo_gpt54_system.json",
+        "summary_report": "reports/zwenooo_gpt54_system_summary.json"
+      },
+      "notes": [
+        "Current best strict recall on mixed20.",
+        "Prompt placement system works on this route."
+      ]
+    },
+    {
+      "rank": 2,
+      "provider": "ark",
+      "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+      "model": "glm-4-7-251222",
+      "prompt_placement": "system",
+      "thinking": "auto",
+      "run_label": "ark_glm4_7_251222_system",
+      "successful_case_count": 19,
+      "failed_case_count": 1,
+      "failed_case_ids": [
+        "raw_146_skip_group_mix"
+      ],
+      "strict": {
+        "exact_match_count": 14,
+        "exact_match_ratio": 0.7,
+        "total_expected": 71,
+        "total_matched": 54,
+        "item_level_recall": 0.7606,
+        "total_missing": 17,
+        "total_extra": 17
+      },
+      "relaxed": {
+        "exact_match_count": 16,
+        "exact_match_ratio": 0.8,
+        "total_expected": 71,
+        "total_matched": 57,
+        "item_level_recall": 0.8028,
+        "total_missing": 14,
+        "total_extra": 14
+      },
+      "latency": {
+        "avg_ms": 67924.89,
+        "min_ms": 20068,
+        "max_ms": 158800
+      },
+      "source_files": {
+        "raw_report": "reports/ark_glm4_7_251222_system_merged.json",
+        "summary_report": "reports/ark_glm4_7_251222_system_merged_summary.json"
+      },
+      "notes": [
+        "Denominator kept as the full 20-case dataset.",
+        "One timeout on raw_146_skip_group_mix.",
+        "Accuracy is strong but latency is much higher than the other providers."
+      ]
+    },
+    {
+      "rank": 3,
+      "provider": "packy",
+      "base_url": "https://api-slb.packyapi.com/v1/chat/completions",
+      "model": "gpt-5.2-medium",
+      "prompt_placement": "user",
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare_user_prompt",
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "failed_case_ids": [],
+      "strict": {
+        "exact_match_count": 10,
+        "exact_match_ratio": 0.5,
+        "total_expected": 71,
+        "total_matched": 46,
+        "item_level_recall": 0.6479,
+        "total_missing": 25,
+        "total_extra": 40
+      },
+      "relaxed": {
+        "exact_match_count": 13,
+        "exact_match_ratio": 0.65,
+        "total_expected": 71,
+        "total_matched": 49,
+        "item_level_recall": 0.6901,
+        "total_missing": 22,
+        "total_extra": 37
+      },
+      "latency": {
+        "avg_ms": 14762.8,
+        "min_ms": 4935,
+        "max_ms": 29140
+      },
+      "source_files": {
+        "raw_report": "reports/packy_gpt52_compare_user_prompt.json",
+        "summary_report": "reports/packy_gpt52_compare_user_prompt_summary.json"
+      },
+      "notes": [
+        "User prompt placement works better than system prompt on this route.",
+        "Better accuracy and speed than gpt-5.2-high on the same dataset."
+      ]
+    },
+    {
+      "rank": 4,
+      "provider": "packy",
+      "base_url": "https://api-slb.packyapi.com/v1/chat/completions",
+      "model": "gpt-5.2-high",
+      "prompt_placement": "user",
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare_user_prompt",
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "failed_case_ids": [],
+      "strict": {
+        "exact_match_count": 9,
+        "exact_match_ratio": 0.45,
+        "total_expected": 71,
+        "total_matched": 45,
+        "item_level_recall": 0.6338,
+        "total_missing": 26,
+        "total_extra": 41
+      },
+      "relaxed": {
+        "exact_match_count": 12,
+        "exact_match_ratio": 0.6,
+        "total_expected": 71,
+        "total_matched": 48,
+        "item_level_recall": 0.6761,
+        "total_missing": 23,
+        "total_extra": 38
+      },
+      "latency": {
+        "avg_ms": 18669.4,
+        "min_ms": 5044,
+        "max_ms": 44778
+      },
+      "source_files": {
+        "raw_report": "reports/packy_gpt52_compare_user_prompt.json",
+        "summary_report": "reports/packy_gpt52_compare_user_prompt_summary.json"
+      },
+      "notes": [
+        "User prompt placement works better than system prompt on this route."
+      ]
+    },
+    {
+      "rank": 5,
+      "provider": "dashscope",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "model": "qwen3.5-plus",
+      "prompt_placement": "system",
+      "thinking": "on",
+      "thinking_budget": 1024,
+      "run_label": "mixed20_thinking_on",
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "failed_case_ids": [],
+      "strict": {
+        "exact_match_count": 15,
+        "exact_match_ratio": 0.75,
+        "total_expected": 71,
+        "total_matched": 38,
+        "item_level_recall": 0.5352,
+        "total_missing": 33,
+        "total_extra": 33
+      },
+      "relaxed": {
+        "exact_match_count": 15,
+        "exact_match_ratio": 0.75,
+        "total_expected": 71,
+        "total_matched": 39,
+        "item_level_recall": 0.5493,
+        "total_missing": 32,
+        "total_extra": 32
+      },
+      "latency": {
+        "avg_ms": 25932.95,
+        "min_ms": 14738,
+        "max_ms": 41691
+      },
+      "source_files": {
+        "raw_report": "reports/mixed20_thinking_on_recomputed.json",
+        "summary_report": "reports/mixed20_thinking_compare_summary_recomputed.json"
+      },
+      "notes": [
+        "Thinking improves accuracy a lot, but latency is about 4.5x higher than thinking off."
+      ]
+    },
+    {
+      "rank": 6,
+      "provider": "dashscope",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "model": "qwen3.5-plus",
+      "prompt_placement": "system",
+      "thinking": "off",
+      "run_label": "mixed20_thinking_off",
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "failed_case_ids": [],
+      "strict": {
+        "exact_match_count": 8,
+        "exact_match_ratio": 0.4,
+        "total_expected": 71,
+        "total_matched": 18,
+        "item_level_recall": 0.2535,
+        "total_missing": 53,
+        "total_extra": 71
+      },
+      "relaxed": {
+        "exact_match_count": 10,
+        "exact_match_ratio": 0.5,
+        "total_expected": 71,
+        "total_matched": 20,
+        "item_level_recall": 0.2817,
+        "total_missing": 51,
+        "total_extra": 69
+      },
+      "latency": {
+        "avg_ms": 5794.5,
+        "min_ms": 1381,
+        "max_ms": 24736
+      },
+      "source_files": {
+        "raw_report": "reports/mixed20_thinking_off_recomputed.json",
+        "summary_report": "reports/mixed20_thinking_compare_summary_recomputed.json"
+      },
+      "notes": [
+        "Fastest configuration in the current leaderboard.",
+        "Accuracy is much lower than thinking on."
+      ]
+    }
+  ]
+}

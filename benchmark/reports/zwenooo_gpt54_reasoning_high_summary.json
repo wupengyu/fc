@@ -1,0 +1,179 @@
+{
+  "generated_at": "2026-03-26 23:18:09",
+  "source_report": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\zwenooo_gpt54_reasoning_high.json",
+  "model": "gpt-5.4",
+  "reasoning_effort": "high",
+  "successful_case_count": 19,
+  "failed_case_count": 1,
+  "strict": {
+    "exact_match_count": 12,
+    "exact_match_ratio": 0.6,
+    "total_expected": 70,
+    "total_matched": 52,
+    "item_level_recall": 0.7429,
+    "total_missing": 18,
+    "total_extra": 33
+  },
+  "relaxed": {
+    "exact_match_count": 15,
+    "exact_match_ratio": 0.75,
+    "total_expected": 70,
+    "total_matched": 55,
+    "item_level_recall": 0.7857,
+    "total_missing": 15,
+    "total_extra": 30
+  },
+  "avg_latency_ms": 19399.47,
+  "min_latency_ms": 4597,
+  "max_latency_ms": 57455,
+  "avg_prompt_tokens": 2601.21,
+  "avg_completion_tokens": 706.68,
+  "avg_total_tokens": 3307.89,
+  "avg_reasoning_tokens": null,
+  "failed_cases": [
+    {
+      "case_id": "raw_92_skip_position_double",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    }
+  ],
+  "non_exact_cases": [
+    {
+      "case_id": "raw_59_dual_category_multi",
+      "status": "ok",
+      "latency_ms": 34457,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "missing": 6,
+        "extra": 6
+      },
+      "relaxed": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "missing": 6,
+        "extra": 6
+      }
+    },
+    {
+      "case_id": "raw_93_fc_multiline_bundle",
+      "status": "ok",
+      "latency_ms": 28582,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "missing": 6,
+        "extra": 6
+      },
+      "relaxed": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 6,
+        "missing": 6,
+        "extra": 6
+      }
+    },
+    {
+      "case_id": "raw_18_mixed_success_and_skip",
+      "status": "ok",
+      "latency_ms": 36313,
+      "strict": {
+        "exact_match": false,
+        "matched": 6,
+        "expected": 8,
+        "missing": 2,
+        "extra": 0
+      },
+      "relaxed": {
+        "exact_match": false,
+        "matched": 6,
+        "expected": 8,
+        "missing": 2,
+        "extra": 0
+      }
+    },
+    {
+      "case_id": "raw_153_skip_chat_result",
+      "status": "ok",
+      "latency_ms": 5782,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 1
+      },
+      "relaxed": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "missing": 0,
+        "extra": 0
+      }
+    },
+    {
+      "case_id": "raw_149_skip_stop_command",
+      "status": "ok",
+      "latency_ms": 5471,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 1
+      },
+      "relaxed": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "missing": 0,
+        "extra": 0
+      }
+    },
+    {
+      "case_id": "raw_146_skip_group_mix",
+      "status": "ok",
+      "latency_ms": 57455,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 18
+      },
+      "relaxed": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 18
+      }
+    },
+    {
+      "case_id": "raw_122_skip_dudan",
+      "status": "ok",
+      "latency_ms": 19211,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 1
+      },
+      "relaxed": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "missing": 0,
+        "extra": 0
+      }
+    },
+    {
+      "case_id": "raw_92_skip_position_double",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    }
+  ]
+}

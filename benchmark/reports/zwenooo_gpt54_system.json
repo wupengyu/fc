@@ -1,0 +1,2440 @@
+{
+  "generated_at": "2026-03-26 16:24:23",
+  "base_url": "https://api-s.zwenooo.link/v1/chat/completions",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "gpt-5.4"
+  ],
+  "run_label": "zwenooo_gpt54_system",
+  "repeats": 1,
+  "prompt_placement": "system",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "summary_by_model": {
+    "gpt-5.4": {
+      "run_count": 20,
+      "successful_run_count": 20,
+      "failed_run_count": 0,
+      "exact_match_count": 14,
+      "avg_latency_ms": 12896.55,
+      "min_latency_ms": 4531,
+      "max_latency_ms": 27212
+    }
+  },
+  "runs": [
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_59_dual_category_multi",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 26354,
+      "comparison": {
+        "expected_count": 6,
+        "actual_count": 6,
+        "matched_count": 6,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 775,
+        "prompt_tokens": 2599,
+        "total_tokens": 3374
+      },
+      "raw_response_text": "[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"830\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"721\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"507\"],\"bet\":40,\"multiple\":1,\"amount\":80.00}}\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513231,
+        "id": "resp_09c52cfaa7212f6f0169c4ec366a34819b9737889ca314bdd5",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 775,
+          "prompt_tokens": 2599,
+          "total_tokens": 3374
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "830"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "721"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "507"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "830"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "721"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "507"
+            ],
+            "bet": 40,
+            "multiple": 1,
+            "amount": "80.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_22_dual_category_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 13949,
+      "comparison": {
+        "expected_count": 2,
+        "actual_count": 2,
+        "matched_count": 2,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 506,
+        "prompt_tokens": 2593,
+        "total_tokens": 3099
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"749\"],\n      \"bet\": 10,\n      \"multiple\": 1,\n      \"amount\": 20.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"749\"],\n      \"bet\": 10,\n      \"multiple\": 1,\n      \"amount\": 20.0\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"749\"],\n      \"bet\": 10,\n      \"multiple\": 1,\n      \"amount\": 20.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"749\"],\n      \"bet\": 10,\n      \"multiple\": 1,\n      \"amount\": 20.0\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513245,
+        "id": "resp_0a7c2ade5e5fa7490169c4ec50d1308198aa2507286faf5990",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 506,
+          "prompt_tokens": 2593,
+          "total_tokens": 3099
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "749"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "749"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 5198,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 143,
+        "prompt_tokens": 2590,
+        "total_tokens": 2733
+      },
+      "raw_response_text": "**Parsing a message**\n\nI need to parse the message \"147体彩五单,\" which seems to indicate a specific betting category, specifically TC P3. The number 147 suggests the identifier, and it looks like bet amount is 5 with a total of 10, while \"直选\" indicates a direct play type. I’ll organize this information into an output array, marking it as successful with an index of 1. It all feels pretty straightforward![\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"147\"],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.0\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "**Parsing a message**\n\nI need to parse the message \"147体彩五单,\" which seems to indicate a specific betting category, specifically TC P3. The number 147 suggests the identifier, and it looks like bet amount is 5 with a total of 10, while \"直选\" indicates a direct play type. I’ll organize this information into an output array, marking it as successful with an index of 1. It all feels pretty straightforward![\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"147\"],\n      \"bet\": 5,\n      \"multiple\": 1,\n      \"amount\": 10.0\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513250,
+        "id": "resp_0ea3089b636dc49b0169c4ec5efeb08198ba0524e7d16c8151",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 143,
+          "prompt_tokens": 2590,
+          "total_tokens": 2733
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "147"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_91_fc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 7860,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 256,
+        "prompt_tokens": 2597,
+        "total_tokens": 2853
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"150\"],\n      \"bet\": 10,\n      \"multiple\": 1,\n      \"amount\": 20.0\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"150\"],\n      \"bet\": 10,\n      \"multiple\": 1,\n      \"amount\": 20.0\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513258,
+        "id": "resp_07f6a8770dd4e0690169c4ec63f014819ba4790398734ac358",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 256,
+          "prompt_tokens": 2597,
+          "total_tokens": 2853
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "150"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_143_tc_multi_compact",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 12646,
+      "comparison": {
+        "expected_count": 3,
+        "actual_count": 3,
+        "matched_count": 3,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 570,
+        "prompt_tokens": 2598,
+        "total_tokens": 3168
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"792\"],\n      \"bet\": 3,\n      \"multiple\": 1,\n      \"amount\": 6.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"367\"],\n      \"bet\": 3,\n      \"multiple\": 1,\n      \"amount\": 6.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"762\"],\n      \"bet\": 3,\n      \"multiple\": 1,\n      \"amount\": 6.0\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"792\"],\n      \"bet\": 3,\n      \"multiple\": 1,\n      \"amount\": 6.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"367\"],\n      \"bet\": 3,\n      \"multiple\": 1,\n      \"amount\": 6.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"762\"],\n      \"bet\": 3,\n      \"multiple\": 1,\n      \"amount\": 6.0\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513271,
+        "id": "resp_03b94e45c0d5fcb50169c4ec6bc8a4819a97d0b04f673069d4",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 570,
+          "prompt_tokens": 2598,
+          "total_tokens": 3168
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "792"
+            ],
+            "bet": 3,
+            "multiple": 1,
+            "amount": "6.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "367"
+            ],
+            "bet": 3,
+            "multiple": 1,
+            "amount": "6.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "762"
+            ],
+            "bet": 3,
+            "multiple": 1,
+            "amount": "6.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_95_fc_multi_compact",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 17502,
+      "comparison": {
+        "expected_count": 3,
+        "actual_count": 3,
+        "matched_count": 3,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 560,
+        "prompt_tokens": 2597,
+        "total_tokens": 3157
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"823\"],\n      \"bet\": 4,\n      \"multiple\": 1,\n      \"amount\": 8.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"813\"],\n      \"bet\": 4,\n      \"multiple\": 1,\n      \"amount\": 8.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"843\"],\n      \"bet\": 4,\n      \"multiple\": 1,\n      \"amount\": 8.0\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"823\"],\n      \"bet\": 4,\n      \"multiple\": 1,\n      \"amount\": 8.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"813\"],\n      \"bet\": 4,\n      \"multiple\": 1,\n      \"amount\": 8.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"843\"],\n      \"bet\": 4,\n      \"multiple\": 1,\n      \"amount\": 8.0\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513288,
+        "id": "resp_0300c3449ec8ce940169c4ec7862c8819ba60a59349d976af7",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 560,
+          "prompt_tokens": 2597,
+          "total_tokens": 3157
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "823"
+            ],
+            "bet": 4,
+            "multiple": 1,
+            "amount": "8.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "813"
+            ],
+            "bet": 4,
+            "multiple": 1,
+            "amount": "8.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "843"
+            ],
+            "bet": 4,
+            "multiple": 1,
+            "amount": "8.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_93_fc_multiline_bundle",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 19144,
+      "comparison": {
+        "expected_count": 6,
+        "actual_count": 6,
+        "matched_count": 6,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 714,
+        "prompt_tokens": 2608,
+        "total_tokens": 3322
+      },
+      "raw_response_text": "[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"210\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"310\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"816\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"176\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"097\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"409\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}}\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"210\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"310\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"816\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"176\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"097\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"409\"],\"bet\":8,\"multiple\":1,\"amount\":16.00}}\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513308,
+        "id": "resp_0458387c994e9ace0169c4ec89e9c4819bba23be76306a6394",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 714,
+          "prompt_tokens": 2608,
+          "total_tokens": 3322
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "210"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "310"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "816"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "176"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "097"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "409"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_142_tc_multi_bundle",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 18405,
+      "comparison": {
+        "expected_count": 5,
+        "actual_count": 5,
+        "matched_count": 0,
+        "missing_count": 5,
+        "extra_count": 5,
+        "accuracy_ratio": 0.0,
+        "exact_match": false,
+        "missing_items": [
+          "{\"data\": {\"amount\": \"6.00\", \"bet\": 3, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"390\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"6.00\", \"bet\": 3, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"360\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"6.00\", \"bet\": 3, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"792\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"6.00\", \"bet\": 3, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"380\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"6.00\", \"bet\": 3, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"716\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}"
+        ],
+        "extra_items": [
+          "{\"data\": {\"amount\": \"12.00\", \"bet\": 6, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"390\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"12.00\", \"bet\": 6, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"360\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"12.00\", \"bet\": 6, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"792\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"12.00\", \"bet\": 6, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"380\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"12.00\", \"bet\": 6, \"category\": \"TC\", \"game\": \"P3\", \"multiple\": 1, \"numbers\": [\"716\"], \"play\": \"直选\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 777,
+        "prompt_tokens": 2602,
+        "total_tokens": 3379
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"390\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"360\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"792\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"380\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"716\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"390\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"360\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"792\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"380\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"TC\",\n      \"game\": \"P3\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\"716\"],\n      \"bet\": 6,\n      \"multiple\": 1,\n      \"amount\": 12.0\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513326,
+        "id": "resp_0dc304948135a76b0169c4ec9d2648819bb9cdf2a0b57bae48",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 777,
+          "prompt_tokens": 2602,
+          "total_tokens": 3379
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "390"
+            ],
+            "bet": 6,
+            "multiple": 1,
+            "amount": "12.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "360"
+            ],
+            "bet": 6,
+            "multiple": 1,
+            "amount": "12.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "792"
+            ],
+            "bet": 6,
+            "multiple": 1,
+            "amount": "12.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "380"
+            ],
+            "bet": 6,
+            "multiple": 1,
+            "amount": "12.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "716"
+            ],
+            "bet": 6,
+            "multiple": 1,
+            "amount": "12.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_69_fc_fushi_dual",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 16291,
+      "comparison": {
+        "expected_count": 12,
+        "actual_count": 12,
+        "matched_count": 12,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 752,
+        "prompt_tokens": 2594,
+        "total_tokens": 3346
+      },
+      "raw_response_text": "[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"267\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"276\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"627\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"672\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"726\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"762\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"278\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"287\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"728\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"782\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"827\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"872\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}}\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"267\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"276\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"627\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"672\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"726\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"762\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"278\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"287\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"728\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"782\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"827\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"872\"],\"bet\":1,\"multiple\":1,\"amount\":2.0}}\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513342,
+        "id": "resp_0a0fd9e59c2a4a7b0169c4ecb068c48198bb7299e7e402c304",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 752,
+          "prompt_tokens": 2594,
+          "total_tokens": 3346
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "267"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "276"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "627"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "672"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "726"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "762"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "278"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "287"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "728"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "782"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "827"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "872"
+            ],
+            "bet": 1,
+            "multiple": 1,
+            "amount": "2.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_126_tc_all_baozi",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 15504,
+      "comparison": {
+        "expected_count": 10,
+        "actual_count": 10,
+        "matched_count": 10,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 603,
+        "prompt_tokens": 2595,
+        "total_tokens": 3198
+      },
+      "raw_response_text": "**Parsing message list**\n\nI need to parse a message list, as it's possible that one message might span two lines. For example, \"体彩\" corresponds to \"TC P3,\" and \"豹子全包 10单\" means 10 numbers with each bet amounting to 20, totaling 200. I'm not sure if I should output one result or multiple results since each message could correspond to several outcomes. It seems likely that I’ll need to produce 10 records based on this![\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"000\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"111\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"222\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"333\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"444\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"555\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"666\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"777\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"888\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"999\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}}\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "**Parsing message list**\n\nI need to parse a message list, as it's possible that one message might span two lines. For example, \"体彩\" corresponds to \"TC P3,\" and \"豹子全包 10单\" means 10 numbers with each bet amounting to 20, totaling 200. I'm not sure if I should output one result or multiple results since each message could correspond to several outcomes. It seems likely that I’ll need to produce 10 records based on this![\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"000\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"111\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"222\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"333\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"444\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"555\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"666\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"777\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"888\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"999\"],\"bet\":10,\"multiple\":1,\"amount\":20.00}}\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513358,
+        "id": "resp_0395da31acfb61630169c4ecc1f6a8819a9990b2712a1c7b12",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 603,
+          "prompt_tokens": 2595,
+          "total_tokens": 3198
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "000"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "111"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "222"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "333"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "444"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "555"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "666"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "777"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "888"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "999"
+            ],
+            "bet": 10,
+            "multiple": 1,
+            "amount": "20.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_131_tc_fushi_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 11364,
+      "comparison": {
+        "expected_count": 6,
+        "actual_count": 6,
+        "matched_count": 6,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 410,
+        "prompt_tokens": 2591,
+        "total_tokens": 3001
+      },
+      "raw_response_text": "**Parsing message details**\n\nI need to parse the message \"体490五十复式.\" It seems to indicate category TC P3, with the number 490 representing three digits. The \"五十\" part probably refers to 50 bets, followed by the keyword \"复式.\" I’ll need to expand permutations of 490 unique digits with 6 combinations for each 50注 play, using the 复式 format. That means one number per record, with an amount of 100 each. Maybe I’ll consider multiple bets too. I should output 6 records indexed by 1.[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"490\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"409\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"940\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"904\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"049\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"094\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}}\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "**Parsing message details**\n\nI need to parse the message \"体490五十复式.\" It seems to indicate category TC P3, with the number 490 representing three digits. The \"五十\" part probably refers to 50 bets, followed by the keyword \"复式.\" I’ll need to expand permutations of 490 unique digits with 6 combinations for each 50注 play, using the 复式 format. That means one number per record, with an amount of 100 each. Maybe I’ll consider multiple bets too. I should output 6 records indexed by 1.[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"490\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"409\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"940\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"904\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"049\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}},\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"094\"],\"bet\":50,\"multiple\":1,\"amount\":100.00}}\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513369,
+        "id": "resp_053a6c4c1b13bcc60169c4eccf4ce88199b0847172eca4954c",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 410,
+          "prompt_tokens": 2591,
+          "total_tokens": 3001
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "490"
+            ],
+            "bet": 50,
+            "multiple": 1,
+            "amount": "100.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "409"
+            ],
+            "bet": 50,
+            "multiple": 1,
+            "amount": "100.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "940"
+            ],
+            "bet": 50,
+            "multiple": 1,
+            "amount": "100.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "904"
+            ],
+            "bet": 50,
+            "multiple": 1,
+            "amount": "100.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "049"
+            ],
+            "bet": 50,
+            "multiple": 1,
+            "amount": "100.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "094"
+            ],
+            "bet": 50,
+            "multiple": 1,
+            "amount": "100.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_18_mixed_success_and_skip",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 22350,
+      "comparison": {
+        "expected_count": 8,
+        "actual_count": 6,
+        "matched_count": 6,
+        "missing_count": 2,
+        "extra_count": 0,
+        "accuracy_ratio": 0.75,
+        "exact_match": false,
+        "missing_items": [
+          "{\"index\": 1, \"reason\": \"号码格式不符，必须为三位数\", \"status\": \"SKIP\", \"valid\": false}",
+          "{\"index\": 1, \"reason\": \"号码格式不符，必须为三位数\", \"status\": \"SKIP\", \"valid\": false}"
+        ],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 1088,
+        "prompt_tokens": 2619,
+        "total_tokens": 3707
+      },
+      "raw_response_text": "**Parsing user message content**\n\nI think I need to parse the message list since the user provided a multiline item. My goal is to output it as a JSON array, potentially one entry per parsed record. The content includes unsupported group plays and invalid numbers, like the first line with \"2345\" and \"23459,\" which are non-3-digit. \n\nThe second line lists numbers formatted differently. I wonder if I need to default to FC since there’s no explicit category. I need to analyze if \"2组\" refers to something unsupported or if it’s a package format. Also, how to interpret \"各8单2组\"? It seems I should only deal with direct numbers in a straightforward manner.**Interpreting message formatting**\n\nIt seems like the numbers might be followed by a playtype or amount. I wonder if I can generate each \"8注,\" since the total amount isn’t specified. The phrase \"各8单2组\" likely means each \"8单\" and \"2组,\" suggesting each number is repeated twice. \n\nHowever, based on rules about package amounts, I should focus on how to interpret the \"每个号码\" guideline. The lack of a clear amount could imply the groups are less important in this case, so I’ll plan to keep each \"8注.\"[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"554\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"455\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"552\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"225\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"224\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"442\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "**Parsing user message content**\n\nI think I need to parse the message list since the user provided a multiline item. My goal is to output it as a JSON array, potentially one entry per parsed record. The content includes unsupported group plays and invalid numbers, like the first line with \"2345\" and \"23459,\" which are non-3-digit. \n\nThe second line lists numbers formatted differently. I wonder if I need to default to FC since there’s no explicit category. I need to analyze if \"2组\" refers to something unsupported or if it’s a package format. Also, how to interpret \"各8单2组\"? It seems I should only deal with direct numbers in a straightforward manner.**Interpreting message formatting**\n\nIt seems like the numbers might be followed by a playtype or amount. I wonder if I can generate each \"8注,\" since the total amount isn’t specified. The phrase \"各8单2组\" likely means each \"8单\" and \"2组,\" suggesting each number is repeated twice. \n\nHowever, based on rules about package amounts, I should focus on how to interpret the \"每个号码\" guideline. The lack of a clear amount could imply the groups are less important in this case, so I’ll plan to keep each \"8注.\"[\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"554\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"455\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"552\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"225\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"224\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  },\n  {\n    \"index\": 1,\n    \"valid\": true,\n    \"status\": \"SUCCESS\",\n    \"data\": {\n      \"category\": \"FC\",\n      \"game\": \"3D\",\n      \"play\": \"直选\",\n      \"zone\": \"MAIN\",\n      \"numbers\": [\n        \"442\"\n      ],\n      \"bet\": 8,\n      \"multiple\": 1,\n      \"amount\": 16.0\n    }\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513391,
+        "id": "resp_0e5b3af5c2f19cc00169c4ecdaa72c819b9b386da55caaccd3",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 1088,
+          "prompt_tokens": 2619,
+          "total_tokens": 3707
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "554"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "455"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "552"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "225"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "224"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "442"
+            ],
+            "bet": 8,
+            "multiple": 1,
+            "amount": "16.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_153_skip_chat_result",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 4531,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 0,
+        "missing_count": 1,
+        "extra_count": 1,
+        "accuracy_ratio": 0.0,
+        "exact_match": false,
+        "missing_items": [
+          "{\"index\": 1, \"reason\": \"闲聊\", \"status\": \"SKIP\", \"valid\": false}"
+        ],
+        "extra_items": [
+          "{\"index\": 1, \"reason\": \"非报单消息\", \"status\": \"SKIP\", \"valid\": false}"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 2590,
+        "total_tokens": 2645
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"非报单消息\"\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"非报单消息\"\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513396,
+        "id": "resp_0d9e717c5b11c2810169c4ecf10958819ba5a8530aaa6ecb2d",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 55,
+          "prompt_tokens": 2590,
+          "total_tokens": 2645
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": false,
+          "status": "SKIP",
+          "reason": "非报单消息"
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_149_skip_stop_command",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 4605,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 0,
+        "missing_count": 1,
+        "extra_count": 1,
+        "accuracy_ratio": 0.0,
+        "exact_match": false,
+        "missing_items": [
+          "{\"index\": 1, \"reason\": \"非报单消息\", \"status\": \"SKIP\", \"valid\": false}"
+        ],
+        "extra_items": [
+          "{\"index\": 1, \"reason\": \"非报单，缺少投注号码和注数\", \"status\": \"SKIP\", \"valid\": false}"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 87,
+        "prompt_tokens": 2588,
+        "total_tokens": 2675
+      },
+      "raw_response_text": "**Looking at JSON output**\n\nI need to produce an output JSON array. The message \"体停\" doesn't seem like a valid order, so I might need to flag that. It mentions a lottery type but lacks a number or bet. Since it's missing critical details, I’ll mark it as invalid and provide a reason for skipping it. This is all about ensuring that the output is accurate and conforms to the expectations![\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"非报单，缺少投注号码和注数\"\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "**Looking at JSON output**\n\nI need to produce an output JSON array. The message \"体停\" doesn't seem like a valid order, so I might need to flag that. It mentions a lottery type but lacks a number or bet. Since it's missing critical details, I’ll mark it as invalid and provide a reason for skipping it. This is all about ensuring that the output is accurate and conforms to the expectations![\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"非报单，缺少投注号码和注数\"\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513401,
+        "id": "resp_0402379ad249bebc0169c4ecf58a9c8198a6739544ba20f158",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 87,
+          "prompt_tokens": 2588,
+          "total_tokens": 2675
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": false,
+          "status": "SKIP",
+          "reason": "非报单，缺少投注号码和注数"
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_146_skip_group_mix",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 27212,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 18,
+        "matched_count": 0,
+        "missing_count": 1,
+        "extra_count": 18,
+        "accuracy_ratio": 0.0,
+        "exact_match": false,
+        "missing_items": [
+          "{\"index\": 1, \"reason\": \"组选玩法暂不支持\", \"status\": \"SKIP\", \"valid\": false}"
+        ],
+        "extra_items": [
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"167\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"176\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"617\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"671\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"716\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"761\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"367\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"376\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"637\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"673\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"736\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"763\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"137\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"173\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"317\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"371\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"713\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}",
+          "{\"data\": {\"amount\": \"10.00\", \"bet\": 5, \"category\": \"FC\", \"game\": \"3D\", \"multiple\": 1, \"numbers\": [\"731\"], \"play\": \"复式\", \"zone\": \"MAIN\"}, \"index\": 1, \"status\": \"SUCCESS\", \"valid\": true}"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 1252,
+        "prompt_tokens": 2597,
+        "total_tokens": 3849
+      },
+      "raw_response_text": "**Generating unique combinations**\n\nI need to come up with unique combinations for each number, so I'll create arrays for that. For the number 167, I have permutations like 167, 176, 617, 671, 716, and 761. Then, for 367, the permutations are 367, 376, 637, 673, 736, and 763. Lastly, for 137, I get 137, 173, 317, 371, 713, and 731. These combinations will give me a nice variety![{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"167\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"176\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"617\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"671\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"716\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"761\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"367\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"376\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"637\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"673\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"736\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"763\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"137\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"173\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"317\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"371\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"713\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"731\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}}]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "**Generating unique combinations**\n\nI need to come up with unique combinations for each number, so I'll create arrays for that. For the number 167, I have permutations like 167, 176, 617, 671, 716, and 761. Then, for 367, the permutations are 367, 376, 637, 673, 736, and 763. Lastly, for 137, I get 137, 173, 317, 371, 713, and 731. These combinations will give me a nice variety![{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"167\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"176\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"617\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"671\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"716\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"761\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"367\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"376\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"637\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"673\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"736\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"763\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"137\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"173\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"317\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"371\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"713\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}},{\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"FC\",\"game\":\"3D\",\"play\":\"复式\",\"zone\":\"MAIN\",\"numbers\":[\"731\"],\"bet\":5,\"multiple\":1,\"amount\":10.0}}]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513428,
+        "id": "resp_0af3660df734a5200169c4ecfa1b488199af72a8f1022e4a08",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 1252,
+          "prompt_tokens": 2597,
+          "total_tokens": 3849
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "167"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "176"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "617"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "671"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "716"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "761"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "367"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "376"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "637"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "673"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "736"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "763"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "137"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "173"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "317"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "371"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "713"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        },
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "FC",
+            "game": "3D",
+            "play": "复式",
+            "zone": "MAIN",
+            "numbers": [
+              "731"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_123_skip_double_fly",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 12951,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 119,
+        "prompt_tokens": 2595,
+        "total_tokens": 2714
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"号码格式不符，必须为三位数\"\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"号码格式不符，必须为三位数\"\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513441,
+        "id": "resp_004f54a1ac3782df0169c4ed155a10819ba2f26dff859d96ad",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 119,
+          "prompt_tokens": 2595,
+          "total_tokens": 2714
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": false,
+          "status": "SKIP",
+          "reason": "号码格式不符，必须为三位数"
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_122_skip_dudan",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 5630,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 0,
+        "missing_count": 1,
+        "extra_count": 1,
+        "accuracy_ratio": 0.0,
+        "exact_match": false,
+        "missing_items": [
+          "{\"index\": 1, \"reason\": \"组选玩法暂不支持\", \"status\": \"SKIP\", \"valid\": false}"
+        ],
+        "extra_items": [
+          "{\"index\": 1, \"reason\": \"组选、独胆玩法暂不支持\", \"status\": \"SKIP\", \"valid\": false}"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 168,
+        "prompt_tokens": 2678,
+        "total_tokens": 2846
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"组选、独胆玩法暂不支持\"\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"组选、独胆玩法暂不支持\"\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513446,
+        "id": "resp_09add0cf754773ad0169c4ed22903881989e490fe8a879efd5",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 168,
+          "prompt_tokens": 2678,
+          "total_tokens": 2846
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": false,
+          "status": "SKIP",
+          "reason": "组选、独胆玩法暂不支持"
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_117_skip_position_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 4761,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 139,
+        "prompt_tokens": 2603,
+        "total_tokens": 2742
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"号码格式不符，必须为三位数\"\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"号码格式不符，必须为三位数\"\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513451,
+        "id": "resp_0800c03e4af5aa630169c4ed27e890819888b722814617d1fd",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 139,
+          "prompt_tokens": 2603,
+          "total_tokens": 2742
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": false,
+          "status": "SKIP",
+          "reason": "号码格式不符，必须为三位数"
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_92_skip_position_double",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 5426,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 140,
+        "prompt_tokens": 2596,
+        "total_tokens": 2736
+      },
+      "raw_response_text": "**Evaluating JSON output requirements**\n\nI need to produce a JSON array, but first, I have to determine if the message \"两码定位十位8，个位6，10\" is valid. It seems like this isn't a three-digit number, which makes it unsupported. The spec requires a three-digit number, so that means it's invalid. I might skip it with the reason \"号码格式不符，必须为三位数\" since it's a bet but not parseable due to its format.[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"号码格式不符，必须为三位数\"\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "**Evaluating JSON output requirements**\n\nI need to produce a JSON array, but first, I have to determine if the message \"两码定位十位8，个位6，10\" is valid. It seems like this isn't a three-digit number, which makes it unsupported. The spec requires a three-digit number, so that means it's invalid. I might skip it with the reason \"号码格式不符，必须为三位数\" since it's a bet but not parseable due to its format.[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"号码格式不符，必须为三位数\"\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513457,
+        "id": "resp_03a27328fd45b92a0169c4ed2cc5808198a79f1954c980041d",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 140,
+          "prompt_tokens": 2596,
+          "total_tokens": 2736
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": false,
+          "status": "SKIP",
+          "reason": "号码格式不符，必须为三位数"
+        }
+      ]
+    },
+    {
+      "model": "gpt-5.4",
+      "case_id": "raw_106_skip_chat_none",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "zwenooo_gpt54_system",
+      "status": "ok",
+      "latency_ms": 6248,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 2589,
+        "total_tokens": 2644
+      },
+      "raw_response_text": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"非报单消息\"\n  }\n]",
+      "raw_response_json": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "[\n  {\n    \"index\": 1,\n    \"valid\": false,\n    \"status\": \"SKIP\",\n    \"reason\": \"非报单消息\"\n  }\n]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1774513463,
+        "id": "resp_00fadae440fccbdc0169c4ed321e70819897c2f86797ff848a",
+        "model": "gpt-5.4",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 55,
+          "prompt_tokens": 2589,
+          "total_tokens": 2644
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": false,
+          "status": "SKIP",
+          "reason": "非报单消息"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1865 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>报单统计</title>
+    <style>
+        :root {
+            --bg: #f6f1e7;
+            --bg-accent: rgba(210, 125, 72, 0.12);
+            --bg-accent-2: rgba(33, 88, 122, 0.12);
+            --surface: rgba(255, 255, 255, 0.88);
+            --surface-strong: #ffffff;
+            --surface-soft: #fbf7f1;
+            --border: rgba(148, 163, 184, 0.24);
+            --border-strong: rgba(69, 94, 112, 0.18);
+            --text: #20303d;
+            --text-soft: #5f6e79;
+            --text-muted: #7e8d97;
+            --brand: #b85c38;
+            --brand-dark: #8e4325;
+            --brand-soft: #f5dfd3;
+            --accent: #21587a;
+            --accent-soft: #dbe9f1;
+            --shadow: 0 22px 60px rgba(57, 43, 28, 0.10);
+            --shadow-soft: 0 12px 28px rgba(57, 43, 28, 0.08);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 28px 18px 32px;
+            font-family: "MiSans", "HarmonyOS Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background:
+                radial-gradient(circle at top left, var(--bg-accent), transparent 34%),
+                radial-gradient(circle at top right, var(--bg-accent-2), transparent 28%),
+                linear-gradient(180deg, #fbf7f1 0%, #f3eee6 100%);
+            color: var(--text);
+            line-height: 1.45;
+        }
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            inset: auto;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 999px;
+            filter: blur(12px);
+            opacity: 0.65;
+        }
+        body::before {
+            width: 240px;
+            height: 240px;
+            top: -60px;
+            right: -40px;
+            background: rgba(184, 92, 56, 0.10);
+        }
+        body::after {
+            width: 280px;
+            height: 280px;
+            bottom: -100px;
+            left: -80px;
+            background: rgba(33, 88, 122, 0.10);
+        }
+        .page-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1440px, 100%);
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 24px 26px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: var(--radius-xl);
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(251, 247, 241, 0.82)),
+                linear-gradient(135deg, rgba(184, 92, 56, 0.08), rgba(33, 88, 122, 0.06));
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+        }
+        .header::before {
+            content: '今晚号码态势';
+            display: inline-flex;
+            align-items: center;
+            align-self: flex-start;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(184, 92, 56, 0.10);
+            color: var(--brand-dark);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+        .header h1 {
+            margin: 10px 0 8px;
+            font-size: clamp(30px, 4vw, 42px);
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+        .header .sub {
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+        .global-issue-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 18px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: var(--radius-lg);
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(251, 247, 241, 0.84)),
+                linear-gradient(135deg, rgba(184, 92, 56, 0.06), rgba(33, 88, 122, 0.05));
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(12px);
+        }
+        .global-issue-copy {
+            min-width: 0;
+        }
+        .global-issue-fields {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .global-issue-label {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(33, 88, 122, 0.10);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .global-issue-title {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+        .global-issue-hint {
+            margin-top: 6px;
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+        .global-issue-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 190px;
+            flex: 0 0 190px;
+        }
+        .global-issue-field label {
+            color: var(--text-soft);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .global-issue-field input {
+            width: 100%;
+            height: 44px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 0 14px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+        .global-issue-field input:focus {
+            outline: none;
+            border-color: rgba(184, 92, 56, 0.55);
+            box-shadow: 0 0 0 4px rgba(184, 92, 56, 0.12);
+        }
+        .stats-panel-head {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .stats-filter-strip {
+            padding: 12px 14px;
+            border: 1px solid rgba(184, 92, 56, 0.14);
+            border-radius: 18px;
+            background:
+                linear-gradient(135deg, rgba(255, 249, 244, 0.92), rgba(255, 255, 255, 0.9)),
+                linear-gradient(135deg, rgba(184, 92, 56, 0.04), rgba(33, 88, 122, 0.03));
+        }
+        .stats-filter-form {
+            display: grid;
+            gap: 10px;
+            min-width: 0;
+        }
+        .stats-filter-grid {
+            display: grid;
+            gap: 10px;
+            align-items: end;
+        }
+        .stats-filter-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .stats-filter-grid.compact {
+            grid-template-columns: minmax(0, 1.4fr) 110px 152px;
+        }
+        .stats-filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+        .stats-filter-field label {
+            color: var(--text-soft);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .stats-filter-field select,
+        .stats-filter-field input,
+        .stats-filter-action button {
+            width: 100%;
+            min-width: 0;
+            height: 40px;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            padding: 0 12px;
+            font-size: 13px;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        }
+        .stats-filter-field select,
+        .stats-filter-field input {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+        }
+        .stats-filter-field select:focus,
+        .stats-filter-field input:focus,
+        .review-search input:focus,
+        .review-text:focus,
+        .review-edit:focus,
+        .review-actions input:focus,
+        .review-target-select:focus {
+            outline: none;
+            border-color: rgba(184, 92, 56, 0.55);
+            box-shadow: 0 0 0 4px rgba(184, 92, 56, 0.12);
+        }
+        .stats-filter-action {
+            display: flex;
+            align-items: flex-end;
+        }
+        .stats-filter-action button {
+            border: none;
+            background: linear-gradient(135deg, var(--brand), #cf734a);
+            color: #fff;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            box-shadow: 0 10px 20px rgba(184, 92, 56, 0.18);
+        }
+        .stats-filter-action button:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .summary-card {
+            position: relative;
+            overflow: hidden;
+            padding: 24px 26px;
+            border: 1px solid rgba(255, 255, 255, 0.42);
+            border-radius: var(--radius-xl);
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 245, 236, 0.88)),
+                linear-gradient(135deg, rgba(184, 92, 56, 0.06), rgba(33, 88, 122, 0.04));
+            box-shadow: var(--shadow);
+        }
+        .summary-card::after {
+            content: '';
+            position: absolute;
+            top: -28px;
+            right: -18px;
+            width: 132px;
+            height: 132px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(184, 92, 56, 0.20), transparent 66%);
+        }
+        .summary-card .label {
+            position: relative;
+            color: var(--text-soft);
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+        .summary-card .value {
+            position: relative;
+            font-size: clamp(34px, 5vw, 48px);
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.04em;
+        }
+        .page-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.24fr) minmax(360px, 0.96fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .panel {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            background: var(--surface);
+            box-shadow: var(--shadow-soft);
+            padding: 20px;
+            backdrop-filter: blur(12px);
+        }
+        .panel-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+        .panel-sub {
+            color: var(--text-muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .table-shell {
+            overflow-x: auto;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.82);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 420px;
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.88);
+            font-size: 14px;
+        }
+        th {
+            color: var(--text-soft);
+            background: linear-gradient(180deg, rgba(255, 248, 242, 0.95), rgba(247, 242, 235, 0.95));
+            font-weight: 800;
+        }
+        tbody tr {
+            transition: background 0.16s ease;
+        }
+        tr:hover {
+            background: rgba(184, 92, 56, 0.06);
+        }
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            padding-right: 20px;
+        }
+        th.sortable::after {
+            content: '⇅';
+            position: absolute;
+            right: 6px;
+            color: #b8a38f;
+            font-size: 11px;
+        }
+        th.sortable.asc::after {
+            content: '↑';
+            color: var(--brand);
+        }
+        th.sortable.desc::after {
+            content: '↓';
+            color: var(--brand);
+        }
+        .rank-1, .rank-2, .rank-3 {
+            font-weight: 800;
+        }
+        .rank-1 { color: #b45309; }
+        .rank-2 { color: #c76c39; }
+        .rank-3 { color: #2f6f8f; }
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .review-search {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .review-search input {
+            width: 100%;
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0 12px;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+        }
+        .review-search-button {
+            height: 40px;
+            min-width: 74px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent), #2f769f);
+            color: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(33, 88, 122, 0.18);
+        }
+        .review-search-button:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(135deg, #18445f, var(--accent));
+        }
+        .review-search-button.secondary {
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+            box-shadow: none;
+        }
+        .review-search-button.secondary:hover {
+            background: var(--surface-soft);
+        }
+        .stats-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.16);
+        }
+        .stats-page-info {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .stats-page-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .review-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.16);
+        }
+        .review-page-info {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .review-page-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .page-button {
+            height: 34px;
+            min-width: 82px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .page-button:hover {
+            background: var(--surface-soft);
+        }
+        .page-button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        .review-card {
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: 18px;
+            padding: 16px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(251, 247, 241, 0.88));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+        .review-head {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            height: 24px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: var(--brand-soft);
+            color: var(--brand-dark);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .review-number {
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .review-meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px 10px;
+            margin-bottom: 10px;
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+        .review-parse-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .parse-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            min-height: 24px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: rgba(33, 88, 122, 0.10);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .parse-chip.number {
+            background: var(--brand-soft);
+            color: var(--brand-dark);
+        }
+        .review-parse-compact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .review-parse-compact-row {
+            display: grid;
+            grid-template-columns: minmax(64px, auto) minmax(88px, auto) auto;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+        .review-parse-lottery {
+            color: var(--text);
+            font-weight: 600;
+        }
+        .review-parse-bet {
+            font-weight: 700;
+            color: var(--text);
+        }
+        .review-parse-toggle {
+            margin-top: 6px;
+            align-self: flex-start;
+            height: 30px;
+            padding: 0 10px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .review-parse-toggle:hover {
+            background: var(--surface-soft);
+        }
+        .review-label {
+            margin-top: 8px;
+            margin-bottom: 6px;
+            color: var(--text-soft);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        .review-text,
+        .review-edit {
+            width: 100%;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: 14px;
+            padding: 12px;
+            resize: vertical;
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .review-text {
+            min-height: 112px;
+        }
+        .review-edit {
+            min-height: 96px;
+            border-color: var(--border);
+        }
+        .review-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .review-actions input {
+            width: 170px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0 10px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+        }
+        .review-target-select {
+            min-width: 280px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0 10px;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+        }
+        .action-button {
+            height: 38px;
+            border: none;
+            border-radius: 12px;
+            padding: 0 14px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #fff;
+            font-weight: 700;
+        }
+        .action-button.primary {
+            background: linear-gradient(135deg, var(--brand), #cf734a);
+            box-shadow: 0 10px 20px rgba(184, 92, 56, 0.18);
+        }
+        .action-button.primary:hover { background: linear-gradient(135deg, var(--brand-dark), var(--brand)); }
+        .action-button.secondary {
+            background: linear-gradient(135deg, var(--accent), #2f769f);
+            box-shadow: 0 10px 20px rgba(33, 88, 122, 0.18);
+        }
+        .action-button.secondary:hover { background: linear-gradient(135deg, #18445f, var(--accent)); }
+        .action-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+        .review-status {
+            margin-top: 10px;
+            color: var(--text-muted);
+            font-size: 12px;
+            min-height: 18px;
+        }
+        .empty {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 24px 0;
+            font-size: 13px;
+        }
+        .status-line {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.78);
+            text-align: right;
+            color: var(--text-muted);
+            font-size: 12px;
+            box-shadow: var(--shadow-soft);
+        }
+        @media (max-width: 1380px) {
+            .page-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 900px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+            }
+            .global-issue-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .global-issue-fields {
+                justify-content: stretch;
+            }
+            .global-issue-field {
+                min-width: 0;
+                flex-basis: auto;
+            }
+            .stats-filter-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .stats-filter-grid.compact {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .panel-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .panel-sub {
+                white-space: normal;
+            }
+        }
+        @media (max-width: 720px) {
+            body { padding: 14px 12px 22px; }
+            .page-shell { width: 100%; }
+            .header,
+            .global-issue-bar,
+            .summary-card,
+            .panel,
+            .status-line {
+                border-radius: 18px;
+            }
+            .stats-filter-strip {
+                padding: 12px;
+            }
+            .stats-filter-grid,
+            .stats-filter-grid.compact,
+            .global-issue-fields {
+                grid-template-columns: 1fr;
+            }
+            .global-issue-fields {
+                display: grid;
+            }
+            .stats-filter-action button {
+                min-height: 44px;
+            }
+            .review-search {
+                grid-template-columns: 1fr;
+            }
+            .review-meta {
+                grid-template-columns: 1fr;
+            }
+            .review-parse-compact-row {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+            .review-actions input,
+            .review-target-select,
+            .review-actions button {
+                width: 100%;
+                min-width: 0;
+            }
+            .stats-pagination,
+            .review-pagination {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .stats-page-actions,
+            .review-page-actions {
+                justify-content: space-between;
+            }
+            .status-line {
+                text-align: left;
+            }
+        }
+        @media (max-width: 480px) {
+            .header h1 {
+                margin-top: 8px;
+            }
+            .summary-card .value {
+                font-size: 34px;
+            }
+            .panel {
+                padding: 16px;
+            }
+            table {
+                min-width: 360px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page-shell">
+<div class="header">
+    <h1>报单统计</h1>
+    <div class="sub" id="update-time">等待数据...</div>
+</div>
+
+<div class="global-issue-bar">
+    <div class="global-issue-copy">
+        <div class="global-issue-label">全局条件</div>
+        <div class="global-issue-title">统计日期同时作用于号码排行榜和来源消息校正区</div>
+        <div class="global-issue-hint">切换日期后会同步刷新两侧数据，作为当前页面的共同检索背景条件。</div>
+    </div>
+    <div class="global-issue-fields">
+        <div class="global-issue-field">
+            <label for="issueKey">统计日期</label>
+            <input type="date" id="issueKey" />
+        </div>
+    </div>
+</div>
+
+<div class="summary">
+    <div class="summary-card">
+        <div class="label">今晚总注数</div>
+        <div class="value" id="totalOrders">0</div>
+    </div>
+</div>
+
+<div class="page-grid">
+    <section class="panel">
+        <div class="stats-panel-head">
+            <div class="panel-title">
+                <span>号码排行榜</span>
+                <span class="panel-sub">继承上方全局日期，下面条件只作用于当前榜单</span>
+            </div>
+            <div class="stats-filter-strip">
+                <div class="stats-filter-form">
+                    <div class="stats-filter-grid">
+                        <div class="stats-filter-field">
+                            <label for="lotteryCategory">彩种</label>
+                            <select id="lotteryCategory">
+                                <option value="FC">FC</option>
+                                <option value="TC">TC</option>
+                            </select>
+                        </div>
+                        <div class="stats-filter-field">
+                            <label for="gameType">玩法大类</label>
+                            <select id="gameType">
+                                <option value="3D">3D</option>
+                                <option value="P3">P3</option>
+                                <option value="P5">P5</option>
+                                <option value="SSQ">SSQ</option>
+                                <option value="DLT">DLT</option>
+                                <option value="QLQ">QLQ</option>
+                            </select>
+                        </div>
+                        <div class="stats-filter-field">
+                            <label for="playType">投注玩法</label>
+                            <select id="playType">
+                                <option value="ALL">全部玩法</option>
+                                <option value="DIRECT">直选</option>
+                                <option value="COMPOUND">复式</option>
+                            </select>
+                        </div>
+                        <div class="stats-filter-field">
+                            <label for="sortBy">排行榜排序</label>
+                            <select id="sortBy">
+                                <option value="count">按注数排序</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="stats-filter-grid compact">
+                        <div class="stats-filter-field">
+                            <label for="statsNumber">指定号码</label>
+                            <input type="text" id="statsNumber" placeholder="检索指定号码，如 512" />
+                        </div>
+                        <div class="stats-filter-field">
+                            <label for="topN">每页条数</label>
+                            <input type="number" id="topN" value="20" min="1" max="100" title="每页条数" />
+                        </div>
+                        <div class="stats-filter-action">
+                            <button onclick="applyFilters()">刷新排行榜</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-shell">
+            <table>
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>号码</th>
+                        <th class="sortable" data-sort="orderCount" onclick="sortTable('orderCount')">注数</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-table">
+                    <tr><td colspan="3" class="empty">暂无数据</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="stats-pagination" id="stats-pagination"></div>
+    </section>
+    <section class="panel">
+        <div class="panel-title">
+            <span>来源消息校正区</span>
+            <span class="panel-sub">仅继承上方全局日期条件，按微信消息时间倒序展示当天全部匹配消息</span>
+        </div>
+        <div class="review-search">
+            <input
+                type="text"
+                id="reviewRawId"
+                inputmode="numeric"
+                placeholder="按 raw_id 搜索，如 8390"
+            />
+            <input
+                type="text"
+                id="reviewBetNumber"
+                maxlength="3"
+                inputmode="numeric"
+                placeholder="按投注号码搜索，如 512"
+            />
+            <input
+                type="text"
+                id="reviewMessageKeyword"
+                placeholder="按微信消息内容模糊搜索"
+            />
+            <button type="button" class="review-search-button" onclick="applyReviewSearch()">搜索</button>
+            <button type="button" class="review-search-button secondary" onclick="clearReviewSearch()">清空</button>
+        </div>
+        <div class="review-list" id="review-list">
+            <div class="empty">暂无数据</div>
+        </div>
+        <div class="review-pagination" id="review-pagination"></div>
+    </section>
+</div>
+
+<div class="status-line" id="poll-status">轮询未启动</div>
+</div>
+
+<script>
+const STATS_API = '/wechat/api/stats';
+const SOURCE_API = '/wechat/api/top-source-messages';
+const FORCE_REPARSE_API = '/wechat/api/force-parse-raw';
+const CORRECT_REPARSE_API = '/wechat/api/reparse-corrected-raw';
+const POLL_INTERVAL = 5000;
+const REVIEW_PAGE_SIZE = 5;
+const REVIEW_PARSE_COLLAPSE_SIZE = 5;
+const THREE_DIGIT_PATTERN = /^\d{3}$/;
+const POSITIVE_INTEGER_PATTERN = /^\d+$/;
+
+let currentStats = [];
+let currentStatsPage = 1;
+let currentStatsTotalPages = 1;
+let currentStatsTotalItems = 0;
+let currentStatsPageSize = 20;
+let currentReviewItems = [];
+let currentReviewPage = 1;
+let currentReviewTotalPages = 1;
+let currentReviewTotalItems = 0;
+let currentSort = { field: 'orderCount', order: 'desc' };
+let reviewDrafts = {};
+let reviewExpandedState = {};
+let reviewRefreshLocked = false;
+let pendingReviewData = null;
+
+function getLocalDateInputValue() {
+    const now = new Date();
+    return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+}
+
+function buildUrl(base, params) {
+    const queryString = params instanceof URLSearchParams
+        ? params.toString()
+        : new URLSearchParams(params || {}).toString();
+    return queryString ? `${base}?${queryString}` : base;
+}
+
+async function fetchJson(url, options = {}) {
+    const response = await fetch(url, options);
+    const contentType = response.headers.get('content-type') || '';
+    const payload = contentType.includes('application/json')
+        ? await response.json()
+        : await response.text();
+
+    if (!response.ok) {
+        if (payload && typeof payload === 'object') {
+            throw new Error(payload.msg || `HTTP ${response.status}`);
+        }
+        throw new Error((typeof payload === 'string' && payload.trim()) || `HTTP ${response.status}`);
+    }
+
+    if (typeof payload === 'string') {
+        throw new Error('接口未返回 JSON 数据');
+    }
+    return payload;
+}
+
+document.getElementById('issueKey').value = getLocalDateInputValue();
+
+function buildHeaders(includeJson = false) {
+    const headers = {};
+    if (includeJson) {
+        headers['Content-Type'] = 'application/json';
+    }
+    return headers;
+}
+
+function resolvePlayType(value) {
+    if (value === 'DIRECT') {
+        return '直选';
+    }
+    if (value === 'COMPOUND') {
+        return '复式';
+    }
+    return null;
+}
+
+function getStatsNumber() {
+    const input = document.getElementById('statsNumber');
+    const raw = input ? input.value.trim() : '';
+    return raw || '';
+}
+
+function normalizeDigitsInput(value) {
+    return String(value || '').replace(/\D/g, '');
+}
+
+function normalizeThreeDigitInput(value) {
+    return normalizeDigitsInput(value).slice(0, 3);
+}
+
+function resolveStatsSortBy() {
+    return currentSort.field === 'sumAmount' ? 'amount' : 'count';
+}
+
+function syncStatsSortFromSelect(resetOrder = false) {
+    const sortValue = document.getElementById('sortBy').value;
+    const nextField = sortValue === 'amount' ? 'sumAmount' : 'orderCount';
+    if (currentSort.field !== nextField || resetOrder) {
+        currentSort = {
+            field: nextField,
+            order: resetOrder ? 'desc' : currentSort.order
+        };
+    }
+}
+
+function refreshStatsSortUi() {
+    document.querySelectorAll('th.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+        if (th.dataset.sort === currentSort.field) {
+            th.classList.add(currentSort.order);
+        }
+    });
+    document.getElementById('sortBy').value = resolveStatsSortBy();
+}
+
+function buildParams(pageOverride, pageSizeOverride) {
+    const params = new URLSearchParams({
+        lotteryCategory: document.getElementById('lotteryCategory').value,
+        gameType: document.getElementById('gameType').value,
+        issueKey: document.getElementById('issueKey').value,
+        sortBy: resolveStatsSortBy(),
+        sortOrder: currentSort.order,
+        page: String(pageOverride || currentStatsPage || 1),
+        pageSize: String(pageSizeOverride || document.getElementById('topN').value || '20')
+    });
+
+    const playType = resolvePlayType(document.getElementById('playType').value);
+    if (playType) {
+        params.set('playType', playType);
+    }
+
+    const number = getStatsNumber();
+    if (number) {
+        params.set('number', number);
+    }
+    return params;
+}
+
+function buildReviewParams() {
+    const params = new URLSearchParams({
+        issueKey: document.getElementById('issueKey').value,
+        sortBy: 'messageTimeDesc',
+        page: String(currentReviewPage || 1),
+        pageSize: String(REVIEW_PAGE_SIZE)
+    });
+
+    params.set('sortBy', 'messageTimeDesc');
+    const rawId = getReviewRawId();
+    if (rawId) {
+        params.set('rawId', rawId);
+    }
+    const betNumber = getReviewBetNumber();
+    if (betNumber) {
+        params.set('betNumber', betNumber);
+    }
+    const messageKeyword = getReviewMessageKeyword();
+    if (messageKeyword) {
+        params.set('messageKeyword', messageKeyword);
+    }
+    return params;
+}
+
+function getReviewRawId() {
+    const input = document.getElementById('reviewRawId');
+    const raw = input ? input.value.trim() : '';
+    if (!raw || !POSITIVE_INTEGER_PATTERN.test(raw)) {
+        return '';
+    }
+    return raw;
+}
+
+function getReviewBetNumber() {
+    const input = document.getElementById('reviewBetNumber');
+    const raw = input ? input.value.trim() : '';
+    if (!raw || !THREE_DIGIT_PATTERN.test(raw)) {
+        return '';
+    }
+    return raw;
+}
+
+function getReviewMessageKeyword() {
+    const input = document.getElementById('reviewMessageKeyword');
+    const raw = input ? input.value.trim() : '';
+    return raw || '';
+}
+
+function describeReviewSearch() {
+    const parts = [];
+    const rawId = getReviewRawId();
+    const betNumber = getReviewBetNumber();
+    const messageKeyword = getReviewMessageKeyword();
+    if (rawId) {
+        parts.push(`rawId ${rawId}`);
+    }
+    if (betNumber) {
+        parts.push(`号码 ${betNumber}`);
+    }
+    if (messageKeyword) {
+        parts.push(`消息包含“${messageKeyword}”`);
+    }
+    return parts.length ? parts.join('，') : '全部消息';
+}
+
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function getReviewItemKey(item, index) {
+    if (item && item.rawId) {
+        return `raw-${item.rawId}`;
+    }
+    return `idx-${index}`;
+}
+
+function getParseRecordKey(record, index) {
+    if (record && record.parseResultId) {
+        return `parse-${record.parseResultId}`;
+    }
+    return `record-${index}`;
+}
+
+function isReviewEditorActive() {
+    const active = document.activeElement;
+    if (!active || !active.closest) {
+        return false;
+    }
+    if (!active.closest('.review-card')) {
+        return false;
+    }
+    const activeId = active.id || '';
+    return active.classList.contains('review-edit')
+        || activeId.startsWith('correct-bet-')
+        || activeId.startsWith('correct-target-');
+}
+
+function rememberReviewDraft(index) {
+    const item = currentReviewItems[index];
+    if (!item) {
+        return;
+    }
+
+    const key = getReviewItemKey(item, index);
+    const textInput = document.getElementById(`correct-text-${index}`);
+    const betInput = document.getElementById(`correct-bet-${index}`);
+    const targetSelect = document.getElementById(`correct-target-${index}`);
+    reviewDrafts[key] = {
+        correctedText: textInput ? textInput.value : '',
+        correctBet: betInput ? betInput.value : '',
+        targetRecordKey: targetSelect ? targetSelect.value : ''
+    };
+}
+
+function markReviewEditing(index) {
+    reviewRefreshLocked = true;
+    rememberReviewDraft(index);
+}
+
+function releaseReviewEditing() {
+    window.setTimeout(() => {
+        if (isReviewEditorActive()) {
+            return;
+        }
+        reviewRefreshLocked = false;
+        if (pendingReviewData) {
+            const data = pendingReviewData;
+            pendingReviewData = null;
+            renderReviewPanel(data, true);
+        }
+    }, 120);
+}
+
+function clearReviewDraft(index) {
+    const item = currentReviewItems[index];
+    if (!item) {
+        return;
+    }
+    delete reviewDrafts[getReviewItemKey(item, index)];
+}
+
+function formatMoney(value) {
+    const amount = Number(value || 0);
+    return amount.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatDateTime(value) {
+    if (!value) {
+        return '-';
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+    return date.toLocaleString('zh-CN', { hour12: false });
+}
+
+function buildParseRecordSummary(record, index) {
+    const numbers = Array.isArray(record && record.numbers) && record.numbers.length
+        ? record.numbers.join('/')
+        : '-';
+    const lottery = formatRecordLottery(record);
+    const bet = record && record.bet ? record.bet : 0;
+    return `#${(record && record.itemIndex) || (index + 1)} ${numbers} ${lottery} ${bet}注`;
+}
+
+function formatLotteryLabel(category, gameType) {
+    const categoryMap = {
+        FC: '福彩',
+        TC: '体彩'
+    };
+    const normalizedCategory = category ? String(category).trim().toUpperCase() : '';
+    const normalizedGame = gameType ? String(gameType).trim().toUpperCase() : '';
+    const categoryLabel = categoryMap[normalizedCategory] || normalizedCategory || '-';
+    return normalizedGame ? `${categoryLabel}${normalizedGame}` : categoryLabel;
+}
+
+function formatRecordLottery(record) {
+    const fallbackCategoryNode = document.getElementById('lotteryCategory');
+    const fallbackGameTypeNode = document.getElementById('gameType');
+    const category = record && record.category ? record.category : (fallbackCategoryNode ? fallbackCategoryNode.value : '');
+    const gameType = record && record.gameType ? record.gameType : (fallbackGameTypeNode ? fallbackGameTypeNode.value : '');
+    return formatLotteryLabel(category, gameType);
+}
+
+function flattenParseRecordRows(records) {
+    const rows = [];
+    (Array.isArray(records) ? records : []).forEach(record => {
+        const numbers = Array.isArray(record && record.numbers) && record.numbers.length
+            ? record.numbers
+            : ['-'];
+        const lottery = formatRecordLottery(record);
+        const bet = record && record.bet ? record.bet : 0;
+        numbers.forEach(number => {
+            rows.push({
+                number,
+                lottery,
+                bet
+            });
+        });
+    });
+    return rows;
+}
+
+function renderParseRecords(records, reviewKey, reviewIndex) {
+    const rows = flattenParseRecordRows(records);
+    if (rows.length === 0) {
+        return '<div class="empty">当前消息暂无解析记录</div>';
+    }
+
+    const expanded = reviewKey ? !!reviewExpandedState[reviewKey] : false;
+    const visibleRows = expanded ? rows : rows.slice(0, REVIEW_PARSE_COLLAPSE_SIZE);
+    const hasToggle = rows.length > REVIEW_PARSE_COLLAPSE_SIZE;
+
+    return `
+        <div class="review-parse-compact-list">
+            ${visibleRows.map(row => `
+                <div class="review-parse-compact-row">
+                    <span class="parse-chip number">${escapeHtml(row.number)}</span>
+                    <span class="review-parse-lottery">${escapeHtml(row.lottery)}</span>
+                    <span class="review-parse-bet">${row.bet}注</span>
+                </div>
+            `).join('')}
+            ${hasToggle ? `
+                <button type="button" class="review-parse-toggle" onclick="toggleReviewParseRecords(${reviewIndex})">
+                    ${expanded ? '收起解析记录' : `展开全部 ${rows.length} 行`}
+                </button>
+            ` : ''}
+        </div>
+    `;
+}
+
+function buildCurrentReviewPanelState() {
+    return {
+        items: currentReviewItems,
+        page: currentReviewPage,
+        totalItems: currentReviewTotalItems,
+        totalPages: currentReviewTotalPages,
+        pageSize: REVIEW_PAGE_SIZE
+    };
+}
+
+function toggleReviewParseRecords(index) {
+    const item = currentReviewItems[index];
+    if (!item) {
+        return;
+    }
+    const reviewKey = getReviewItemKey(item, index);
+    reviewExpandedState[reviewKey] = !reviewExpandedState[reviewKey];
+    renderReviewPanel(buildCurrentReviewPanelState(), true);
+}
+
+function buildCorrectionTargetOptions(item, selectedKey) {
+    const records = Array.isArray(item && item.parseRecords) ? item.parseRecords : [];
+    if (!records.length) {
+        return '<option value="">无可用解析记录</option>';
+    }
+
+    const effectiveKey = selectedKey || (records.length === 1 ? getParseRecordKey(records[0], 0) : '');
+    const options = [];
+    if (records.length > 1) {
+        options.push(`<option value="">选择要校正注数的解析记录</option>`);
+    }
+
+    records.forEach((record, index) => {
+        const key = getParseRecordKey(record, index);
+        options.push(
+            `<option value="${escapeHtml(key)}" ${effectiveKey === key ? 'selected' : ''}>${escapeHtml(buildParseRecordSummary(record, index))}</option>`
+        );
+    });
+    return options.join('');
+}
+
+function resolveCorrectionTarget(index) {
+    const item = currentReviewItems[index];
+    if (!item || !Array.isArray(item.parseRecords) || item.parseRecords.length === 0) {
+        return null;
+    }
+
+    const targetSelect = document.getElementById(`correct-target-${index}`);
+    const selectedKey = targetSelect ? targetSelect.value : '';
+    const fallbackKey = item.parseRecords.length === 1 ? getParseRecordKey(item.parseRecords[0], 0) : '';
+    const effectiveKey = selectedKey || fallbackKey;
+    if (!effectiveKey) {
+        return null;
+    }
+
+    return item.parseRecords.find((record, recordIndex) => getParseRecordKey(record, recordIndex) === effectiveKey) || null;
+}
+
+async function fetchStats(resetView = false) {
+    const result = await fetchJson(buildUrl(STATS_API, buildParams()), { headers: buildHeaders() });
+    if (!result.success) {
+        throw new Error(result.msg || '统计接口失败');
+    }
+    renderStats(result.data || {}, resetView);
+}
+
+async function fetchSourceMessages() {
+    const result = await fetchJson(buildUrl(SOURCE_API, buildReviewParams()), { headers: buildHeaders() });
+    if (!result.success) {
+        throw new Error(result.msg || '来源消息接口失败');
+    }
+    renderReviewPanel(result.data || {});
+}
+
+function applyFilters() {
+    syncStatsSortFromSelect(true);
+    currentStatsPage = 1;
+    fetchStats(true)
+        .then(() => {
+            document.getElementById('poll-status').textContent = '号码排行榜筛选已更新';
+        })
+        .catch(error => {
+            document.getElementById('poll-status').textContent = '号码排行榜请求失败: ' + error.message;
+        });
+}
+
+function applyReviewSearch() {
+    const rawIdInput = document.getElementById('reviewRawId');
+    const rawIdValue = rawIdInput ? rawIdInput.value.trim() : '';
+    if (rawIdValue && !POSITIVE_INTEGER_PATTERN.test(rawIdValue)) {
+        document.getElementById('poll-status').textContent = '来源消息搜索失败: rawId 必须是正整数';
+        if (rawIdInput) {
+            rawIdInput.focus();
+        }
+        return;
+    }
+    const input = document.getElementById('reviewBetNumber');
+    const value = input ? input.value.trim() : '';
+    if (value && !THREE_DIGIT_PATTERN.test(value)) {
+        document.getElementById('poll-status').textContent = '来源消息搜索失败: 投注号码必须是 3 位数字';
+        if (input) {
+            input.focus();
+        }
+        return;
+    }
+    currentReviewPage = 1;
+    fetchSourceMessages()
+        .then(() => {
+            document.getElementById('poll-status').textContent = '来源消息搜索完成: ' + describeReviewSearch();
+        })
+        .catch(error => {
+            document.getElementById('poll-status').textContent = '来源消息请求失败: ' + error.message;
+        });
+}
+
+function clearReviewSearch() {
+    const rawIdInput = document.getElementById('reviewRawId');
+    const betNumberInput = document.getElementById('reviewBetNumber');
+    const messageKeywordInput = document.getElementById('reviewMessageKeyword');
+    if (rawIdInput) {
+        rawIdInput.value = '';
+    }
+    if (betNumberInput) {
+        betNumberInput.value = '';
+    }
+    if (messageKeywordInput) {
+        messageKeywordInput.value = '';
+    }
+    currentReviewPage = 1;
+    fetchSourceMessages()
+        .then(() => {
+            document.getElementById('poll-status').textContent = '来源消息搜索已清空';
+        })
+        .catch(error => {
+            document.getElementById('poll-status').textContent = '来源消息请求失败: ' + error.message;
+        });
+}
+
+async function fetchAll(resetStatsView = false) {
+    try {
+        await Promise.all([fetchStats(resetStatsView), fetchSourceMessages()]);
+        document.getElementById('poll-status').textContent = '上次更新: ' + new Date().toLocaleTimeString();
+    } catch (error) {
+        document.getElementById('poll-status').textContent = '请求失败: ' + error.message;
+    }
+}
+
+function renderStats(data, resetView = false) {
+    currentStats = Array.isArray(data.stats) ? data.stats.map(item => ({ ...item })) : [];
+    currentStatsPage = Number(data.page || 1);
+    currentStatsTotalPages = Number(data.totalPages || 1);
+    currentStatsTotalItems = Number(data.totalItems || currentStats.length || 0);
+    currentStatsPageSize = Number(data.pageSize || document.getElementById('topN').value || 20);
+    document.getElementById('totalOrders').textContent = data.totalOrders || 0;
+    document.getElementById('update-time').textContent = '查询时间: ' + (data.queryTime || '-');
+    document.getElementById('topN').value = currentStatsPageSize;
+
+    if (resetView) {
+        refreshStatsSortUi();
+    }
+    refreshStatsSortUi();
+    renderTable(currentStats);
+    renderStatsPagination();
+}
+
+function renderStatsPagination() {
+    const container = document.getElementById('stats-pagination');
+    if (!container) {
+        return;
+    }
+    if (!currentStatsTotalItems) {
+        container.innerHTML = '';
+        return;
+    }
+    if (currentStatsTotalPages <= 1) {
+        container.innerHTML = `<div class="stats-page-info">共 ${currentStatsTotalItems} 条</div>`;
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="stats-page-info">第 ${currentStatsPage} / ${currentStatsTotalPages} 页，共 ${currentStatsTotalItems} 条</div>
+        <div class="stats-page-actions">
+            <button type="button" class="page-button" onclick="changeStatsPage(-1)" ${currentStatsPage <= 1 ? 'disabled' : ''}>上一页</button>
+            <button type="button" class="page-button" onclick="changeStatsPage(1)" ${currentStatsPage >= currentStatsTotalPages ? 'disabled' : ''}>下一页</button>
+        </div>
+    `;
+}
+
+function changeStatsPage(step) {
+    const nextPage = currentStatsPage + step;
+    if (nextPage < 1 || nextPage > currentStatsTotalPages) {
+        return;
+    }
+    currentStatsPage = nextPage;
+    fetchStats()
+        .then(() => {
+            document.getElementById('poll-status').textContent = `号码排行榜已切换到第 ${currentStatsPage} 页`;
+        })
+        .catch(error => {
+            document.getElementById('poll-status').textContent = '号码排行榜请求失败: ' + error.message;
+        });
+}
+
+function renderTable(stats) {
+    const tbody = document.getElementById('stats-table');
+    if (!stats || stats.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty">暂无数据</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = stats.map((item, index) => {
+        const rank = item.rank || ((currentStatsPage - 1) * currentStatsPageSize + index + 1);
+        const rankClass = rank <= 3 ? `rank-${rank}` : '';
+        return `
+            <tr>
+                <td class="${rankClass}">${rank}</td>
+                <td><strong>${escapeHtml(item.number)}</strong></td>
+                <td>${item.orderCount || 0}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function sortTable(field) {
+    const nextField = field === 'sumAmount' ? 'sumAmount' : 'orderCount';
+    if (currentSort.field === nextField) {
+        currentSort.order = currentSort.order === 'desc' ? 'asc' : 'desc';
+    } else {
+        currentSort.field = nextField;
+        currentSort.order = 'desc';
+    }
+    currentStatsPage = 1;
+    refreshStatsSortUi();
+    fetchStats()
+        .then(() => {
+            document.getElementById('poll-status').textContent = '号码排行榜排序已更新';
+        })
+        .catch(error => {
+            document.getElementById('poll-status').textContent = '号码排行榜请求失败: ' + error.message;
+        });
+}
+
+function renderReviewPanel(data, forceRender = false) {
+    const nextItems = Array.isArray(data.items) ? [...data.items] : [];
+    if (!forceRender && reviewRefreshLocked && isReviewEditorActive()) {
+        pendingReviewData = { ...data, items: nextItems };
+        return;
+    }
+
+    pendingReviewData = null;
+    currentReviewItems = nextItems;
+    const hasServerPaging = data
+        && (data.page != null || data.totalItems != null || data.totalPages != null || data.pageSize != null);
+    const nextTotalItems = hasServerPaging
+        ? Number(data.totalItems || 0)
+        : currentReviewTotalItems;
+    const nextTotalPages = hasServerPaging
+        ? Number(data.totalPages || (nextTotalItems ? Math.ceil(nextTotalItems / REVIEW_PAGE_SIZE) : 1) || 1)
+        : Math.max(1, currentReviewTotalPages || 1);
+    const nextPage = hasServerPaging
+        ? Number(data.page || currentReviewPage || 1)
+        : currentReviewPage;
+
+    currentReviewTotalItems = nextTotalItems;
+    currentReviewTotalPages = Math.max(1, nextTotalPages);
+    currentReviewPage = Math.min(Math.max(1, nextPage), currentReviewTotalPages);
+    const reviewList = document.getElementById('review-list');
+    const reviewPagination = document.getElementById('review-pagination');
+    if (currentReviewItems.length === 0) {
+        reviewList.innerHTML = '<div class="empty">暂无来源消息数据</div>';
+        reviewPagination.innerHTML = '';
+        currentReviewPage = 1;
+        currentReviewTotalPages = 1;
+        currentReviewTotalItems = 0;
+        return;
+    }
+
+    reviewList.innerHTML = currentReviewItems.map((item, pageIndex) => {
+        const index = pageIndex;
+        const canOperate = !!item.rawId;
+        const reviewKey = getReviewItemKey(item, index);
+        const draft = reviewDrafts[reviewKey] || {};
+        const parseRecords = Array.isArray(item.parseRecords) ? item.parseRecords : [];
+        const selectedTargetKey = draft.targetRecordKey || (parseRecords.length === 1 ? getParseRecordKey(parseRecords[0], 0) : '');
+        return `
+            <div class="review-card" id="review-card-${index}">
+                <div class="review-head">
+                    <span class="badge">#${item.rank || index + 1}</span>
+                    <span class="review-number">${escapeHtml(formatDateTime(item.receivedAt))}</span>
+                </div>
+                <div class="review-meta">
+                    <div>rawId: ${item.rawId || '-'}</div>
+                    <div>解析记录: ${item.parseRecordCount || parseRecords.length || 0}</div>
+                </div>
+                <div class="review-label">原始微信消息</div>
+                <textarea class="review-text" readonly>${escapeHtml(item.rawText || '')}</textarea>
+                <div class="review-label">当前解析记录</div>
+                <div class="review-parse-list">${renderParseRecords(parseRecords, reviewKey, index)}</div>
+                <div class="review-label">修正文案/校正备注（可选，会连同原始报单一起给 AI 解析）</div>
+                <textarea class="review-edit" id="correct-text-${index}" placeholder="可输入修正后的完整报单文本，或补充备注，例如：组200中的200不是下注号码" onfocus="markReviewEditing(${index})" oninput="rememberReviewDraft(${index})" onblur="releaseReviewEditing()">${escapeHtml(draft.correctedText || '')}</textarea>
+                <div class="review-actions">
+                    <select
+                        id="correct-target-${index}"
+                        class="review-target-select"
+                        ${parseRecords.length ? '' : 'disabled'}
+                        onfocus="markReviewEditing(${index})"
+                        onchange="rememberReviewDraft(${index})"
+                        onblur="releaseReviewEditing()"
+                    >
+                        ${buildCorrectionTargetOptions(item, selectedTargetKey)}
+                    </select>
+                    <input
+                        type="number"
+                        min="1"
+                        id="correct-bet-${index}"
+                        placeholder="正确注数（可选，需选择解析记录）"
+                        value="${escapeHtml(draft.correctBet || '')}"
+                        onfocus="markReviewEditing(${index})"
+                        oninput="rememberReviewDraft(${index})"
+                        onblur="releaseReviewEditing()"
+                    />
+                    <button class="action-button secondary" onclick="reparseSourceRaw(${index})" ${canOperate ? '' : 'disabled'}>
+                        按原文重解析
+                    </button>
+                    <button class="action-button primary" onclick="submitCorrection(${index})" ${canOperate ? '' : 'disabled'}>
+                        提交校正并重解析
+                    </button>
+                </div>
+                <div class="review-status" id="review-status-${index}"></div>
+            </div>
+        `;
+    }).join('');
+
+    reviewPagination.innerHTML = `
+        <div class="review-page-info">第${currentReviewPage} / ${currentReviewTotalPages} 页，共${currentReviewTotalItems} 条</div>
+        <div class="review-page-actions">
+            <button type="button" class="page-button" onclick="changeReviewPage(-1)" ${currentReviewPage <= 1 ? 'disabled' : ''}>上一页</button>
+            <button type="button" class="page-button" onclick="changeReviewPage(1)" ${currentReviewPage >= currentReviewTotalPages ? 'disabled' : ''}>下一页</button>
+        </div>
+    `;
+}
+
+function changeReviewPage(step) {
+    const nextPage = currentReviewPage + step;
+    if (nextPage < 1 || nextPage > currentReviewTotalPages) {
+        return;
+    }
+    currentReviewPage = nextPage;
+    fetchSourceMessages()
+        .then(() => {
+            document.getElementById('poll-status').textContent = `来源消息已切换到第 ${currentReviewPage} 页`;
+        })
+        .catch(error => {
+            document.getElementById('poll-status').textContent = '来源消息请求失败: ' + error.message;
+        });
+}
+
+function setReviewStatus(index, message) {
+    const node = document.getElementById(`review-status-${index}`);
+    if (node) {
+        node.textContent = message || '';
+    }
+}
+
+function toggleReviewButtons(index, disabled) {
+    const card = document.getElementById(`review-card-${index}`);
+    if (!card) {
+        return;
+    }
+    card.querySelectorAll('button').forEach(button => {
+        button.disabled = disabled;
+    });
+}
+
+async function reparseSourceRaw(index) {
+    const item = currentReviewItems[index];
+    if (!item || !item.rawId) {
+        return;
+    }
+
+    try {
+        setReviewStatus(index, '正在按原文重解析...');
+        toggleReviewButtons(index, true);
+        const result = await fetchJson(buildUrl(FORCE_REPARSE_API, { rawId: item.rawId }), {
+            method: 'POST',
+            headers: buildHeaders()
+        });
+        if (!result.success) {
+            throw new Error(result.msg || 'Reparse failed');
+        }
+        setReviewStatus(index, result.data || result.msg || '重解析完成');
+        await fetchAll();
+    } catch (error) {
+        setReviewStatus(index, '失败: ' + error.message);
+    } finally {
+        toggleReviewButtons(index, false);
+    }
+}
+
+async function submitCorrection(index) {
+    const item = currentReviewItems[index];
+    if (!item || !item.rawId) {
+        return;
+    }
+
+    const betInput = document.getElementById(`correct-bet-${index}`);
+    const textInput = document.getElementById(`correct-text-${index}`);
+    rememberReviewDraft(index);
+    const rawCorrectedText = textInput ? textInput.value : '';
+    const correctedText = rawCorrectedText && rawCorrectedText.trim() ? rawCorrectedText : '';
+    const correctBet = Number(betInput && betInput.value);
+    const hasCorrectBet = Number.isInteger(correctBet) && correctBet > 0;
+    const targetRecord = resolveCorrectionTarget(index);
+
+    if (!hasCorrectBet && !correctedText) {
+        setReviewStatus(index, '请至少填写正确注数或修正文案');
+        return;
+    }
+
+    if (hasCorrectBet && !targetRecord) {
+        setReviewStatus(index, '请先选择要校正注数的解析记录');
+        return;
+    }
+
+    const targetNumbers = Array.isArray(targetRecord && targetRecord.numbers) ? targetRecord.numbers : [];
+    if (hasCorrectBet && targetNumbers.length !== 1) {
+        setReviewStatus(index, '注数校正仅支持单号码解析记录，请改用修正文案纠偏');
+        return;
+    }
+
+    const payload = {
+        rawId: item.rawId,
+        lotteryCategory: targetRecord ? targetRecord.category : document.getElementById('lotteryCategory').value,
+        gameType: targetRecord ? targetRecord.gameType : document.getElementById('gameType').value,
+        playType: targetRecord ? targetRecord.playType : resolvePlayType(document.getElementById('playType').value),
+        numberZone: targetRecord ? (targetRecord.numberZone || 'MAIN') : 'MAIN',
+        number: targetNumbers.length === 1 ? targetNumbers[0] : null,
+        correctBet: hasCorrectBet ? correctBet : null,
+        correctedText: correctedText || null
+    };
+
+    try {
+        setReviewStatus(index, correctedText ? '正在按修正文案重解析...' : '正在按正确注数校正并重解析...');
+        toggleReviewButtons(index, true);
+        const result = await fetchJson(CORRECT_REPARSE_API, {
+            method: 'POST',
+            headers: buildHeaders(true),
+            body: JSON.stringify(payload)
+        });
+        if (!result.success) {
+            throw new Error(result.msg || 'Correction reparse failed');
+        }
+        setReviewStatus(index, result.data || result.msg || '校正完成');
+        clearReviewDraft(index);
+        reviewRefreshLocked = false;
+        pendingReviewData = null;
+        if (betInput) {
+            betInput.value = '';
+        }
+        if (textInput) {
+            textInput.value = '';
+        }
+        await fetchAll();
+    } catch (error) {
+        setReviewStatus(index, '失败: ' + error.message);
+    } finally {
+        toggleReviewButtons(index, false);
+    }
+}
+
+setInterval(() => {
+    if (!document.hidden) {
+        fetchAll(false);
+    }
+}, POLL_INTERVAL);
+
+syncStatsSortFromSelect(true);
+refreshStatsSortUi();
+fetchAll(true);
+
+['reviewRawId', 'reviewBetNumber', 'reviewMessageKeyword'].forEach((inputId) => {
+    const input = document.getElementById(inputId);
+    if (!input) {
+        return;
+    }
+    if (inputId === 'reviewRawId') {
+        input.addEventListener('input', () => {
+            input.value = normalizeDigitsInput(input.value);
+        });
+    }
+    if (inputId === 'reviewBetNumber') {
+        input.addEventListener('input', () => {
+            input.value = normalizeThreeDigitInput(input.value);
+        });
+    }
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            applyReviewSearch();
+        }
+    });
+});
+
+['statsNumber', 'topN'].forEach((inputId) => {
+    const input = document.getElementById(inputId);
+    if (!input) {
+        return;
+    }
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            applyFilters();
+        }
+    });
+});
+
+const issueKeyInput = document.getElementById('issueKey');
+if (issueKeyInput) {
+    issueKeyInput.addEventListener('change', () => {
+        currentStatsPage = 1;
+        currentReviewPage = 1;
+        fetchAll(true)
+            .then(() => {
+                document.getElementById('poll-status').textContent = `已切换全局统计日期: ${issueKeyInput.value || '-'}`;
+            })
+            .catch(error => {
+                document.getElementById('poll-status').textContent = '切换全局统计日期失败: ' + error.message;
+            });
+    });
+}
+</script>
+</body>
+</html>

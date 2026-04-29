@@ -1,0 +1,607 @@
+{
+  "generated_at": "2026-03-27 01:19:58",
+  "source_report": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\sssaicode_claude_compare_system_retry2.json",
+  "note": "Same mixed20 dataset, Anthropic messages API via anti.sssaicode.com, prompt placed in system, retries=2.",
+  "api_format": "anthropic",
+  "retries": 2,
+  "strict": [
+    {
+      "model": "claude-sonnet-4-6",
+      "relaxed": false,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 9,
+      "exact_match_ratio": 0.45,
+      "total_expected": 71,
+      "total_matched": 46,
+      "item_level_recall": 0.6479,
+      "total_missing": 25,
+      "total_extra": 42,
+      "avg_latency_ms": 13595.5,
+      "min_latency_ms": 5604,
+      "max_latency_ms": 24523,
+      "avg_prompt_tokens": 22.35,
+      "avg_completion_tokens": 669.2,
+      "avg_total_tokens": 691.55
+    },
+    {
+      "model": "claude-opus-4-6",
+      "relaxed": false,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 11,
+      "exact_match_ratio": 0.55,
+      "total_expected": 71,
+      "total_matched": 48,
+      "item_level_recall": 0.6761,
+      "total_missing": 23,
+      "total_extra": 40,
+      "avg_latency_ms": 12742.3,
+      "min_latency_ms": 6009,
+      "max_latency_ms": 20415,
+      "avg_prompt_tokens": 18.35,
+      "avg_completion_tokens": 624.65,
+      "avg_total_tokens": 643.0
+    },
+    {
+      "model": "claude-haiku-4-5-20251001",
+      "relaxed": false,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 14,
+      "exact_match_ratio": 0.7,
+      "total_expected": 71,
+      "total_matched": 54,
+      "item_level_recall": 0.7606,
+      "total_missing": 17,
+      "total_extra": 14,
+      "avg_latency_ms": 3807.95,
+      "min_latency_ms": 2405,
+      "max_latency_ms": 8121,
+      "avg_prompt_tokens": 7.65,
+      "avg_completion_tokens": 207.2,
+      "avg_total_tokens": 214.85
+    }
+  ],
+  "relaxed": [
+    {
+      "model": "claude-sonnet-4-6",
+      "relaxed": true,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 14,
+      "exact_match_ratio": 0.7,
+      "total_expected": 71,
+      "total_matched": 52,
+      "item_level_recall": 0.7324,
+      "total_missing": 19,
+      "total_extra": 36,
+      "avg_latency_ms": 13595.5,
+      "min_latency_ms": 5604,
+      "max_latency_ms": 24523,
+      "avg_prompt_tokens": 22.35,
+      "avg_completion_tokens": 669.2,
+      "avg_total_tokens": 691.55
+    },
+    {
+      "model": "claude-opus-4-6",
+      "relaxed": true,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 16,
+      "exact_match_ratio": 0.8,
+      "total_expected": 71,
+      "total_matched": 54,
+      "item_level_recall": 0.7606,
+      "total_missing": 17,
+      "total_extra": 34,
+      "avg_latency_ms": 12742.3,
+      "min_latency_ms": 6009,
+      "max_latency_ms": 20415,
+      "avg_prompt_tokens": 18.35,
+      "avg_completion_tokens": 624.65,
+      "avg_total_tokens": 643.0
+    },
+    {
+      "model": "claude-haiku-4-5-20251001",
+      "relaxed": true,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 17,
+      "exact_match_ratio": 0.85,
+      "total_expected": 71,
+      "total_matched": 58,
+      "item_level_recall": 0.8169,
+      "total_missing": 13,
+      "total_extra": 10,
+      "avg_latency_ms": 3807.95,
+      "min_latency_ms": 2405,
+      "max_latency_ms": 8121,
+      "avg_prompt_tokens": 7.65,
+      "avg_completion_tokens": 207.2,
+      "avg_total_tokens": 214.85
+    }
+  ],
+  "non_exact_cases_by_model": {
+    "claude-sonnet-4-6": [
+      {
+        "case_id": "raw_91_fc_simple_single",
+        "latency_ms": 15371,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        }
+      },
+      {
+        "case_id": "raw_95_fc_multi_compact",
+        "latency_ms": 15033,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 3,
+          "missing": 3,
+          "extra": 3
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 3,
+          "missing": 3,
+          "extra": 3
+        }
+      },
+      {
+        "case_id": "raw_93_fc_multiline_bundle",
+        "latency_ms": 24523,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        }
+      },
+      {
+        "case_id": "raw_18_mixed_success_and_skip",
+        "latency_ms": 11683,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 8,
+          "missing": 8,
+          "extra": 8
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 8,
+          "missing": 7,
+          "extra": 7
+        }
+      },
+      {
+        "case_id": "raw_153_skip_chat_result",
+        "latency_ms": 5604,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_149_skip_stop_command",
+        "latency_ms": 12614,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_146_skip_group_mix",
+        "latency_ms": 22758,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 18
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 18
+        }
+      },
+      {
+        "case_id": "raw_122_skip_dudan",
+        "latency_ms": 8841,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_117_skip_position_single",
+        "latency_ms": 13414,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_92_skip_position_double",
+        "latency_ms": 16474,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        }
+      },
+      {
+        "case_id": "raw_106_skip_chat_none",
+        "latency_ms": 5984,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      }
+    ],
+    "claude-opus-4-6": [
+      {
+        "case_id": "raw_95_fc_multi_compact",
+        "latency_ms": 14281,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 3,
+          "missing": 3,
+          "extra": 3
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 3,
+          "missing": 3,
+          "extra": 3
+        }
+      },
+      {
+        "case_id": "raw_93_fc_multiline_bundle",
+        "latency_ms": 16121,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        }
+      },
+      {
+        "case_id": "raw_18_mixed_success_and_skip",
+        "latency_ms": 17780,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 8,
+          "missing": 8,
+          "extra": 8
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 8,
+          "missing": 7,
+          "extra": 7
+        }
+      },
+      {
+        "case_id": "raw_153_skip_chat_result",
+        "latency_ms": 6272,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_149_skip_stop_command",
+        "latency_ms": 7423,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_146_skip_group_mix",
+        "latency_ms": 20112,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 18
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 18
+        }
+      },
+      {
+        "case_id": "raw_122_skip_dudan",
+        "latency_ms": 8851,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_92_skip_position_double",
+        "latency_ms": 12491,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_106_skip_chat_none",
+        "latency_ms": 6009,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      }
+    ],
+    "claude-haiku-4-5-20251001": [
+      {
+        "case_id": "raw_59_dual_category_multi",
+        "latency_ms": 6198,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 7
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 7
+        }
+      },
+      {
+        "case_id": "raw_18_mixed_success_and_skip",
+        "latency_ms": 3319,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 8,
+          "missing": 8,
+          "extra": 3
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 8,
+          "missing": 7,
+          "extra": 2
+        }
+      },
+      {
+        "case_id": "raw_153_skip_chat_result",
+        "latency_ms": 2619,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_123_skip_double_fly",
+        "latency_ms": 3323,
+        "strict": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 1
+        }
+      },
+      {
+        "case_id": "raw_122_skip_dudan",
+        "latency_ms": 2453,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_117_skip_position_single",
+        "latency_ms": 3451,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      }
+    ]
+  }
+}

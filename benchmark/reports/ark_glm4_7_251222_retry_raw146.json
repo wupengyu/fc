@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-03-26 15:44:25",
+  "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "glm-4-7-251222"
+  ],
+  "run_label": "ark_glm4_7_251222_retry_raw146",
+  "repeats": 1,
+  "prompt_placement": "system",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "summary_by_model": {
+    "glm-4-7-251222": {
+      "run_count": 1,
+      "successful_run_count": 0,
+      "failed_run_count": 1,
+      "exact_match_count": 0,
+      "avg_latency_ms": null,
+      "min_latency_ms": null,
+      "max_latency_ms": null
+    }
+  },
+  "runs": [
+    {
+      "model": "glm-4-7-251222",
+      "case_id": "raw_146_skip_group_mix",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "ark_glm4_7_251222_retry_raw146",
+      "status": "error",
+      "error": "The read operation timed out"
+    }
+  ]
+}

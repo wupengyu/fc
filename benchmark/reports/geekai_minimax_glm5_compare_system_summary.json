@@ -1,0 +1,394 @@
+{
+  "generated_at": "2026-03-27 01:53:49",
+  "source_report": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\geekai_minimax_glm5_compare_system.json",
+  "note": "Same mixed20 dataset, geekai.dev OpenAI-compatible route, prompt placed in system, retries=2.",
+  "api_format": "openai",
+  "retries": 2,
+  "strict": [
+    {
+      "model": "minimax-m2.7:free",
+      "relaxed": false,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 11,
+      "exact_match_ratio": 0.55,
+      "total_expected": 71,
+      "total_matched": 33,
+      "item_level_recall": 0.4648,
+      "total_missing": 38,
+      "total_extra": 33,
+      "avg_latency_ms": 28067.5,
+      "min_latency_ms": 3170,
+      "max_latency_ms": 194519,
+      "avg_prompt_tokens": 2484.75,
+      "avg_completion_tokens": 1248.75,
+      "avg_total_tokens": 3733.5
+    },
+    {
+      "model": "glm-5",
+      "relaxed": false,
+      "case_count": 20,
+      "successful_case_count": 10,
+      "failed_case_count": 10,
+      "exact_match_count": 5,
+      "exact_match_ratio": 0.25,
+      "total_expected": 35,
+      "total_matched": 19,
+      "item_level_recall": 0.5429,
+      "total_missing": 16,
+      "total_extra": 16,
+      "avg_latency_ms": 26351.7,
+      "min_latency_ms": 5385,
+      "max_latency_ms": 110398,
+      "avg_prompt_tokens": 2678.4,
+      "avg_completion_tokens": 814.3,
+      "avg_total_tokens": 3492.7
+    }
+  ],
+  "relaxed": [
+    {
+      "model": "minimax-m2.7:free",
+      "relaxed": true,
+      "case_count": 20,
+      "successful_case_count": 20,
+      "failed_case_count": 0,
+      "exact_match_count": 14,
+      "exact_match_ratio": 0.7,
+      "total_expected": 71,
+      "total_matched": 37,
+      "item_level_recall": 0.5211,
+      "total_missing": 34,
+      "total_extra": 29,
+      "avg_latency_ms": 28067.5,
+      "min_latency_ms": 3170,
+      "max_latency_ms": 194519,
+      "avg_prompt_tokens": 2484.75,
+      "avg_completion_tokens": 1248.75,
+      "avg_total_tokens": 3733.5
+    },
+    {
+      "model": "glm-5",
+      "relaxed": true,
+      "case_count": 20,
+      "successful_case_count": 10,
+      "failed_case_count": 10,
+      "exact_match_count": 7,
+      "exact_match_ratio": 0.35,
+      "total_expected": 35,
+      "total_matched": 21,
+      "item_level_recall": 0.6,
+      "total_missing": 14,
+      "total_extra": 14,
+      "avg_latency_ms": 26351.7,
+      "min_latency_ms": 5385,
+      "max_latency_ms": 110398,
+      "avg_prompt_tokens": 2678.4,
+      "avg_completion_tokens": 814.3,
+      "avg_total_tokens": 3492.7
+    }
+  ],
+  "failed_cases_by_model": {
+    "minimax-m2.7:free": [],
+    "glm-5": [
+      {
+        "case_id": "raw_22_dual_category_single",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_91_fc_simple_single",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_95_fc_multi_compact",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_93_fc_multiline_bundle",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_142_tc_multi_bundle",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_126_tc_all_baozi",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_131_tc_fushi_single",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_149_skip_stop_command",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_146_skip_group_mix",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "case_id": "raw_106_skip_chat_none",
+        "error": "Extra data: line 6 column 1 (char 128)"
+      }
+    ]
+  },
+  "non_exact_cases_by_model": {
+    "minimax-m2.7:free": [
+      {
+        "case_id": "raw_59_dual_category_multi",
+        "latency_ms": 194519,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        }
+      },
+      {
+        "case_id": "raw_22_dual_category_single",
+        "latency_ms": 64783,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 2,
+          "missing": 2,
+          "extra": 2
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 2,
+          "missing": 2,
+          "extra": 2
+        }
+      },
+      {
+        "case_id": "raw_91_fc_simple_single",
+        "latency_ms": 9256,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        }
+      },
+      {
+        "case_id": "raw_93_fc_multiline_bundle",
+        "latency_ms": 119147,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        }
+      },
+      {
+        "case_id": "raw_69_fc_fushi_dual",
+        "latency_ms": 23984,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 12,
+          "missing": 12,
+          "extra": 12
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 12,
+          "missing": 12,
+          "extra": 12
+        }
+      },
+      {
+        "case_id": "raw_18_mixed_success_and_skip",
+        "latency_ms": 12225,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 8,
+          "missing": 8,
+          "extra": 3
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 8,
+          "missing": 7,
+          "extra": 2
+        }
+      },
+      {
+        "case_id": "raw_153_skip_chat_result",
+        "latency_ms": 4799,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_122_skip_dudan",
+        "latency_ms": 4803,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_117_skip_position_single",
+        "latency_ms": 8967,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      }
+    ],
+    "glm-5": [
+      {
+        "case_id": "raw_59_dual_category_multi",
+        "latency_ms": 110398,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 6,
+          "missing": 6,
+          "extra": 6
+        }
+      },
+      {
+        "case_id": "raw_18_mixed_success_and_skip",
+        "latency_ms": 24343,
+        "strict": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 8,
+          "missing": 7,
+          "extra": 7
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 1,
+          "expected": 8,
+          "missing": 7,
+          "extra": 7
+        }
+      },
+      {
+        "case_id": "raw_153_skip_chat_result",
+        "latency_ms": 5385,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_122_skip_dudan",
+        "latency_ms": 16618,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": true,
+          "matched": 1,
+          "expected": 1,
+          "missing": 0,
+          "extra": 0
+        }
+      },
+      {
+        "case_id": "raw_117_skip_position_single",
+        "latency_ms": 22105,
+        "strict": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        },
+        "relaxed": {
+          "exact_match": false,
+          "matched": 0,
+          "expected": 1,
+          "missing": 1,
+          "extra": 1
+        }
+      }
+    ]
+  }
+}

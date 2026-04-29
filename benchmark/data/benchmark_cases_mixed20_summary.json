@@ -1,0 +1,243 @@
+[
+  {
+    "raw_id": 59,
+    "case_id": "raw_59_dual_category_multi",
+    "description": "????????????????? 6 ???",
+    "result_count": 6,
+    "valid_count": 6,
+    "status_counts": {
+      "SUCCESS": 6
+    },
+    "message_preview": "体彩福彩\n830，721，507十五单五组240米",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 22,
+    "case_id": "raw_22_dual_category_single",
+    "description": "?????????????",
+    "result_count": 2,
+    "valid_count": 2,
+    "status_counts": {
+      "SUCCESS": 2
+    },
+    "message_preview": "749福体十单五组",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 130,
+    "case_id": "raw_130_tc_simple_single",
+    "description": "????????",
+    "result_count": 1,
+    "valid_count": 1,
+    "status_counts": {
+      "SUCCESS": 1
+    },
+    "message_preview": "147体彩五单",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 91,
+    "case_id": "raw_91_fc_simple_single",
+    "description": "????????",
+    "result_count": 1,
+    "valid_count": 1,
+    "status_counts": {
+      "SUCCESS": 1
+    },
+    "message_preview": "福：150—10单一组（合22）",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 143,
+    "case_id": "raw_143_tc_multi_compact",
+    "description": "?????????",
+    "result_count": 3,
+    "valid_count": 3,
+    "status_counts": {
+      "SUCCESS": 3
+    },
+    "message_preview": "体:792，367，762，各3单2组",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 95,
+    "case_id": "raw_95_fc_multi_compact",
+    "description": "?????????",
+    "result_count": 3,
+    "valid_count": 3,
+    "status_counts": {
+      "SUCCESS": 3
+    },
+    "message_preview": "福彩823.813.843各4单1组30",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 93,
+    "case_id": "raw_93_fc_multiline_bundle",
+    "description": "????????",
+    "result_count": 6,
+    "valid_count": 6,
+    "status_counts": {
+      "SUCCESS": 6
+    },
+    "message_preview": "福\n210\n310\n816\n176\n097\n409\n各八单十二组\n合计240",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 142,
+    "case_id": "raw_142_tc_multi_bundle",
+    "description": "?????????",
+    "result_count": 5,
+    "valid_count": 5,
+    "status_counts": {
+      "SUCCESS": 5
+    },
+    "message_preview": "体:390，360，792，380，716各3单2组",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 69,
+    "case_id": "raw_69_fc_fushi_dual",
+    "description": "?????????",
+    "result_count": 12,
+    "valid_count": 12,
+    "status_counts": {
+      "SUCCESS": 12
+    },
+    "message_preview": "267 278复试一倍24",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 126,
+    "case_id": "raw_126_tc_all_baozi",
+    "description": "??????",
+    "result_count": 10,
+    "valid_count": 10,
+    "status_counts": {
+      "SUCCESS": 10
+    },
+    "message_preview": "体彩全包豹子10单\n合计200",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 131,
+    "case_id": "raw_131_tc_fushi_single",
+    "description": "?????????",
+    "result_count": 6,
+    "valid_count": 6,
+    "status_counts": {
+      "SUCCESS": 6
+    },
+    "message_preview": "体490五十复式",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 18,
+    "case_id": "raw_18_mixed_success_and_skip",
+    "description": "?????????????????????",
+    "result_count": 8,
+    "valid_count": 6,
+    "status_counts": {
+      "SKIP": 2,
+      "SUCCESS": 6
+    },
+    "message_preview": "2345-23459组六30组三20\n554-455-552-225-224-442各8单2组\n54/52组三各30",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 153,
+    "case_id": "raw_153_skip_chat_result",
+    "description": "????????",
+    "result_count": 1,
+    "valid_count": 0,
+    "status_counts": {
+      "SKIP": 1
+    },
+    "message_preview": "最后一个开了",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 149,
+    "case_id": "raw_149_skip_stop_command",
+    "description": "????????",
+    "result_count": 1,
+    "valid_count": 0,
+    "status_counts": {
+      "SKIP": 1
+    },
+    "message_preview": "体停",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 146,
+    "case_id": "raw_146_skip_group_mix",
+    "description": "?????????????",
+    "result_count": 1,
+    "valid_count": 0,
+    "status_counts": {
+      "SKIP": 1
+    },
+    "message_preview": "167，367，137复试五倍组三30",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 123,
+    "case_id": "raw_123_skip_double_fly",
+    "description": "????????",
+    "result_count": 1,
+    "valid_count": 0,
+    "status_counts": {
+      "SKIP": 1
+    },
+    "message_preview": "体双飞\n26 27各300",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 122,
+    "case_id": "raw_122_skip_dudan",
+    "description": "??/????????",
+    "result_count": 1,
+    "valid_count": 0,
+    "status_counts": {
+      "SKIP": 1
+    },
+    "message_preview": "毒胆 4 组六（36注）\n014 024 034 045 046 047 048 049 124 134 145 146 147 148 149 234 245 246 247 248 249 345 346 347 348 349 456",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 117,
+    "case_id": "raw_117_skip_position_single",
+    "description": "????????",
+    "result_count": 1,
+    "valid_count": 0,
+    "status_counts": {
+      "SKIP": 1
+    },
+    "message_preview": "体一码定位 百位十位个位6. 各1000共3000",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 92,
+    "case_id": "raw_92_skip_position_double",
+    "description": "????????",
+    "result_count": 1,
+    "valid_count": 0,
+    "status_counts": {
+      "SKIP": 1
+    },
+    "message_preview": "两码定位十位8，个位6，10",
+    "benchmark_index_normalized": true
+  },
+  {
+    "raw_id": 106,
+    "case_id": "raw_106_skip_chat_none",
+    "description": "?????????",
+    "result_count": 1,
+    "valid_count": 0,
+    "status_counts": {
+      "SKIP": 1
+    },
+    "message_preview": "没有了",
+    "benchmark_index_normalized": true
+  }
+]

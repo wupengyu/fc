@@ -1,0 +1,396 @@
+{
+  "generated_at": "2026-03-26 13:41:41",
+  "base_url": "https://api-slb.packyapi.com/v1/chat/completions",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "gpt-5.2-medium",
+    "gpt-5.2-high"
+  ],
+  "run_label": "packy_gpt52_compare",
+  "repeats": 1,
+  "thinking": "auto",
+  "thinking_budget": null,
+  "summary_by_model": {
+    "gpt-5.2-medium": {
+      "run_count": 20,
+      "successful_run_count": 0,
+      "failed_run_count": 20,
+      "exact_match_count": 0,
+      "avg_latency_ms": null,
+      "min_latency_ms": null,
+      "max_latency_ms": null
+    },
+    "gpt-5.2-high": {
+      "run_count": 20,
+      "successful_run_count": 0,
+      "failed_run_count": 20,
+      "exact_match_count": 0,
+      "avg_latency_ms": null,
+      "min_latency_ms": null,
+      "max_latency_ms": null
+    }
+  },
+  "runs": [
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_59_dual_category_multi",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_22_dual_category_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_91_fc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_143_tc_multi_compact",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "model output must be a JSON array"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_95_fc_multi_compact",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_93_fc_multiline_bundle",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_142_tc_multi_bundle",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_69_fc_fushi_dual",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_126_tc_all_baozi",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "model output must be a JSON array"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_131_tc_fushi_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_18_mixed_success_and_skip",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_153_skip_chat_result",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_149_skip_stop_command",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_146_skip_group_mix",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_123_skip_double_fly",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_122_skip_dudan",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_117_skip_position_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_92_skip_position_double",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-medium",
+      "case_id": "raw_106_skip_chat_none",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_59_dual_category_multi",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_22_dual_category_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "model output must be a JSON array"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_91_fc_simple_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_143_tc_multi_compact",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_95_fc_multi_compact",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_93_fc_multiline_bundle",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_142_tc_multi_bundle",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_69_fc_fushi_dual",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_126_tc_all_baozi",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_131_tc_fushi_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_18_mixed_success_and_skip",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_153_skip_chat_result",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_149_skip_stop_command",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_146_skip_group_mix",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "every item in model output must be a JSON object"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_123_skip_double_fly",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "model output must be a JSON array"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_122_skip_dudan",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 2 (char 1)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_117_skip_position_single",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_92_skip_position_double",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "model": "gpt-5.2-high",
+      "case_id": "raw_106_skip_chat_none",
+      "repeat_index": 1,
+      "thinking": "auto",
+      "run_label": "packy_gpt52_compare",
+      "status": "error",
+      "error": "Extra data: line 1 column 5 (char 4)"
+    }
+  ]
+}

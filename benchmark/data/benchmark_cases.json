@@ -1,0 +1,122 @@
+[
+  {
+    "case_id": "raw_59_dual_category_multi_result",
+    "description": "同一条消息同时命中体彩和福彩，并拆成 6 条标准结果，适合对比模型识别正确性和时延。",
+    "source": {
+      "database": "wechat_msg",
+      "raw_id": 59,
+      "batch_id": 59,
+      "msg_id": "dadf85658cd1386be8b1af90af6f47fa3ad835950c20eedfb998c9cb8503f02d",
+      "sender_wxid": "问题不大🤟🏻🤟🏻🤟🏻",
+      "issue_key": "2026-03-25",
+      "exported_on": "2026-03-26"
+    },
+    "input": {
+      "message": "体彩福彩\n830，721，507十五单五组240米"
+    },
+    "expected_results": [
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "830"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "721"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "FC",
+          "game": "3D",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "507"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "830"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "721"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      },
+      {
+        "index": 1,
+        "valid": true,
+        "status": "SUCCESS",
+        "data": {
+          "category": "TC",
+          "game": "P3",
+          "play": "直选",
+          "zone": "MAIN",
+          "numbers": [
+            "507"
+          ],
+          "bet": 40,
+          "multiple": 1,
+          "amount": 80.0
+        }
+      }
+    ]
+  }
+]

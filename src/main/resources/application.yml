@@ -1,0 +1,132 @@
+spring:
+  application:
+    name: qian-xun-pro-wechat-http-demo
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          no-cache: true
+          no-store: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.8.0.110:3306/wechat_msg?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&connectTimeout=10000&socketTimeout=60000&tcpKeepAlive=true
+    username: root
+    password: root
+    hikari:
+      maximum-pool-size: 36
+      minimum-idle: 0
+      idle-timeout: 10000
+      max-lifetime: 30000
+      connection-timeout: 10000
+      validation-timeout: 3000
+      leak-detection-threshold: 30000
+  data:
+    redis:
+      host: 10.8.0.110
+      port: 6379
+      password: 123456
+      database: 0
+      timeout: 20s
+      connect-timeout: 10s
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  mapper-locations: classpath*:/mapper/**/*.xml
+
+server:
+  port: 8989
+  servlet:
+    context-path: /wechat
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+logging:
+  level:
+    cn.daenx.myadmin: info
+    org.springframework: warn
+  config: classpath:logback.xml
+
+task:
+  scheduler:
+    pool-size: 6
+  async:
+    core-size: 8
+    max-size: 8
+    queue-capacity: 500
+
+# 目标群 wxid
+# target-group-wxid: "44567355795@chatroom"
+target-group-wxid: "49792312233@chatroom"
+
+qian-xun-pro:
+  url: "http://192.168.0.100:7777/qianxun/httpapi"
+
+message:
+  flush-interval: 5000
+
+order:
+  window-start: "19:30:00"
+  window-end: "21:35:00"
+  trigger-count: 50
+  trigger-wait: 500
+  reparse-enabled: true
+  reparse-schedule-delay: 5000
+  reparse-batch-size: 30
+  reparse-max-attempts: 3
+  reparse-cooldown-seconds: 90
+  reparse-require-window: true
+  fc-stop:
+    enabled: true
+    start: "21:16:00"
+    end: "21:35:00"
+    keyword: "福停"
+    cache-seconds: 30
+
+ai:
+  base-url: "${AI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions}"
+  api-key: "${DASHSCOPE_API_KEY:sk-378d80e7063f4bc6943177317e2efeea}"
+  model: "${AI_MODEL:glm-4.7}"
+  compare-model: "${AI_COMPARE_MODEL:glm-4.7}"
+  # 兼容回切:
+  # AI_BASE_URL=https://codex.ojbk.works/v1/chat/completions
+  # AI_MODEL=gpt-4o
+  # 当前默认解析模型为 glm-4.7
+  # base-url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+  # api-key: "sk-378d80e7063f4bc6943177317e2efeea"
+  # model: "qwen3.5-plus"
+  timeout: 120000
+  temperature: 0.1
+  max-tokens: 16000
+  parallel: 24
+  realtime-parallel: 24
+  reparse-parallel: 2
+  fast-path-simple-direct-enabled: true
+  save-call-log: false
+  thinking-mode: "off"
+  enable-thinking: false
+  thinking-budget: 1024
+  prompt:
+    path: "classpath:prompts/order-parse.prompt"
+    hot-reload: false
+    reload-interval: 60000
+
+detector:
+  keywords: "双色球,大乐透,3D,排列三,排列五,七乐彩,福彩,体彩"
+
+stats:
+  default-top-n: 20
+  max-top-n: 500
+
+sse:
+  url: "http://10.8.0.110:5678/stream"
+  enabled: false
+
+redis:
+  queue-name: "wechat_messages"
+
+api:
+  auth:
+    key: "${API_AUTH_KEY:}"

@@ -1,0 +1,107 @@
+{
+  "generated_at": "2026-03-27 01:29:58",
+  "base_url": "https://geekai.dev/api/v1/chat/completions",
+  "api_format": "openai",
+  "cases_file": "qian-xun-pro-wechat-http-demo-master\\benchmark\\data\\benchmark_cases_mixed20.json",
+  "prompt_file": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\src\\main\\resources\\prompts\\order-parse.prompt",
+  "models": [
+    "minimax-m2.7:free"
+  ],
+  "run_label": "geekai_probe_minimax",
+  "repeats": 1,
+  "prompt_placement": "system",
+  "thinking": "auto",
+  "thinking_budget": null,
+  "reasoning_effort": null,
+  "retries": 1,
+  "summary_by_model": {
+    "minimax-m2.7:free": {
+      "run_count": 1,
+      "successful_run_count": 1,
+      "failed_run_count": 0,
+      "exact_match_count": 1,
+      "avg_latency_ms": 6237.0,
+      "min_latency_ms": 6237,
+      "max_latency_ms": 6237
+    }
+  },
+  "runs": [
+    {
+      "model": "minimax-m2.7:free",
+      "case_id": "raw_130_tc_simple_single",
+      "repeat_index": 1,
+      "api_format": "openai",
+      "thinking": "auto",
+      "reasoning_effort": null,
+      "retries": 1,
+      "run_label": "geekai_probe_minimax",
+      "status": "ok",
+      "latency_ms": 6237,
+      "comparison": {
+        "expected_count": 1,
+        "actual_count": 1,
+        "matched_count": 1,
+        "missing_count": 0,
+        "extra_count": 0,
+        "accuracy_ratio": 1.0,
+        "exact_match": true,
+        "missing_items": [],
+        "extra_items": []
+      },
+      "usage": {
+        "prompt_tokens": 2475,
+        "completion_tokens": 280,
+        "total_tokens": 2755,
+        "completion_tokens_details": {
+          "reasoning_tokens": 205
+        }
+      },
+      "raw_response_text": "[\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"TC\", \"game\": \"P3\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"147\"], \"bet\": 5, \"multiple\": 1, \"amount\": 10.00}}\n]",
+      "raw_response_json": {
+        "id": "f2abf32a-760a-4106-b196-709780226699",
+        "created": 1774546193,
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "[\n  {\"index\": 1, \"valid\": true, \"status\": \"SUCCESS\", \"data\": {\"category\": \"TC\", \"game\": \"P3\", \"play\": \"直选\", \"zone\": \"MAIN\", \"numbers\": [\"147\"], \"bet\": 5, \"multiple\": 1, \"amount\": 10.00}}\n]",
+              "reasoning_content": "用户要求我解析消息 \"[1] 147体彩五单\"\n\n让我分析这条消息：\n1. 这是第1条消息\n2. 包含数字\"147\"，这是三位数\n3. 包含\"体彩\"，根据映射应该是 TC + P3\n4. 包含\"五单\"，表示5注\n5. 没有明确玩法关键词，默认直选\n\n所以这是一条有效的报单：\n- category: TC\n- game: P3\n- play: 直选\n- zone: MAIN\n- numbers: [\"147\"]\n- bet: 5\n- multiple: 1\n- amount: 5 × 2 = 10.00元\n\n输出JSON：\n```json\n[\n  {\"index\":1,\"valid\":true,\"status\":\"SUCCESS\",\"data\":{\"category\":\"TC\",\"game\":\"P3\",\"play\":\"直选\",\"zone\":\"MAIN\",\"numbers\":[\"147\"],\"bet\":5,\"multiple\":1,\"amount\":10.00}}\n]\n```",
+              "name": "MiniMax AI"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "model": "minimax-m2.7:free",
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2475,
+          "completion_tokens": 280,
+          "total_tokens": 2755,
+          "completion_tokens_details": {
+            "reasoning_tokens": 205
+          }
+        }
+      },
+      "normalized_output": [
+        {
+          "index": 1,
+          "valid": true,
+          "status": "SUCCESS",
+          "data": {
+            "category": "TC",
+            "game": "P3",
+            "play": "直选",
+            "zone": "MAIN",
+            "numbers": [
+              "147"
+            ],
+            "bet": 5,
+            "multiple": 1,
+            "amount": "10.00"
+          }
+        }
+      ]
+    }
+  ]
+}

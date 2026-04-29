@@ -1,0 +1,131 @@
+{
+  "generated_at": "2026-03-26 23:18:09",
+  "source_report": "E:\\code\\福彩微信消息接收项目\\qian-xun-pro-wechat-http-demo-master\\benchmark\\reports\\zwenooo_gpt54_reasoning_medium.json",
+  "model": "gpt-5.4",
+  "reasoning_effort": "medium",
+  "successful_case_count": 20,
+  "failed_case_count": 0,
+  "strict": {
+    "exact_match_count": 15,
+    "exact_match_ratio": 0.75,
+    "total_expected": 71,
+    "total_matched": 61,
+    "item_level_recall": 0.8592,
+    "total_missing": 10,
+    "total_extra": 25
+  },
+  "relaxed": {
+    "exact_match_count": 17,
+    "exact_match_ratio": 0.85,
+    "total_expected": 71,
+    "total_matched": 63,
+    "item_level_recall": 0.8873,
+    "total_missing": 8,
+    "total_extra": 23
+  },
+  "avg_latency_ms": 11014.95,
+  "min_latency_ms": 2747,
+  "max_latency_ms": 27611,
+  "avg_prompt_tokens": 2600.95,
+  "avg_completion_tokens": 420.95,
+  "avg_total_tokens": 3021.9,
+  "avg_reasoning_tokens": null,
+  "failed_cases": [],
+  "non_exact_cases": [
+    {
+      "case_id": "raw_142_tc_multi_bundle",
+      "status": "ok",
+      "latency_ms": 14628,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 5,
+        "missing": 5,
+        "extra": 5
+      },
+      "relaxed": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 5,
+        "missing": 5,
+        "extra": 5
+      }
+    },
+    {
+      "case_id": "raw_18_mixed_success_and_skip",
+      "status": "ok",
+      "latency_ms": 13574,
+      "strict": {
+        "exact_match": false,
+        "matched": 6,
+        "expected": 8,
+        "missing": 2,
+        "extra": 0
+      },
+      "relaxed": {
+        "exact_match": false,
+        "matched": 6,
+        "expected": 8,
+        "missing": 2,
+        "extra": 0
+      }
+    },
+    {
+      "case_id": "raw_153_skip_chat_result",
+      "status": "ok",
+      "latency_ms": 2747,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 1
+      },
+      "relaxed": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "missing": 0,
+        "extra": 0
+      }
+    },
+    {
+      "case_id": "raw_146_skip_group_mix",
+      "status": "ok",
+      "latency_ms": 22596,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 18
+      },
+      "relaxed": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 18
+      }
+    },
+    {
+      "case_id": "raw_122_skip_dudan",
+      "status": "ok",
+      "latency_ms": 6892,
+      "strict": {
+        "exact_match": false,
+        "matched": 0,
+        "expected": 1,
+        "missing": 1,
+        "extra": 1
+      },
+      "relaxed": {
+        "exact_match": true,
+        "matched": 1,
+        "expected": 1,
+        "missing": 0,
+        "extra": 0
+      }
+    }
+  ]
+}
