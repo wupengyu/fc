@@ -9,13 +9,15 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 回调事件接收
+ * Legacy HTTP callback receiver. Disabled by default because messages are now consumed from Redis.
  */
 @RestController
 @RequestMapping("")
+@ConditionalOnProperty(name = "wechat.callback.enabled", havingValue = "true")
 @Slf4j
 public class CallBackController {
     private EventHandleService getService(String event) {
@@ -29,7 +31,7 @@ public class CallBackController {
 
     @PostMapping("/callback")
     public Result page(@RequestBody String jsonStr) {
-        log.info("接收到回调事件：{}", jsonStr);
+        log.info("legacy callback event received: {}", jsonStr);
         JSONObject req = JSONObject.parseObject(jsonStr);
         BaseEventVo data = req.getObject("data", BaseEventVo.class);
         JSONObject jsonObject = req.getJSONObject("data").getJSONObject("data");

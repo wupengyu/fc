@@ -1,6 +1,6 @@
 spring:
   application:
-    name: qian-xun-pro-wechat-http-demo
+    name: wechat-message-parser
   web:
     resources:
       cache:
@@ -60,9 +60,6 @@ task:
 # 目标群 wxid
 # target-group-wxid: "44567355795@chatroom"
 target-group-wxid: "49792312233@chatroom"
-
-qian-xun-pro:
-  url: "http://192.168.0.100:7777/qianxun/httpapi"
 
 message:
   flush-interval: 5000
@@ -127,6 +124,14 @@ sse:
 
 redis:
   queue-name: "wechat_messages"
+
+wechat:
+  callback:
+    enabled: false
+
+qian-xun-pro:
+  enabled: false
+  url: ""
 
 api:
   auth:

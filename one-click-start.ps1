@@ -216,7 +216,7 @@ try {
     Write-Output "[OK] Service is running."
     Write-Output "[OK] PID      : $($serviceProcess.Id)"
     Write-Output "[OK] URL      : http://127.0.0.1:$Port$ContextPath/api/runtime-status"
-    Write-Output "[OK] Callback : http://127.0.0.1:$Port$ContextPath/callback"
+    Write-Output "[OK] Source   : Redis queue wechat_messages"
     Write-Output "[OK] Logs     : $outLog"
     Write-Output "[OK] Status   : raw=$($health.data.rawOrderCount), success=$($health.data.parseSuccessCount), failed=$($health.data.parseFailedCount), buffer=$($health.data.orderBuffer)"
     exit 0

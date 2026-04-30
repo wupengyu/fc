@@ -3,7 +3,7 @@ chcp 65001 >nul
 setlocal
 
 echo ==========================================
-echo   qian-xun-pro-wechat-http-demo 启动脚本
+echo   wechat-message-parser 启动脚本
 echo ==========================================
 echo.
 
@@ -34,7 +34,7 @@ echo [配置信息]
 echo JAVA_HOME: %JAVA_HOME%
 echo MAVEN_HOME: %MAVEN_HOME%
 echo 端口: 8989
-echo 回调地址: http://127.0.0.1:8989/wechat/callback
+echo 消息入口: Redis 队列 wechat_messages
 echo.
 echo [实时日志输出]
 echo ==========================================

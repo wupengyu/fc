@@ -37,7 +37,7 @@ echo APP_HOME  : %APP_HOME%
 echo JAVA_HOME : %JAVA_HOME%
 echo JAR       : %JAR_PATH%
 echo URL       : http://127.0.0.1:8989/wechat/stats.html
-echo CALLBACK  : http://127.0.0.1:8989/wechat/callback
+echo SOURCE    : Redis queue wechat_messages
 echo.
 
 pushd "%APP_HOME%"

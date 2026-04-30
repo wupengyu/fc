@@ -6,17 +6,19 @@ import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
- * 千寻微信框架Pro 接口请求工具类
+ * Legacy HTTP API client. Disabled by default with the old callback integration.
  */
 @Component
+@ConditionalOnProperty(name = "qian-xun-pro.enabled", havingValue = "true")
 @Slf4j
 public class QianXunApi {
     public static String url;
 
-    @Value("${qian-xun-pro.url}")
+    @Value("${qian-xun-pro.url:}")
     public void setUrl(String url) {
         QianXunApi.url = url;
     }
