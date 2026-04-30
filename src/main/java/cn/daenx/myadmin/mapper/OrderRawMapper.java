@@ -11,6 +11,9 @@ import java.util.List;
 @Mapper
 public interface OrderRawMapper extends BaseMapper<OrderRaw> {
 
+    @Select("SELECT * FROM t_order_raw WHERE id = #{rawId} FOR UPDATE")
+    OrderRaw selectByIdForUpdate(@Param("rawId") Long rawId);
+
     @Select("<script>" +
             "SELECT COUNT(*) " +
             "FROM t_order_raw " +

@@ -51,6 +51,8 @@ public class NormalizePersistService {
     @Autowired
     private AiCallLogMapper aiCallLogMapper;
     @Autowired
+    private OrderRawMapper orderRawMapper;
+    @Autowired
     private TransactionTemplate transactionTemplate;
 
     @Transactional
@@ -78,6 +80,7 @@ public class NormalizePersistService {
      */
     @Transactional
     public void persistSingle(OrderRaw raw, List<AiParseResult> items) {
+        raw = lockRawForPersist(raw);
         if (items.isEmpty()) {
             log.warn("AI未返回结果: rawId={}", raw.getId());
             saveParseBatch(raw, OrderConstant.PARSE_STATUS_FAILED, "AI未返回结果", null);
@@ -113,8 +116,9 @@ public class NormalizePersistService {
         String issueKey = raw.getReceivedAt() != null
                 ? raw.getReceivedAt().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
                 : LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        int persistedIndex = 1;
         for (AiParseResult result : items) {
-            saveAiParseResultRecord(raw, batch, result, issueKey);
+            saveAiParseResultRecord(raw, batch, result, issueKey, persistedIndex++);
         }
 
         if (!successItems.isEmpty()) {
@@ -273,6 +277,14 @@ public class NormalizePersistService {
         return value != null && value > 0 ? value : fallback;
     }
 
+    private OrderRaw lockRawForPersist(OrderRaw raw) {
+        if (raw == null || raw.getId() == null) {
+            return raw;
+        }
+        OrderRaw lockedRaw = orderRawMapper.selectByIdForUpdate(raw.getId());
+        return lockedRaw != null ? lockedRaw : raw;
+    }
+
     private OrderParseBatch saveParseBatch(OrderRaw raw, int status, String msg, String rawAiResponse) {
         OrderParseBatch batch = new OrderParseBatch();
         batch.setRawId(raw.getId());
@@ -301,11 +313,11 @@ public class NormalizePersistService {
     /**
      * 保存AI解析结果记录到 t_ai_parse_result
      */
-    private void saveAiParseResultRecord(OrderRaw raw, OrderParseBatch batch, AiParseResult result, String issueKey) {
+    private void saveAiParseResultRecord(OrderRaw raw, OrderParseBatch batch, AiParseResult result, String issueKey, int itemIndex) {
         AiParseResultRecord record = new AiParseResultRecord();
         record.setRawId(raw.getId());
         record.setBatchId(batch.getId());
-        record.setItemIndex(result.getIndex());
+        record.setItemIndex(itemIndex);
         record.setValid(result.isSuccess() ? 1 : 0);
         record.setStatus(result.getStatus());
         record.setReason(result.getErrorOrReason());
