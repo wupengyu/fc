@@ -42,7 +42,9 @@ public class OrderIngressService {
                 fingerprint = generateFingerprint(msg);
             }
 
-            String contentKey = buildContentKey(msg);
+            String contentKey = fingerprint != null && !fingerprint.isBlank()
+                    ? "FP|" + fingerprint
+                    : buildContentKey(msg);
             if (contentKey != null && !batchContentKeys.add(contentKey)) {
                 log.info("duplicate order skipped within batch, senderWxid={}, receivedAt={}",
                         msg.getSenderWxid(), msg.getReceivedAt());
@@ -54,6 +56,19 @@ public class OrderIngressService {
                 pruneRecentContentKeys(now);
                 if (contentKey != null && recentContentKeys.containsKey(contentKey)) {
                     log.info("duplicate order skipped by recent content cache, senderWxid={}, receivedAt={}",
+                            msg.getSenderWxid(), msg.getReceivedAt());
+                    continue;
+                }
+
+                if (isFingerprintDuplicate(fingerprint)) {
+                    rememberRecentContentKey(contentKey, now);
+                    log.info("duplicate order skipped by business fingerprint, fingerprint={}", fingerprint);
+                    continue;
+                }
+
+                if (isSameDayWechatContentDuplicate(msg)) {
+                    rememberRecentContentKey(contentKey, now);
+                    log.info("duplicate order skipped by same-day wechat content, senderWxid={}, receivedAt={}",
                             msg.getSenderWxid(), msg.getReceivedAt());
                     continue;
                 }
@@ -86,6 +101,61 @@ public class OrderIngressService {
             }
         }
         return result;
+    }
+
+    private boolean isFingerprintDuplicate(String fingerprint) {
+        if (fingerprint == null || fingerprint.isBlank()) {
+            return false;
+        }
+        LambdaQueryWrapper<OrderRaw> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrderRaw::getFingerprint, fingerprint);
+        wrapper.last("LIMIT 1");
+        return orderRawMapper.selectCount(wrapper) > 0;
+    }
+
+    private boolean isSameDayWechatContentDuplicate(OrderMessage msg) {
+        if (msg.getRawText() == null || msg.getReceivedAt() == null) {
+            return false;
+        }
+        if (!OrderConstant.SOURCE_WECHAT.equals(resolveSource(msg))) {
+            return false;
+        }
+        if (isSameDayWechatContentDuplicate(msg, true)) {
+            return true;
+        }
+        return hasUnstableIdentity(msg.getSenderWxid()) && isSameDayWechatContentDuplicate(msg, false);
+    }
+
+    private boolean isSameDayWechatContentDuplicate(OrderMessage msg, boolean includeSender) {
+        LocalDateTime from = msg.getReceivedAt().toLocalDate().atStartOfDay();
+        LocalDateTime to = from.plusDays(1);
+        LambdaQueryWrapper<OrderRaw> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrderRaw::getSource, OrderConstant.SOURCE_WECHAT);
+        eqOrIsNull(wrapper, OrderRaw::getFromWxid, msg.getFromWxid());
+        if (includeSender) {
+            eqOrIsNull(wrapper, OrderRaw::getSenderWxid, msg.getSenderWxid());
+        }
+        wrapper.eq(OrderRaw::getRawText, msg.getRawText());
+        wrapper.ge(OrderRaw::getReceivedAt, from);
+        wrapper.lt(OrderRaw::getReceivedAt, to);
+        wrapper.last("LIMIT 1");
+        return orderRawMapper.selectCount(wrapper) > 0;
+    }
+
+    private boolean hasUnstableIdentity(String value) {
+        if (value == null || value.isBlank()) {
+            return false;
+        }
+        for (int i = 0; i < value.length(); ) {
+            int codePoint = value.codePointAt(i);
+            i += Character.charCount(codePoint);
+            if (Character.isSupplementaryCodePoint(codePoint)
+                    || Character.getType(codePoint) == Character.NON_SPACING_MARK
+                    || Character.isISOControl(codePoint)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isContentDuplicate(OrderMessage msg) {

@@ -15,7 +15,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Slf4j
 @Service
@@ -154,8 +156,8 @@ public class RedisClientService {
         if (hasText(msg.getServerId())) {
             return "REDIS|SERVER|" + safe(msg.getUsername()) + "|" + msg.getServerId().trim();
         }
-        return "REDIS|FALLBACK|" + safe(msg.getUsername()) + "|" + safe(msg.getSender()) + "|" +
-                safe(msg.getTimestamp()) + "|" + safe(msg.getContent());
+        return "REDIS|FALLBACK|" + safe(msg.getUsername()) + "|" + normalizeIdentity(msg.getSender()) + "|" +
+                normalizeToDate(msg.getTimestamp()) + "|" + normalizeContent(msg.getContent());
     }
 
     private boolean hasText(String value) {
@@ -164,6 +166,47 @@ public class RedisClientService {
 
     private String safe(Object value) {
         return value == null ? "" : String.valueOf(value).trim();
+    }
+
+    private String normalizeToDate(Long timestamp) {
+        if (timestamp == null) {
+            return "";
+        }
+        long ts = timestamp;
+        if (String.valueOf(Math.abs(ts)).length() <= 10) {
+            ts = ts * 1000L;
+        }
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(ts), ZoneId.systemDefault())
+                .toLocalDate()
+                .toString();
+    }
+
+    private String normalizeContent(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace("\r\n", "\n")
+                .replace('\r', '\n')
+                .trim();
+    }
+
+    private String normalizeIdentity(String value) {
+        String normalized = normalizeContent(value);
+        if (normalized.isEmpty()) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < normalized.length(); ) {
+            int codePoint = normalized.codePointAt(i);
+            i += Character.charCount(codePoint);
+            if (Character.isSupplementaryCodePoint(codePoint)
+                    || Character.getType(codePoint) == Character.NON_SPACING_MARK
+                    || Character.isISOControl(codePoint)) {
+                continue;
+            }
+            builder.appendCodePoint(codePoint);
+        }
+        return builder.toString().trim();
     }
 
     private String preview(String value, int maxLength) {
