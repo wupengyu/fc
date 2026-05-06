@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Collections;
 
 /**
  * 报单刷写任务
@@ -43,6 +44,8 @@ public class OrderFlushTask {
 
     @Scheduled(fixedDelay = 1000)
     public void flush() {
+        List<OrderMessage> retryMessages = Collections.emptyList();
+        boolean rawPersistAttemptCompleted = false;
         try {
             OrderBufferService.DrainResult drainResult = orderBufferService.drainIfReady(triggerCount, triggerWait);
             if (!drainResult.ready()) {
@@ -64,8 +67,10 @@ public class OrderFlushTask {
             if (inWindowMessages.isEmpty()) {
                 return;
             }
+            retryMessages = inWindowMessages;
 
             List<OrderRaw> rawList = orderIngressService.batchIngest(inWindowMessages);
+            rawPersistAttemptCompleted = true;
             if (rawList.isEmpty()) {
                 log.info("所有消息均为重复，跳过");
                 return;
@@ -74,6 +79,10 @@ public class OrderFlushTask {
             asyncParseService.parseAndPersist(rawList);
             log.info("已提交异步AI解析, 条数={}", rawList.size());
         } catch (Exception e) {
+            if (!rawPersistAttemptCompleted && !retryMessages.isEmpty()) {
+                orderBufferService.restoreMessages(retryMessages);
+                log.warn("报单刷写失败，已将待入库消息放回缓冲区重试: count={}", retryMessages.size());
+            }
             log.error("报单缓冲区刷写异常，任务将在下次调度继续执行", e);
         }
     }

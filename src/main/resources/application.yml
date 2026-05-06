@@ -71,11 +71,14 @@ order:
   trigger-wait: 500
   persist-max-attempts: 8
   reparse-enabled: true
+  auto-reparse-enabled: false
   reparse-schedule-delay: 5000
   reparse-batch-size: 30
   reparse-max-attempts: 3
   reparse-cooldown-seconds: 90
   reparse-require-window: true
+  fast-reparse-allow-during-window: false
+  cross-source-mirror-check-enabled: false
   fc-stop:
     enabled: true
     start: "21:16:00"
@@ -95,7 +98,9 @@ ai:
   # base-url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
   # api-key: "sk-378d80e7063f4bc6943177317e2efeea"
   # model: "qwen3.5-plus"
-  timeout: 120000
+  timeout: 180000
+  retry-attempts: 1
+  retry-backoff-ms: 1500
   temperature: 0.1
   max-tokens: 16000
   parallel: 16
@@ -124,6 +129,10 @@ sse:
 
 redis:
   queue-name: "wechat_messages"
+  processing-queue-name: "wechat_messages:processing"
+  consumer-threads: 4
+  requeue-backoff-ms: 1000
+  recover-processing-on-startup: true
 
 wechat:
   callback:

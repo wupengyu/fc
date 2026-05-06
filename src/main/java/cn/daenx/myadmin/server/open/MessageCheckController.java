@@ -1,11 +1,10 @@
 package cn.daenx.myadmin.server.open;
 
 import cn.daenx.myadmin.mapper.MessageMapper;
+import cn.daenx.myadmin.modules.service.RedisClientService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,10 +23,7 @@ public class MessageCheckController {
     private MessageMapper messageMapper;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Value("${redis.queue-name:wechat_messages}")
-    private String queueName;
+    private RedisClientService redisClientService;
 
     @GetMapping("/messages")
     public Map<String, Object> checkMessages() {
@@ -41,17 +37,22 @@ public class MessageCheckController {
         qw.ge("received_at", today730PM);
         long dbCount = messageMapper.selectCount(qw);
 
-        Long redisCount = redisTemplate.opsForList().size(queueName);
-        if (redisCount == null) redisCount = 0L;
+        long redisCount = redisClientService.queueSize();
+        long redisProcessingCount = redisClientService.processingQueueSize();
+        long pendingRedisCount = redisCount + redisProcessingCount;
 
         Map<String, Object> result = new HashMap<>();
         result.put("timeRange", today730PM.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + " 至今");
         result.put("dbCount", dbCount);
         result.put("redisQueueCount", redisCount);
-        result.put("total", dbCount + redisCount);
-        result.put("status", redisCount == 0 ? "所有消息已入库" : "Redis队列中还有 " + redisCount + " 条待处理");
+        result.put("redisProcessingQueueCount", redisProcessingCount);
+        result.put("total", dbCount + pendingRedisCount);
+        result.put("status", pendingRedisCount == 0
+                ? "所有消息已入库"
+                : "Redis队列中还有 " + redisCount + " 条待处理，processing 中 " + redisProcessingCount + " 条");
 
-        log.info("消息检查结果: DB={}, Redis={}, Total={}", dbCount, redisCount, dbCount + redisCount);
+        log.info("消息检查结果: DB={}, Redis={}, Processing={}, Total={}",
+                dbCount, redisCount, redisProcessingCount, dbCount + pendingRedisCount);
         return result;
     }
 }

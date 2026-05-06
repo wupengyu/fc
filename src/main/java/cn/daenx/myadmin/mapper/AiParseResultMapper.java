@@ -3,6 +3,7 @@ package cn.daenx.myadmin.mapper;
 import cn.daenx.myadmin.entity.AiParseResultRecord;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -12,6 +13,18 @@ import java.util.List;
 
 @Mapper
 public interface AiParseResultMapper extends BaseMapper<AiParseResultRecord> {
+
+    @Insert("<script>" +
+            "INSERT INTO t_ai_parse_result " +
+            "(raw_id, batch_id, item_index, valid, status, reason, category, game, play, zone, " +
+            "numbers, bet, multiple, amount, issue_key, created_at) VALUES " +
+            "<foreach collection='records' item='record' separator=','>" +
+            "(#{record.rawId}, #{record.batchId}, #{record.itemIndex}, #{record.valid}, #{record.status}, " +
+            "#{record.reason}, #{record.category}, #{record.game}, #{record.play}, #{record.zone}, " +
+            "#{record.numbers}, #{record.bet}, #{record.multiple}, #{record.amount}, #{record.issueKey}, NOW(3))" +
+            "</foreach>" +
+            "</script>")
+    int insertBatchRecords(@Param("records") List<AiParseResultRecord> records);
 
     @Delete("DELETE FROM t_ai_parse_result WHERE issue_key = #{issueKey}")
     int deleteByIssueKey(@Param("issueKey") String issueKey);

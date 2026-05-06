@@ -3,6 +3,7 @@ package cn.daenx.myadmin.modules.task;
 import cn.daenx.myadmin.modules.service.OrderReparseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +14,14 @@ public class OrderReparseTask {
     @Autowired
     private OrderReparseService orderReparseService;
 
+    @Value("${order.auto-reparse-enabled:false}")
+    private boolean autoReparseEnabled;
+
     @Scheduled(fixedDelayString = "${order.reparse-schedule-delay:60000}")
     public void retryFailedOrders() {
+        if (!autoReparseEnabled) {
+            return;
+        }
         OrderReparseService.RetrySummary summary = orderReparseService.retryFailedOrdersToday();
         if (summary.executed()) {
             log.info("自动补偿重跑完成: 扫描={}, 重跑={}, 成功={}, 跳过={}, 失败={}",

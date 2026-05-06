@@ -21,13 +21,16 @@ import cn.daenx.myadmin.modules.service.NormalizePersistService;
 import cn.daenx.myadmin.modules.service.OrderBufferService;
 import cn.daenx.myadmin.modules.service.OrderReparseService;
 import cn.daenx.myadmin.modules.service.OrderWindowService;
+import cn.daenx.myadmin.modules.service.RedisClientService;
 import cn.daenx.myadmin.modules.service.StatsService;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +48,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -88,6 +92,13 @@ public class StatsController {
     private AiParseService aiParseService;
 
     @Autowired
+    private RedisClientService redisClientService;
+
+    @Autowired
+    @Qualifier("parseTaskExecutor")
+    private ThreadPoolTaskExecutor parseTaskExecutor;
+
+    @Autowired
     private StringRedisTemplate redisTemplate;
 
     @Value("${redis.queue-name:wechat_messages}")
@@ -102,17 +113,19 @@ public class StatsController {
         LambdaQueryWrapper<Message> qw = new LambdaQueryWrapper<>();
         qw.ge(Message::getReceivedAt, today730PM);
         long dbCount = messageMapper.selectCount(qw);
-        Long redisCount = redisTemplate.opsForList().size(queueName);
-        if (redisCount == null) {
-            redisCount = 0L;
-        }
+        long redisCount = redisClientService.queueSize();
+        long redisProcessingCount = redisClientService.processingQueueSize();
+        long pendingRedisCount = redisCount + redisProcessingCount;
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("timeRange", today730PM + " 至今");
         data.put("dbCount", dbCount);
         data.put("redisQueueCount", redisCount);
-        data.put("total", dbCount + redisCount);
-        data.put("status", redisCount == 0 ? "所有消息已入库" : "Redis 队列还有 " + redisCount + " 条待处理");
+        data.put("redisProcessingQueueCount", redisProcessingCount);
+        data.put("total", dbCount + pendingRedisCount);
+        data.put("status", pendingRedisCount == 0
+                ? "所有消息已入库"
+                : "Redis 队列还有 " + redisCount + " 条待处理，processing 中 " + redisProcessingCount + " 条");
         return Result.ok(data);
     }
 
@@ -221,9 +234,14 @@ public class StatsController {
         data.put("serverTime", LocalDateTime.now().toString());
         data.put("reparseWindow", orderReparseService.getRuntimeWindowText());
         data.put("reparseAllowedNow", orderReparseService.canRunReparseNow());
+        data.put("fastReparseAllowedNow", orderReparseService.canRunFastReparseNow());
         data.put("messageRetryBuffer", messageBufferService.pendingCount());
         data.put("orderBuffer", orderBufferService.pendingCount());
+        data.put("redis", redisClientService.runtimeStatus());
+        data.put("asyncParseExecutor", asyncParseExecutorStatus());
+        data.put("aiParseExecutor", aiParseService.runtimeStatus());
         data.put("rawOrderCount", countRawOrders(start, end));
+        data.put("rawWithoutAnyBatchCount", orderRawMapper.countWithoutAnyBatchByReceivedAt(start, end));
         data.put("parseSuccessCount", countParseStatus(start, end, OrderConstant.PARSE_STATUS_SUCCESS));
         data.put("parseFailedCount", countParseStatus(start, end, OrderConstant.PARSE_STATUS_FAILED));
         data.put("parseSkippedCount", countParseStatus(start, end, OrderConstant.PARSE_STATUS_SKIPPED));
@@ -482,6 +500,23 @@ public class StatsController {
 
     private long countParseStatus(LocalDateTime start, LocalDateTime end, int parseStatus) {
         return orderParseBatchMapper.countLatestStatusByRawReceivedAt(start, end, parseStatus);
+    }
+
+    private Map<String, Object> asyncParseExecutorStatus() {
+        Map<String, Object> data = new LinkedHashMap<>();
+        if (parseTaskExecutor == null || parseTaskExecutor.getThreadPoolExecutor() == null) {
+            data.put("initialized", false);
+            return data;
+        }
+        ThreadPoolExecutor executor = parseTaskExecutor.getThreadPoolExecutor();
+        data.put("initialized", true);
+        data.put("poolSize", executor.getPoolSize());
+        data.put("corePoolSize", executor.getCorePoolSize());
+        data.put("activeCount", executor.getActiveCount());
+        data.put("queueSize", executor.getQueue().size());
+        data.put("completedTaskCount", executor.getCompletedTaskCount());
+        data.put("taskCount", executor.getTaskCount());
+        return data;
     }
 
     private Map<String, Object> buildModelPreview(AiParseService.ModelPreview preview) {

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -13,6 +14,13 @@ public interface OrderRawMapper extends BaseMapper<OrderRaw> {
 
     @Select("SELECT * FROM t_order_raw WHERE id = #{rawId} FOR UPDATE")
     OrderRaw selectByIdForUpdate(@Param("rawId") Long rawId);
+
+    @Select("SELECT COUNT(*) " +
+            "FROM t_order_raw r " +
+            "LEFT JOIN t_order_parse_batch b ON b.raw_id = r.id " +
+            "WHERE r.received_at >= #{start} AND r.received_at < #{end} AND b.id IS NULL")
+    long countWithoutAnyBatchByReceivedAt(@Param("start") LocalDateTime start,
+                                          @Param("end") LocalDateTime end);
 
     @Select("<script>" +
             "SELECT COUNT(*) " +

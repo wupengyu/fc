@@ -25,6 +25,21 @@ public class OrderBufferService {
         }
     }
 
+    public void restoreMessages(List<OrderMessage> messages) {
+        if (messages == null || messages.isEmpty()) {
+            return;
+        }
+        synchronized (swapLock) {
+            List<OrderMessage> restored = new ArrayList<>(messages.size() + buffer.size());
+            restored.addAll(messages);
+            restored.addAll(buffer);
+            buffer = restored;
+            if (firstMessageTime == 0) {
+                firstMessageTime = System.currentTimeMillis();
+            }
+        }
+    }
+
     public DrainResult drainIfReady(int triggerCount, long triggerWait) {
         synchronized (swapLock) {
             int size = buffer.size();

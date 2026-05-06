@@ -36,7 +36,7 @@ public class ApiAuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        if (isSafeReadOnlyRequest(request)) {
+        if (isSafeReadOnlyRequest(request) || isLocalRequest(request)) {
             return true;
         }
 
@@ -56,6 +56,13 @@ public class ApiAuthInterceptor implements HandlerInterceptor {
             path = path.substring(contextPath.length());
         }
         return READ_ONLY_WHITELIST.contains(path);
+    }
+
+    private boolean isLocalRequest(HttpServletRequest request) {
+        String remoteAddr = request.getRemoteAddr();
+        return "127.0.0.1".equals(remoteAddr)
+                || "0:0:0:0:0:0:0:1".equals(remoteAddr)
+                || "::1".equals(remoteAddr);
     }
 
     private String normalize(String value) {

@@ -21,10 +21,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +36,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class NormalizePersistService {
+
+    private static final int BATCH_INSERT_SIZE = 500;
 
     @Value("${order.persist-max-attempts:4}")
     private int persistMaxAttempts;
@@ -98,7 +102,7 @@ public class NormalizePersistService {
 
         OrderParseBatch batch;
         if (!successItems.isEmpty()) {
-            if (hasExistingParseData(raw)) {
+            if (hasExistingPersistData(raw)) {
                 cleanSingleRaw(raw);
             }
             batch = saveParseBatch(raw, OrderConstant.PARSE_STATUS_SUCCESS, null, rawAiResponse);
@@ -117,9 +121,11 @@ public class NormalizePersistService {
                 ? raw.getReceivedAt().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
                 : LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
         int persistedIndex = 1;
+        List<AiParseResultRecord> aiRecords = new ArrayList<>(items.size());
         for (AiParseResult result : items) {
-            saveAiParseResultRecord(raw, batch, result, issueKey, persistedIndex++);
+            aiRecords.add(buildAiParseResultRecord(raw, batch, result, issueKey, persistedIndex++));
         }
+        saveAiParseResultRecords(aiRecords);
 
         if (!successItems.isEmpty()) {
             persistValidOrders(raw, successItems, batch);
@@ -153,7 +159,9 @@ public class NormalizePersistService {
      */
     private void persistValidOrders(OrderRaw raw, List<AiParseResult> successItems, OrderParseBatch batch) {
         int itemNo = 1;
-        Map<StatKey, StatDelta> statDeltaMap = new LinkedHashMap<>();
+        Set<ItemContributionKey> seenContributions = new HashSet<>();
+        int skippedDuplicateNumbers = 0;
+        List<PendingValidOrder> pendingOrders = new ArrayList<>();
         for (AiParseResult result : successItems) {
             AiParseResult.ParsedData data = result.getData();
             if (data == null) {
@@ -169,47 +177,105 @@ public class NormalizePersistService {
                 continue;
             }
 
-            // 保存订单项
-            OrderItem item = saveOrderItemFromParsedData(raw, batch, data, itemNo);
-
-            // 计算每个号码分配的金额
-            BigDecimal allocPerNumber = BigDecimal.ZERO;
-            if (data.getAmount() != null && data.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-                allocPerNumber = data.getAmount().divide(BigDecimal.valueOf(numbers.size()), 2, RoundingMode.HALF_UP);
+            List<String> cleanedNumbers = numbers.stream()
+                    .filter(Objects::nonNull)
+                    .toList();
+            if (cleanedNumbers.isEmpty()) {
+                log.warn("解析成功但有效号码为空: rawId={}, itemNo={}", raw.getId(), itemNo);
+                itemNo++;
+                continue;
             }
 
+            String playType = data.getPlay() != null ? data.getPlay() : "直选";
             String zone = data.getZone() != null ? data.getZone() : OrderConstant.ZONE_MAIN;
-            List<String> statNumbers = numbers.stream()
-                    .filter(Objects::nonNull)
+            int betCount = resolvePositiveInt(data.getBet(), 1);
+            BigDecimal allocPerNumber = BigDecimal.ZERO;
+            if (data.getAmount() != null && data.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                allocPerNumber = data.getAmount().divide(BigDecimal.valueOf(cleanedNumbers.size()), 2, RoundingMode.HALF_UP);
+            }
+
+            List<String> effectiveNumbers = new ArrayList<>(cleanedNumbers.size());
+            for (String number : cleanedNumbers) {
+                ItemContributionKey contributionKey = new ItemContributionKey(
+                        data.getCategory(),
+                        data.getGame(),
+                        playType,
+                        zone,
+                        number,
+                        betCount
+                );
+                if (!seenContributions.add(contributionKey)) {
+                    skippedDuplicateNumbers++;
+                    continue;
+                }
+                effectiveNumbers.add(number);
+            }
+
+            if (effectiveNumbers.isEmpty()) {
+                itemNo++;
+                continue;
+            }
+
+            BigDecimal effectiveAmount = allocPerNumber.multiply(BigDecimal.valueOf(effectiveNumbers.size()));
+
+            List<String> statNumbers = effectiveNumbers.stream()
                     .sorted(Comparator.naturalOrder())
                     .toList();
 
-            // 保存号码详情
-            for (String number : numbers) {
-                saveOrderItemNumber(item.getId(), zone, number, allocPerNumber);
-            }
-
-            // Gate check + stats upsert
-            int betCount = resolvePositiveInt(data.getBet(), 1);
-            int updated = orderItemMapper.tryApplyStat(item.getId());
-            if (updated > 0) {
-                for (String number : statNumbers) {
-                    StatKey key = new StatKey(
-                            item.getLotteryCategory(),
-                            item.getGameType(),
-                            item.getPlayType(),
-                            item.getIssueKey(),
-                            zone,
-                            number
-                    );
-                    statDeltaMap.computeIfAbsent(key, ignored -> new StatDelta())
-                            .merge(betCount, allocPerNumber);
-                }
-            }
-
+            OrderItem item = buildOrderItemFromParsedData(raw, batch, data, itemNo, effectiveAmount);
+            pendingOrders.add(new PendingValidOrder(item, effectiveNumbers, statNumbers, zone, allocPerNumber));
             itemNo++;
         }
 
+        persistPendingOrders(raw, pendingOrders);
+
+        if (skippedDuplicateNumbers > 0) {
+            log.info("duplicate parsed numbers skipped before stats, rawId={}, skipped={}",
+                    raw.getId(), skippedDuplicateNumbers);
+        }
+    }
+
+    private void persistPendingOrders(OrderRaw raw, List<PendingValidOrder> pendingOrders) {
+        if (pendingOrders.isEmpty()) {
+            return;
+        }
+
+        List<OrderItem> orderItems = pendingOrders.stream()
+                .map(PendingValidOrder::item)
+                .toList();
+        saveOrderItems(orderItems);
+
+        List<OrderItemNumber> allItemNumbers = new ArrayList<>();
+        Map<StatKey, StatDelta> statDeltaMap = new LinkedHashMap<>();
+        for (PendingValidOrder pendingOrder : pendingOrders) {
+            OrderItem item = pendingOrder.item();
+            if (item.getId() == null) {
+                throw new IllegalStateException("批量保存订单项后未返回ID: rawId=" + raw.getId()
+                        + ", itemNo=" + item.getItemNo());
+            }
+
+            for (String number : pendingOrder.effectiveNumbers()) {
+                allItemNumbers.add(buildOrderItemNumber(item.getId(),
+                        pendingOrder.zone(),
+                        number,
+                        pendingOrder.allocPerNumber()));
+            }
+
+            for (String number : pendingOrder.statNumbers()) {
+                StatKey key = new StatKey(
+                        item.getLotteryCategory(),
+                        item.getGameType(),
+                        item.getPlayType(),
+                        item.getIssueKey(),
+                        pendingOrder.zone(),
+                        number
+                );
+                statDeltaMap.computeIfAbsent(key, ignored -> new StatDelta())
+                        .merge(item.getBetCount(), pendingOrder.allocPerNumber());
+            }
+        }
+
+        saveOrderItemNumbers(allItemNumbers);
         applyStatDeltas(statDeltaMap);
     }
 
@@ -227,20 +293,11 @@ public class NormalizePersistService {
                 .thenComparing(entry -> safeSort(entry.getKey().numberZone()))
                 .thenComparing(entry -> safeSort(entry.getKey().number())));
 
+        List<NumberStats> stats = new ArrayList<>(entries.size());
         for (Map.Entry<StatKey, StatDelta> entry : entries) {
-            StatKey key = entry.getKey();
-            StatDelta delta = entry.getValue();
-            numberStatsMapper.upsertStats(
-                    key.lotteryCategory(),
-                    key.gameType(),
-                    key.playType(),
-                    key.issueKey(),
-                    key.numberZone(),
-                    key.number(),
-                    delta.betCount(),
-                    delta.amount()
-            );
+            stats.add(buildNumberStatsDelta(entry.getKey(), entry.getValue()));
         }
+        upsertStatsBatch(stats);
     }
 
     private String safeSort(String value) {
@@ -250,7 +307,8 @@ public class NormalizePersistService {
     /**
      * 从新的 ParsedData 结构保存订单项
      */
-    private OrderItem saveOrderItemFromParsedData(OrderRaw raw, OrderParseBatch batch, AiParseResult.ParsedData data, int itemNo) {
+    private OrderItem buildOrderItemFromParsedData(OrderRaw raw, OrderParseBatch batch, AiParseResult.ParsedData data,
+                                                   int itemNo, BigDecimal effectiveAmount) {
         OrderItem item = new OrderItem();
         item.setRawId(raw.getId());
         item.setBatchId(batch.getId());
@@ -265,12 +323,26 @@ public class NormalizePersistService {
         item.setBetCount(resolvePositiveInt(data.getBet(), 1));
         item.setGroupCount(1);  // 新结构中没有groupCount，默认为1
         item.setMultiple(resolvePositiveInt(data.getMultiple(), 1));
-        item.setTotalAmount(data.getAmount() != null ? data.getAmount() : BigDecimal.ZERO);
+        item.setTotalAmount(effectiveAmount != null ? effectiveAmount : BigDecimal.ZERO);
         item.setAmountAllocMode(OrderConstant.ALLOC_SPLIT);
         item.setRawText(raw.getRawText());
-        item.setStatApplied(OrderConstant.STAT_NOT_APPLIED);
-        orderItemMapper.insert(item);
+        item.setStatApplied(OrderConstant.STAT_APPLIED);
         return item;
+    }
+
+    private void saveOrderItems(List<OrderItem> items) {
+        if (items == null || items.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < items.size(); i += BATCH_INSERT_SIZE) {
+            int end = Math.min(i + BATCH_INSERT_SIZE, items.size());
+            List<OrderItem> batch = items.subList(i, end);
+            if (batch.size() == 1) {
+                orderItemMapper.insert(batch.get(0));
+            } else {
+                orderItemMapper.insertBatchRecords(batch);
+            }
+        }
     }
 
     private int resolvePositiveInt(Integer value, int fallback) {
@@ -301,19 +373,29 @@ public class NormalizePersistService {
         return batch;
     }
 
-    private void saveOrderItemNumber(Long itemId, String zone, String number, BigDecimal allocAmount) {
+    private OrderItemNumber buildOrderItemNumber(Long itemId, String zone, String number, BigDecimal allocAmount) {
         OrderItemNumber n = new OrderItemNumber();
         n.setItemId(itemId);
         n.setNumberZone(zone);
         n.setNumber(number);
         n.setAmountAlloc(allocAmount);
-        orderItemNumberMapper.insert(n);
+        return n;
+    }
+
+    private void saveOrderItemNumbers(List<OrderItemNumber> numbers) {
+        if (numbers == null || numbers.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < numbers.size(); i += BATCH_INSERT_SIZE) {
+            int end = Math.min(i + BATCH_INSERT_SIZE, numbers.size());
+            orderItemNumberMapper.insertBatchRecords(numbers.subList(i, end));
+        }
     }
 
     /**
      * 保存AI解析结果记录到 t_ai_parse_result
      */
-    private void saveAiParseResultRecord(OrderRaw raw, OrderParseBatch batch, AiParseResult result, String issueKey, int itemIndex) {
+    private AiParseResultRecord buildAiParseResultRecord(OrderRaw raw, OrderParseBatch batch, AiParseResult result, String issueKey, int itemIndex) {
         AiParseResultRecord record = new AiParseResultRecord();
         record.setRawId(raw.getId());
         record.setBatchId(batch.getId());
@@ -339,7 +421,17 @@ public class NormalizePersistService {
             record.setAmount(BigDecimal.ZERO);
         }
 
-        aiParseResultMapper.insert(record);
+        return record;
+    }
+
+    private void saveAiParseResultRecords(List<AiParseResultRecord> records) {
+        if (records == null || records.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < records.size(); i += BATCH_INSERT_SIZE) {
+            int end = Math.min(i + BATCH_INSERT_SIZE, records.size());
+            aiParseResultMapper.insertBatchRecords(records.subList(i, end));
+        }
     }
 
     @Transactional
@@ -348,46 +440,21 @@ public class NormalizePersistService {
             return;
         }
         Long rawId = raw.getId();
+        List<Long> rawIds = List.of(rawId);
+        List<Long> batchIds = selectBatchIdsByRawIds(rawIds);
 
-        LambdaQueryWrapper<OrderItem> itemWrapper = new LambdaQueryWrapper<>();
-        itemWrapper.eq(OrderItem::getRawId, rawId);
-        List<OrderItem> items = orderItemMapper.selectList(itemWrapper);
+        List<OrderItem> items = selectItemsByRawIdsOrBatchIds(rawIds, batchIds);
 
         if (!items.isEmpty()) {
-            for (OrderItem item : items) {
-                if (item.getStatApplied() != null && item.getStatApplied() == OrderConstant.STAT_APPLIED) {
-                    LambdaQueryWrapper<OrderItemNumber> numQuery = new LambdaQueryWrapper<>();
-                    numQuery.eq(OrderItemNumber::getItemId, item.getId());
-                    List<OrderItemNumber> itemNumbers = orderItemNumberMapper.selectList(numQuery);
-                    for (OrderItemNumber itemNumber : itemNumbers) {
-                        numberStatsMapper.decrementStats(
-                                item.getLotteryCategory(),
-                                item.getGameType(),
-                                item.getPlayType(),
-                                item.getIssueKey(),
-                                itemNumber.getNumberZone(),
-                                itemNumber.getNumber(),
-                                item.getBetCount() != null ? item.getBetCount() : 0,
-                                itemNumber.getAmountAlloc() != null ? itemNumber.getAmountAlloc() : BigDecimal.ZERO
-                        );
-                    }
-                }
-            }
-
-            List<Long> itemIds = items.stream().map(OrderItem::getId).toList();
-            LambdaQueryWrapper<OrderItemNumber> numDelete = new LambdaQueryWrapper<>();
-            numDelete.in(OrderItemNumber::getItemId, itemIds);
-            orderItemNumberMapper.delete(numDelete);
-            orderItemMapper.delete(itemWrapper);
+            decrementAppliedStats(items);
+            deleteItemsWithNumbers(items);
         }
 
         LambdaQueryWrapper<OrderParseBatch> batchWrapper = new LambdaQueryWrapper<>();
         batchWrapper.eq(OrderParseBatch::getRawId, rawId);
         parseBatchMapper.delete(batchWrapper);
 
-        LambdaQueryWrapper<AiParseResultRecord> aiWrapper = new LambdaQueryWrapper<>();
-        aiWrapper.eq(AiParseResultRecord::getRawId, rawId);
-        aiParseResultMapper.delete(aiWrapper);
+        int aiDeleted = deleteAiResultsByRawIdsOrBatchIds(rawIds, batchIds);
 
         String issueKey = raw.getReceivedAt() != null
                 ? raw.getReceivedAt().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -401,16 +468,143 @@ public class NormalizePersistService {
         }
 
         numberStatsMapper.deleteNonPositiveRows();
-        log.info("清除单条解析数据: rawId={}", rawId);
+        log.info("清除单条解析数据: rawId={}, batchIds={}, itemRows={}, aiRows={}",
+                rawId, batchIds.size(), items.size(), aiDeleted);
     }
 
-    private boolean hasExistingParseData(OrderRaw raw) {
+    private boolean hasExistingPersistData(OrderRaw raw) {
         if (raw == null || raw.getId() == null) {
             return false;
         }
         LambdaQueryWrapper<OrderParseBatch> batchWrapper = new LambdaQueryWrapper<>();
         batchWrapper.eq(OrderParseBatch::getRawId, raw.getId());
-        return parseBatchMapper.selectCount(batchWrapper) > 0;
+        if (parseBatchMapper.selectCount(batchWrapper) > 0) {
+            return true;
+        }
+
+        LambdaQueryWrapper<OrderItem> itemWrapper = new LambdaQueryWrapper<>();
+        itemWrapper.eq(OrderItem::getRawId, raw.getId());
+        if (orderItemMapper.selectCount(itemWrapper) > 0) {
+            return true;
+        }
+
+        LambdaQueryWrapper<AiParseResultRecord> aiWrapper = new LambdaQueryWrapper<>();
+        aiWrapper.eq(AiParseResultRecord::getRawId, raw.getId());
+        return aiParseResultMapper.selectCount(aiWrapper) > 0;
+    }
+
+    private List<Long> selectBatchIdsByRawIds(List<Long> rawIds) {
+        if (rawIds == null || rawIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<OrderParseBatch> batchWrapper = new LambdaQueryWrapper<>();
+        batchWrapper.in(OrderParseBatch::getRawId, rawIds);
+        return parseBatchMapper.selectList(batchWrapper).stream()
+                .map(OrderParseBatch::getId)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private List<OrderItem> selectItemsByRawIdsOrBatchIds(List<Long> rawIds, List<Long> batchIds) {
+        if ((rawIds == null || rawIds.isEmpty()) && (batchIds == null || batchIds.isEmpty())) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<OrderItem> itemWrapper = new LambdaQueryWrapper<>();
+        itemWrapper.and(wrapper -> {
+            boolean hasRawIds = rawIds != null && !rawIds.isEmpty();
+            boolean hasBatchIds = batchIds != null && !batchIds.isEmpty();
+            if (hasRawIds) {
+                wrapper.in(OrderItem::getRawId, rawIds);
+            }
+            if (hasBatchIds) {
+                if (hasRawIds) {
+                    wrapper.or();
+                }
+                wrapper.in(OrderItem::getBatchId, batchIds);
+            }
+        });
+        return orderItemMapper.selectList(itemWrapper);
+    }
+
+    private void decrementAppliedStats(List<OrderItem> items) {
+        List<OrderItem> appliedItems = items == null ? Collections.emptyList() : items.stream()
+                .filter(item -> item.getId() != null)
+                .filter(item -> item.getStatApplied() != null && item.getStatApplied() == OrderConstant.STAT_APPLIED)
+                .toList();
+        if (appliedItems.isEmpty()) {
+            return;
+        }
+
+        Map<Long, OrderItem> itemById = appliedItems.stream()
+                .collect(Collectors.toMap(OrderItem::getId, item -> item, (left, right) -> left));
+        List<Long> itemIds = new ArrayList<>(itemById.keySet());
+        List<OrderItemNumber> itemNumbers = new ArrayList<>();
+        for (int i = 0; i < itemIds.size(); i += BATCH_INSERT_SIZE) {
+            int end = Math.min(i + BATCH_INSERT_SIZE, itemIds.size());
+            LambdaQueryWrapper<OrderItemNumber> numQuery = new LambdaQueryWrapper<>();
+            numQuery.in(OrderItemNumber::getItemId, itemIds.subList(i, end));
+            itemNumbers.addAll(orderItemNumberMapper.selectList(numQuery));
+        }
+
+        Map<StatKey, StatDelta> statDeltaMap = new LinkedHashMap<>();
+        for (OrderItemNumber itemNumber : itemNumbers) {
+            OrderItem item = itemById.get(itemNumber.getItemId());
+            if (item == null) {
+                continue;
+            }
+            StatKey key = new StatKey(
+                    item.getLotteryCategory(),
+                    item.getGameType(),
+                    item.getPlayType(),
+                    item.getIssueKey(),
+                    itemNumber.getNumberZone(),
+                    itemNumber.getNumber()
+            );
+            int bet = item.getBetCount() != null ? item.getBetCount() : 0;
+            BigDecimal amount = itemNumber.getAmountAlloc() != null
+                    ? itemNumber.getAmountAlloc()
+                    : BigDecimal.ZERO;
+            statDeltaMap.computeIfAbsent(key, ignored -> new StatDelta()).merge(-bet, amount.negate());
+        }
+        applyStatDeltas(statDeltaMap);
+    }
+
+    private void deleteItemsWithNumbers(List<OrderItem> items) {
+        if (items == null || items.isEmpty()) {
+            return;
+        }
+        List<Long> itemIds = items.stream()
+                .map(OrderItem::getId)
+                .filter(Objects::nonNull)
+                .toList();
+        if (itemIds.isEmpty()) {
+            return;
+        }
+        LambdaQueryWrapper<OrderItemNumber> numDelete = new LambdaQueryWrapper<>();
+        numDelete.in(OrderItemNumber::getItemId, itemIds);
+        orderItemNumberMapper.delete(numDelete);
+        orderItemMapper.deleteBatchIds(itemIds);
+    }
+
+    private int deleteAiResultsByRawIdsOrBatchIds(List<Long> rawIds, List<Long> batchIds) {
+        if ((rawIds == null || rawIds.isEmpty()) && (batchIds == null || batchIds.isEmpty())) {
+            return 0;
+        }
+        LambdaQueryWrapper<AiParseResultRecord> aiWrapper = new LambdaQueryWrapper<>();
+        aiWrapper.and(wrapper -> {
+            boolean hasRawIds = rawIds != null && !rawIds.isEmpty();
+            boolean hasBatchIds = batchIds != null && !batchIds.isEmpty();
+            if (hasRawIds) {
+                wrapper.in(AiParseResultRecord::getRawId, rawIds);
+            }
+            if (hasBatchIds) {
+                if (hasRawIds) {
+                    wrapper.or();
+                }
+                wrapper.in(AiParseResultRecord::getBatchId, batchIds);
+            }
+        });
+        return aiParseResultMapper.delete(aiWrapper);
     }
 
     private boolean isRetryableLockException(Throwable throwable) {
@@ -419,7 +613,12 @@ public class NormalizePersistService {
             String message = current.getMessage();
             if (message != null) {
                 if (message.contains("Deadlock found when trying to get lock")
-                        || message.contains("Lock wait timeout exceeded")) {
+                        || message.contains("Lock wait timeout exceeded")
+                        || message.contains("Connection is closed")
+                        || message.contains("Communications link failure")
+                        || message.contains("JDBC rollback failed")
+                        || message.contains("Could not open JDBC Connection")
+                        || message.contains("No operations allowed after connection closed")) {
                     return true;
                 }
             }
@@ -448,12 +647,50 @@ public class NormalizePersistService {
         }
     }
 
+    private record PendingValidOrder(OrderItem item,
+                                     List<String> effectiveNumbers,
+                                     List<String> statNumbers,
+                                     String zone,
+                                     BigDecimal allocPerNumber) {
+    }
+
     private record StatKey(String lotteryCategory,
                            String gameType,
                            String playType,
                            String issueKey,
                            String numberZone,
                            String number) {
+    }
+
+    private NumberStats buildNumberStatsDelta(StatKey key, StatDelta delta) {
+        NumberStats stat = new NumberStats();
+        stat.setLotteryCategory(key.lotteryCategory());
+        stat.setGameType(key.gameType());
+        stat.setPlayType(key.playType());
+        stat.setIssueKey(key.issueKey());
+        stat.setNumberZone(key.numberZone());
+        stat.setNumber(key.number());
+        stat.setOrderCount(delta.betCount());
+        stat.setSumAmount(delta.amount());
+        return stat;
+    }
+
+    private void upsertStatsBatch(List<NumberStats> stats) {
+        if (stats == null || stats.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < stats.size(); i += BATCH_INSERT_SIZE) {
+            int end = Math.min(i + BATCH_INSERT_SIZE, stats.size());
+            numberStatsMapper.upsertStatsBatch(stats.subList(i, end));
+        }
+    }
+
+    private record ItemContributionKey(String lotteryCategory,
+                                       String gameType,
+                                       String playType,
+                                       String numberZone,
+                                       String number,
+                                       int betCount) {
     }
 
     private static final class StatDelta {
@@ -481,44 +718,20 @@ public class NormalizePersistService {
     public void cleanByRawIds(List<Long> rawIds, String issueKey) {
         if (rawIds == null || rawIds.isEmpty()) return;
 
-        // 1. 查找关联的order_item
-        LambdaQueryWrapper<OrderItem> itemWrapper = new LambdaQueryWrapper<>();
-        itemWrapper.in(OrderItem::getRawId, rawIds);
-        List<OrderItem> items = orderItemMapper.selectList(itemWrapper);
+        lockRawIdsForPersist(rawIds);
+        List<Long> batchIds = selectBatchIdsByRawIds(rawIds);
+
+        // 1. 查找关联的order_item。除raw_id外，也按历史batch_id兜底清理错挂明细。
+        List<OrderItem> items = selectItemsByRawIdsOrBatchIds(rawIds, batchIds);
 
         if (!items.isEmpty()) {
-            List<Long> itemIds = items.stream().map(OrderItem::getId).toList();
-
             if (issueKey == null) {
-                for (OrderItem item : items) {
-                    if (item.getStatApplied() == null || item.getStatApplied() != OrderConstant.STAT_APPLIED) {
-                        continue;
-                    }
-                    LambdaQueryWrapper<OrderItemNumber> numQuery = new LambdaQueryWrapper<>();
-                    numQuery.eq(OrderItemNumber::getItemId, item.getId());
-                    List<OrderItemNumber> itemNumbers = orderItemNumberMapper.selectList(numQuery);
-                    for (OrderItemNumber itemNumber : itemNumbers) {
-                        numberStatsMapper.decrementStats(
-                                item.getLotteryCategory(),
-                                item.getGameType(),
-                                item.getPlayType(),
-                                item.getIssueKey(),
-                                itemNumber.getNumberZone(),
-                                itemNumber.getNumber(),
-                                item.getBetCount() != null ? item.getBetCount() : 0,
-                                itemNumber.getAmountAlloc() != null ? itemNumber.getAmountAlloc() : BigDecimal.ZERO
-                        );
-                    }
-                }
+                decrementAppliedStats(items);
             }
 
             // 2. 删除order_item_number
-            LambdaQueryWrapper<OrderItemNumber> numWrapper = new LambdaQueryWrapper<>();
-            numWrapper.in(OrderItemNumber::getItemId, itemIds);
-            orderItemNumberMapper.delete(numWrapper);
-
             // 3. 删除order_item
-            orderItemMapper.delete(itemWrapper);
+            deleteItemsWithNumbers(items);
         }
 
         // 4. 删除parse_batch
@@ -527,10 +740,9 @@ public class NormalizePersistService {
         parseBatchMapper.delete(batchWrapper);
 
         // 5. 删除AI解析结果
-        LambdaQueryWrapper<AiParseResultRecord> aiWrapper = new LambdaQueryWrapper<>();
-        aiWrapper.in(AiParseResultRecord::getRawId, rawIds);
-        int aiDeleted = aiParseResultMapper.delete(aiWrapper);
-        log.info("清除AI解析结果: rawIds.size={}, deleted={}", rawIds.size(), aiDeleted);
+        int aiDeleted = deleteAiResultsByRawIdsOrBatchIds(rawIds, batchIds);
+        log.info("清除AI解析结果: rawIds.size={}, batchIds.size={}, deleted={}",
+                rawIds.size(), batchIds.size(), aiDeleted);
 
         // 6. 删除统计数据
         if (issueKey != null) {
@@ -538,5 +750,13 @@ public class NormalizePersistService {
             log.info("清除统计数据: issueKey={}, deleted={}", issueKey, deleted);
         }
         numberStatsMapper.deleteNonPositiveRows();
+    }
+
+    private void lockRawIdsForPersist(List<Long> rawIds) {
+        rawIds.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .sorted()
+                .forEach(orderRawMapper::selectByIdForUpdate);
     }
 }

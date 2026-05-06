@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -77,6 +78,8 @@ public class AiParseService {
             Pattern.compile("(?:共\\s*)?[零一二三四五六七八九十百两\\d]+\\s*注\\s*(?:各)?\\s*$");
     private static final Pattern TRAILING_GROUP_AMOUNT_SUFFIX =
             Pattern.compile("^\\s*(?:[零一二三四五六七八九十百两\\d]+组\\s*)+(\\d{2,4})(?:[米元块毛角钱])?\\s*$");
+    private static final Pattern TRAILING_ANNOTATED_SOURCE_COUNT =
+            Pattern.compile("[（(]?\\s*([零一二三四五六七八九十百两\\d]{1,6})\\s*注\\s*[）)]?\\s*$");
     private static final Pattern TRAILING_LINE_AMOUNT =
             Pattern.compile("(?:(?<!\\d)(\\d{1,6})|([零一二三四五六七八九十百两]{1,6}))\\s*(?:米|元|块|钱)\\s*$");
     private static final Pattern TOTAL_MARKER_GUARD_AMOUNT =
@@ -95,6 +98,10 @@ public class AiParseService {
     private static final int LONG_PERMUTATION_LIST_FAST_PATH_THRESHOLD = 20;
     private static final Pattern PROMPT_CASE_RESULT_PATTERN = Pattern.compile(
             "([^/]+)/([^/]+)/([^/]+)/([^\\s]+) numbers=\\[(.*?)] bet=(\\d+) amount=([\\d.]+)"
+    );
+    private static final Pattern HALF_DIRECT_HINT = Pattern.compile(
+            "半\\s*(?:单|注)|0[.]5\\s*(?:单|注)|°л\\s*µҐ",
+            Pattern.CASE_INSENSITIVE
     );
 
     @Autowired
@@ -120,6 +127,12 @@ public class AiParseService {
 
     @Value("${ai.timeout:60000}")
     private int timeout;
+
+    @Value("${ai.retry-attempts:1}")
+    private int retryAttempts;
+
+    @Value("${ai.retry-backoff-ms:1500}")
+    private long retryBackoffMs;
 
     @Value("${ai.temperature:0.1}")
     private double temperature;
@@ -151,15 +164,23 @@ public class AiParseService {
     @Value("${ai.thinking-budget:4096}")
     private int thinkingBudget;
 
-    private ExecutorService realtimeParseExecutor;
-    private ExecutorService reparseParseExecutor;
+    private ThreadPoolExecutor realtimeParseExecutor;
+    private ThreadPoolExecutor reparseParseExecutor;
+    private final AtomicInteger realtimeSubmittedCount = new AtomicInteger();
+    private final AtomicInteger realtimeCompletedCount = new AtomicInteger();
+    private final AtomicInteger reparseSubmittedCount = new AtomicInteger();
+    private final AtomicInteger reparseCompletedCount = new AtomicInteger();
+    private volatile LocalDateTime lastRealtimeSubmittedAt;
+    private volatile LocalDateTime lastRealtimeCompletedAt;
+    private volatile LocalDateTime lastReparseSubmittedAt;
+    private volatile LocalDateTime lastReparseCompletedAt;
 
     @PostConstruct
     public void initParseExecutors() {
         int realtimeThreads = resolveParallel(ParseLane.REALTIME);
         int reparseThreads = resolveParallel(ParseLane.REPARSE);
-        realtimeParseExecutor = Executors.newFixedThreadPool(realtimeThreads, namedThreadFactory("ai-realtime-"));
-        reparseParseExecutor = Executors.newFixedThreadPool(reparseThreads, namedThreadFactory("ai-reparse-"));
+        realtimeParseExecutor = newParseExecutor(realtimeThreads, "ai-realtime-");
+        reparseParseExecutor = newParseExecutor(reparseThreads, "ai-reparse-");
         log.info("AI parse executors initialized, realtimeParallel={}, reparseParallel={}, legacyParallel={}",
                 realtimeThreads, reparseThreads, parallel);
     }
@@ -185,6 +206,17 @@ public class AiParseService {
         }
     }
 
+    private ThreadPoolExecutor newParseExecutor(int threads, String prefix) {
+        return new ThreadPoolExecutor(
+                threads,
+                threads,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(),
+                namedThreadFactory(prefix)
+        );
+    }
+
     /**
      * 批量解析（入口方法）
      * 每条消息单独发AI请求，并行执行
@@ -204,6 +236,7 @@ public class AiParseService {
             final int index = i;
             final OrderRaw raw = rawList.get(i);
             futures.add(executor.submit(() -> parseSingle(raw, index + 1, defaultOptions())));
+            markSubmitted(lane);
         }
 
         // 收集结果
@@ -212,6 +245,7 @@ public class AiParseService {
             try {
                 SingleResult sr = futures.get(i).get();
                 allResults.addAll(sr.results);
+                markCompleted(lane);
             } catch (Exception e) {
                 log.error("消息{}并行执行异常", i + 1, e);
                 AiParseResult r = new AiParseResult();
@@ -222,6 +256,7 @@ public class AiParseService {
                 r.setFailed(true);
                 r.setError(e.getMessage());
                 allResults.add(r);
+                markCompleted(lane);
             }
         }
 
@@ -260,15 +295,20 @@ public class AiParseService {
         for (int i = 0; i < rawList.size(); i++) {
             final int index = i;
             final OrderRaw raw = rawList.get(i);
+            markSubmitted(lane);
             futures.add(executor.submit(() -> {
-                SingleResult sr = parseSingle(raw, index + 1, defaultOptions());
                 try {
-                    callback.onParsed(sr.raw, sr.results);
-                } catch (Exception e) {
-                    log.error("[解析][{}] 入库失败: rawId={}", index + 1, raw.getId(), e);
-                    callbackErrors.add(e instanceof RuntimeException runtimeException
-                            ? runtimeException
-                            : new RuntimeException(e));
+                    SingleResult sr = parseSingle(raw, index + 1, defaultOptions());
+                    try {
+                        callback.onParsed(sr.raw, sr.results);
+                    } catch (Exception e) {
+                        log.error("[解析][{}] 入库失败: rawId={}", index + 1, raw.getId(), e);
+                        callbackErrors.add(e instanceof RuntimeException runtimeException
+                                ? runtimeException
+                                : new RuntimeException(e));
+                    }
+                } finally {
+                    markCompleted(lane);
                 }
             }));
         }
@@ -306,6 +346,71 @@ public class AiParseService {
     private enum ParseLane {
         REALTIME,
         REPARSE
+    }
+
+    public Map<String, Object> runtimeStatus() {
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("realtime", executorStatus(
+                realtimeParseExecutor,
+                realtimeSubmittedCount.get(),
+                realtimeCompletedCount.get(),
+                lastRealtimeSubmittedAt,
+                lastRealtimeCompletedAt
+        ));
+        data.put("reparse", executorStatus(
+                reparseParseExecutor,
+                reparseSubmittedCount.get(),
+                reparseCompletedCount.get(),
+                lastReparseSubmittedAt,
+                lastReparseCompletedAt
+        ));
+        return data;
+    }
+
+    private Map<String, Object> executorStatus(ThreadPoolExecutor executor,
+                                               int submitted,
+                                               int completed,
+                                               LocalDateTime lastSubmittedAt,
+                                               LocalDateTime lastCompletedAt) {
+        Map<String, Object> status = new LinkedHashMap<>();
+        if (executor == null) {
+            status.put("initialized", false);
+            return status;
+        }
+        status.put("initialized", true);
+        status.put("poolSize", executor.getPoolSize());
+        status.put("corePoolSize", executor.getCorePoolSize());
+        status.put("activeCount", executor.getActiveCount());
+        status.put("queueSize", executor.getQueue().size());
+        status.put("completedTaskCount", executor.getCompletedTaskCount());
+        status.put("taskCount", executor.getTaskCount());
+        status.put("submittedCount", submitted);
+        status.put("completedCount", completed);
+        status.put("lastSubmittedAt", lastSubmittedAt);
+        status.put("lastCompletedAt", lastCompletedAt);
+        return status;
+    }
+
+    private void markSubmitted(ParseLane lane) {
+        LocalDateTime now = LocalDateTime.now();
+        if (lane == ParseLane.REPARSE) {
+            reparseSubmittedCount.incrementAndGet();
+            lastReparseSubmittedAt = now;
+        } else {
+            realtimeSubmittedCount.incrementAndGet();
+            lastRealtimeSubmittedAt = now;
+        }
+    }
+
+    private void markCompleted(ParseLane lane) {
+        LocalDateTime now = LocalDateTime.now();
+        if (lane == ParseLane.REPARSE) {
+            reparseCompletedCount.incrementAndGet();
+            lastReparseCompletedAt = now;
+        } else {
+            realtimeCompletedCount.incrementAndGet();
+            lastRealtimeCompletedAt = now;
+        }
     }
 
     @FunctionalInterface
@@ -348,7 +453,13 @@ public class AiParseService {
                 fastPathResults = tryParseSimpleDirectListFastPath(raw, forceTcByTargetGroupRule);
             }
             if (fastPathResults.isEmpty()) {
+                fastPathResults = tryParseLongHalfDirectListFastPath(raw, forceTcByTargetGroupRule);
+            }
+            if (fastPathResults.isEmpty()) {
                 fastPathResults = tryParseLongDirectListFastPath(raw, forceTcByTargetGroupRule);
+            }
+            if (fastPathResults.isEmpty()) {
+                fastPathResults = tryParseAnnotatedLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
             }
             if (fastPathResults.isEmpty()) {
                 fastPathResults = tryParseLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
@@ -442,6 +553,7 @@ public class AiParseService {
                 results = applyExplicitCategoryDirectLineCompletion(raw, results);
                 results = applyLeopardPackageExplicitDirectAggregationCorrection(raw, results);
                 results = applyForcedTcCategoryContext(raw, results);
+                results = applyExplicitSingleCategoryCorrection(raw, results);
                 results = applyTwoDigitOnlyNumberSkipCorrection(raw, results);
                 results = preferTrustedBaseIfPostCorrectionDegraded(raw, trustedBaseResults, results);
             }
@@ -589,17 +701,56 @@ public class AiParseService {
     }
 
     private String executeAiRequest(String url, JSONObject requestBody) {
-        HttpRequest request = HttpUtil.createPost(url)
-                .header("Authorization", "Bearer " + apiKey)
-                .header("Content-Type", "application/json");
-        if (url.contains("dashscope.aliyuncs.com")) {
-            request.header("x-dashscope-session-cache", "enable");
+        int maxAttempts = Math.max(1, retryAttempts + 1);
+        RuntimeException lastException = null;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                HttpRequest request = HttpUtil.createPost(url)
+                        .header("Authorization", "Bearer " + apiKey)
+                        .header("Content-Type", "application/json");
+                if (url.contains("dashscope.aliyuncs.com")) {
+                    request.header("x-dashscope-session-cache", "enable");
+                }
+                return request
+                        .body(requestBody.toJSONString())
+                        .timeout(timeout)
+                        .execute()
+                        .body();
+            } catch (RuntimeException e) {
+                lastException = e;
+                if (attempt >= maxAttempts || !isRetryableAiRequestException(e)) {
+                    throw e;
+                }
+                long backoffMs = Math.max(0L, retryBackoffMs) * attempt;
+                log.warn("AI请求失败，准备重试: attempt={}/{}, timeoutMs={}, error={}",
+                        attempt, maxAttempts, timeout, e.getMessage());
+                if (backoffMs > 0) {
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(backoffMs);
+                    } catch (InterruptedException interruptedException) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException("AI请求重试等待被中断", interruptedException);
+                    }
+                }
+            }
         }
-        return request
-                .body(requestBody.toJSONString())
-                .timeout(timeout)
-                .execute()
-                .body();
+        throw lastException == null ? new RuntimeException("AI请求失败") : lastException;
+    }
+
+    private boolean isRetryableAiRequestException(RuntimeException e) {
+        String message = e.getMessage();
+        if (message == null || message.isBlank()) {
+            return false;
+        }
+        String normalized = message.toLowerCase(Locale.ROOT);
+        return normalized.contains("timeout")
+                || normalized.contains("timed out")
+                || normalized.contains("connection reset")
+                || normalized.contains("connection refused")
+                || normalized.contains("temporarily")
+                || normalized.contains("503")
+                || normalized.contains("502")
+                || normalized.contains("504");
     }
 
     private AiCallResult parseChatCompletionsResponse(String responseStr) {
@@ -3385,6 +3536,14 @@ public class AiParseService {
     }
 
     private AiParseResult buildDirectResult(String number, int directBet, CategoryGame category, String rawAiResponse) {
+        return buildDirectResultWithAmount(number, directBet, BigDecimal.valueOf(directBet * 2L), category, rawAiResponse);
+    }
+
+    private AiParseResult buildDirectResultWithAmount(String number,
+                                                      int directBet,
+                                                      BigDecimal amount,
+                                                      CategoryGame category,
+                                                      String rawAiResponse) {
         AiParseResult result = new AiParseResult();
         result.setIndex(1);
         result.setValid(true);
@@ -3399,7 +3558,7 @@ public class AiParseService {
         data.setNumbers(List.of(number));
         data.setBet(directBet);
         data.setMultiple(1);
-        data.setAmount(BigDecimal.valueOf(directBet * 2L));
+        data.setAmount(amount);
         result.setData(data);
         return result;
     }
@@ -3899,6 +4058,56 @@ public class AiParseService {
         return null;
     }
 
+    /**
+     * 半单长列表快路径：如“福 ... 半单 合计256”。
+     * 这类消息号码很多，AI容易超时或把半单按整单金额翻倍；尾部总额与号码数闭环时本地解析更稳。
+     */
+    private List<AiParseResult> tryParseLongHalfDirectListFastPath(OrderRaw raw, boolean forceTcByTargetGroupRule) {
+        if (raw == null || raw.getRawText() == null || raw.getRawText().isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String text = extractPrimaryOrderText(raw.getRawText());
+        if (text.isBlank() || containsPermutationMarker(text)) {
+            return Collections.emptyList();
+        }
+
+        Matcher halfMatcher = HALF_DIRECT_HINT.matcher(text);
+        if (!halfMatcher.find()) {
+            return Collections.emptyList();
+        }
+
+        String numberScope = text.substring(0, halfMatcher.start()).trim();
+        List<String> numbers = extractThreeDigitNumbers(numberScope);
+        if (numbers.size() < LONG_NUMBER_LIST_FAST_PATH_THRESHOLD) {
+            return Collections.emptyList();
+        }
+
+        List<CategoryGame> categories = forceTcByTargetGroupRule
+                ? List.of(new CategoryGame("TC", "P3"))
+                : detectCategories(text, raw);
+        Integer hintedTotalAmount = extractMessageTotalAmount(text);
+        if (hintedTotalAmount == null || hintedTotalAmount <= 0) {
+            hintedTotalAmount = extractTrailingTotalAmount(text.substring(halfMatcher.end()));
+        }
+
+        int expectedAmount = numbers.size() * categories.size();
+        if (hintedTotalAmount == null || hintedTotalAmount != expectedAmount) {
+            return Collections.emptyList();
+        }
+
+        List<AiParseResult> results = new ArrayList<>();
+        String rawAiResponse = "[LOCAL_FAST_PATH] long half direct list";
+        for (CategoryGame category : categories) {
+            for (String number : numbers) {
+                results.add(buildDirectResultWithAmount(number, 1, BigDecimal.ONE, category, rawAiResponse));
+            }
+        }
+        log.info("hit long half direct fast path, rawId={}, numbers={}, categories={}, totalAmount={}",
+                raw.getId(), numbers.size(), categories.size(), hintedTotalAmount);
+        return results;
+    }
+
     private Integer extractTrailingPositiveInteger(String value) {
         if (value == null || value.isBlank()) {
             return null;
@@ -3948,13 +4157,18 @@ public class AiParseService {
             return Collections.emptyList();
         }
 
-        List<String> sourceNumbers = extractThreeDigitNumbers(normalized.substring(0, markerStart));
+        String sourceText = normalized.substring(0, markerStart);
+        Integer hintedSourceCount = extractTrailingAnnotatedSourceCount(sourceText);
+        sourceText = stripTrailingAnnotatedSourceCount(sourceText);
+        List<String> sourceNumbers = extractThreeDigitNumbers(sourceText);
         if (sourceNumbers.size() < LONG_PERMUTATION_LIST_FAST_PATH_THRESHOLD) {
             return Collections.emptyList();
         }
 
         Integer hintedTotalAmount = extractTrailingTotalAmount(normalized.substring(markerEnd));
-        if (hintedTotalAmount == null || hintedTotalAmount <= 0) {
+        boolean amountVerified = hintedTotalAmount != null && hintedTotalAmount > 0;
+        boolean sourceCountVerified = hintedSourceCount != null && hintedSourceCount == sourceNumbers.size();
+        if (!amountVerified && !sourceCountVerified && !hasExplicitCategoryMarker(text, raw)) {
             return Collections.emptyList();
         }
 
@@ -3967,14 +4181,98 @@ public class AiParseService {
                 categories,
                 "[LOCAL_FAST_PATH] long permutation list"
         );
-        if (results.isEmpty() || results.size() <= sourceNumbers.size() * categories.size()
-                || sumAmounts(results) != hintedTotalAmount) {
+        if (results.isEmpty() || results.size() <= sourceNumbers.size() * categories.size()) {
             return Collections.emptyList();
         }
 
-        log.info("hit long permutation list fast path, rawId={}, sourceNumbers={}, bet={}, hintedTotalAmount={}, resultCount={}",
-                raw.getId(), sourceNumbers.size(), bet, hintedTotalAmount, results.size());
+        int computedAmount = sumAmounts(results);
+        if (amountVerified && computedAmount != hintedTotalAmount) {
+            return Collections.emptyList();
+        }
+
+        log.info("hit long permutation list fast path, rawId={}, sourceNumbers={}, hintedSourceCount={}, bet={}, amountVerified={}, amount={}, resultCount={}",
+                raw.getId(), sourceNumbers.size(), hintedSourceCount, bet, amountVerified, computedAmount, results.size());
         return results;
+    }
+
+    private List<AiParseResult> tryParseAnnotatedLongPermutationListFastPath(OrderRaw raw,
+                                                                             boolean forceTcByTargetGroupRule) {
+        if (raw == null || raw.getRawText() == null || raw.getRawText().isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String text = extractPrimaryOrderText(raw.getRawText());
+        if (text.isBlank() || !containsPermutationMarker(text)) {
+            return Collections.emptyList();
+        }
+        if (GROUP_PLAY_HINT.matcher(text).find() || LEOPARD_PACKAGE_HINT.matcher(text).find()) {
+            return Collections.emptyList();
+        }
+
+        String normalized = text.replaceAll("[—－-]", " ");
+        Matcher marker = EXPLICIT_PERMUTATION_LIST_MARKER.matcher(normalized);
+        int markerStart = -1;
+        int markerEnd = -1;
+        int bet = 0;
+        while (marker.find()) {
+            int parsedBet = parseNumericToken(marker.group(1));
+            if (parsedBet > 0) {
+                markerStart = marker.start();
+                markerEnd = marker.end();
+                bet = parsedBet;
+            }
+        }
+        if (markerStart < 0 || markerEnd < 0 || bet <= 0) {
+            return Collections.emptyList();
+        }
+
+        String sourceTextWithCount = normalized.substring(0, markerStart);
+        Integer hintedSourceCount = extractTrailingAnnotatedSourceCount(sourceTextWithCount);
+        if (hintedSourceCount == null || hintedSourceCount < LONG_PERMUTATION_LIST_FAST_PATH_THRESHOLD) {
+            return Collections.emptyList();
+        }
+
+        String sourceText = stripTrailingAnnotatedSourceCount(sourceTextWithCount);
+        List<String> sourceNumbers = extractThreeDigitNumbersPreserveDuplicates(sourceText);
+        if (sourceNumbers.size() != hintedSourceCount) {
+            return Collections.emptyList();
+        }
+
+        List<CategoryGame> categories = forceTcByTargetGroupRule
+                ? List.of(new CategoryGame("TC", "P3"))
+                : detectCategories(text, raw);
+        List<AiParseResult> results = buildExpandedPermutationResults(
+                sourceNumbers,
+                bet,
+                categories,
+                "[LOCAL_FAST_PATH] annotated long permutation list"
+        );
+        if (results.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        log.info("hit annotated long permutation fast path, rawId={}, sourceNumbers={}, bet={}, resultCount={}",
+                raw.getId(), sourceNumbers.size(), bet, results.size());
+        return results;
+    }
+
+    private Integer extractTrailingAnnotatedSourceCount(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+        Matcher matcher = TRAILING_ANNOTATED_SOURCE_COUNT.matcher(text.trim());
+        if (!matcher.find()) {
+            return null;
+        }
+        int parsed = parseNumericToken(matcher.group(1));
+        return parsed > 0 ? parsed : null;
+    }
+
+    private String stripTrailingAnnotatedSourceCount(String text) {
+        if (text == null || text.isBlank()) {
+            return text;
+        }
+        return TRAILING_ANNOTATED_SOURCE_COUNT.matcher(text.trim()).replaceFirst("").trim();
     }
 
     private List<AiParseResult> tryParseLongDirectListFastPath(OrderRaw raw, boolean forceTcByTargetGroupRule) {
@@ -4151,6 +4449,54 @@ public class AiParseService {
 
     private boolean shouldForceTcByContext(OrderRaw raw) {
         return raw != null && targetGroupRuleService.shouldForceTc(raw);
+    }
+
+    private List<AiParseResult> applyExplicitSingleCategoryCorrection(OrderRaw raw, List<AiParseResult> aiResults) {
+        if (aiResults == null || aiResults.isEmpty() || shouldForceTcByContext(raw)) {
+            return aiResults;
+        }
+
+        String text = normalizeRawTextForCorrection(raw.getRawText());
+        List<CategoryGame> explicitCategories = detectExplicitCategories(text);
+        if (explicitCategories.size() != 1) {
+            return aiResults;
+        }
+
+        CategoryGame target = explicitCategories.get(0);
+        boolean changed = false;
+        List<AiParseResult> adjusted = new ArrayList<>();
+        Set<String> seen = new LinkedHashSet<>();
+        for (AiParseResult result : aiResults) {
+            if (result == null || !result.isSuccess() || result.getData() == null) {
+                adjusted.add(result);
+                continue;
+            }
+
+            AiParseResult.ParsedData data = result.getData();
+            if (!target.category().equals(data.getCategory()) || !target.game().equals(data.getGame())) {
+                data.setCategory(target.category());
+                data.setGame(target.game());
+                changed = true;
+            }
+
+            String signature = String.join("|",
+                    safeValue(data.getCategory()),
+                    safeValue(data.getGame()),
+                    safeValue(data.getPlay()),
+                    safeValue(data.getZone()),
+                    data.getNumbers() == null ? "[]" : data.getNumbers().toString(),
+                    String.valueOf(data.getBet()),
+                    String.valueOf(data.getAmount()));
+            if (seen.add(signature)) {
+                adjusted.add(result);
+            }
+        }
+
+        if (changed) {
+            log.info("apply explicit single-category correction, rawId={}, category={}, game={}",
+                    raw.getId(), target.category(), target.game());
+        }
+        return changed ? adjusted : aiResults;
     }
 
     private String joinHints(String... hints) {

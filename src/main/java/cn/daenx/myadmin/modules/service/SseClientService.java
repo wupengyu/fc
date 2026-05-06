@@ -18,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -149,7 +150,7 @@ public class SseClientService {
             if (orderWindowService.isInOrderWindow(msgTime)) {
                 OrderMessage orderMsg = new OrderMessage();
                 orderMsg.setMsgId(msgId);
-                orderMsg.setSource("WECHAT");
+                orderMsg.setSource(MESSAGE_SOURCE);
                 orderMsg.setFromWxid(msg.getUsername());
                 orderMsg.setSenderWxid(msg.getSender());
                 orderMsg.setRawText(msg.getContent());
@@ -178,8 +179,9 @@ public class SseClientService {
         if (hasText(msg.getServerId())) {
             return "SSE|SERVER|" + safe(msg.getUsername()) + "|" + msg.getServerId().trim();
         }
+        // Without an upstream message id, content-based de-duplication can swallow valid repeated orders.
         return "SSE|FALLBACK|" + safe(msg.getUsername()) + "|" + safe(msg.getSender()) + "|" +
-                safe(msg.getTimestamp()) + "|" + safe(msg.getContent());
+                safe(msg.getTimestamp()) + "|" + safe(msg.getContent()) + "|" + UUID.randomUUID();
     }
 
     private boolean hasText(String value) {

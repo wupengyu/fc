@@ -73,7 +73,7 @@ public class RecvMsgGroupEvent implements EventHandleService {
             if (orderWindowService.isInOrderWindow(msgTime)) {
                 OrderMessage orderMsg = new OrderMessage();
                 orderMsg.setMsgId(data.getMsgId());
-                orderMsg.setSource("WECHAT");
+                orderMsg.setSource(MESSAGE_SOURCE);
                 orderMsg.setFromWxid(data.getFromWxid());
                 orderMsg.setSenderWxid(data.getFinalFromWxid());
                 orderMsg.setRawText(data.getMsg());

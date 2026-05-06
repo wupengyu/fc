@@ -18,10 +18,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -67,11 +69,18 @@ public class OrderReparseService {
     @Value("${order.reparse-require-window:true}")
     private boolean reparseRequireWindow;
 
+    @Value("${order.fast-reparse-allow-during-window:false}")
+    private boolean fastReparseAllowDuringWindow;
+
     public boolean canRunReparseNow() {
         if (!reparseEnabled) {
             return false;
         }
         return !reparseRequireWindow || orderWindowService.isNowInOrderWindow();
+    }
+
+    public boolean canRunFastReparseNow() {
+        return reparseEnabled && (fastReparseAllowDuringWindow || !orderWindowService.isNowInOrderWindow());
     }
 
     public String getRuntimeWindowText() {
@@ -142,6 +151,10 @@ public class OrderReparseService {
     public RetrySummary reparseDateForceFast(String date) {
         if (!reparseEnabled) {
             return RetrySummary.skipped("FAST", "重跑未启用");
+        }
+        if (!canRunFastReparseNow()) {
+            return RetrySummary.skipped("FAST", "当前处于实时收单窗口 " + getRuntimeWindowText() +
+                    "，为避免抢占实时解析资源，快速回放已被暂停");
         }
 
         LocalDate targetDate = LocalDate.parse(date);
@@ -465,8 +478,8 @@ public class OrderReparseService {
         if (state != null && state.latest() != null && state.latest().getCreatedAt() != null) {
             baseTime = state.latest().getCreatedAt();
         } else {
-            // 没有 batch 记录时仍留出冷却，避免和刚提交的异步解析重叠。
-            cooldown = Math.max(reparseCooldownSeconds, 30);
+            // 没有 batch 记录时通常是实时AI仍在路上，冷却拉长一点，避免补偿通道抢跑。
+            cooldown = Math.max(reparseCooldownSeconds, 240);
             baseTime = raw.getCreatedAt() != null ? raw.getCreatedAt() : raw.getReceivedAt();
         }
         return baseTime == null || !baseTime.plusSeconds(cooldown).isAfter(now);

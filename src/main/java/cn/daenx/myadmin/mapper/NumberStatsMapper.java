@@ -27,6 +27,20 @@ public interface NumberStatsMapper extends BaseMapper<NumberStats> {
                     @Param("betCount") int betCount,
                     @Param("amount") BigDecimal amount);
 
+    @Insert("<script>" +
+            "INSERT INTO t_number_stats " +
+            "(lottery_category, game_type, play_type, issue_key, number_zone, number, order_count, sum_amount) VALUES " +
+            "<foreach collection='stats' item='stat' separator=','>" +
+            "(#{stat.lotteryCategory}, #{stat.gameType}, #{stat.playType}, #{stat.issueKey}, " +
+            "#{stat.numberZone}, #{stat.number}, #{stat.orderCount}, #{stat.sumAmount})" +
+            "</foreach> " +
+            "ON DUPLICATE KEY UPDATE " +
+            "order_count = order_count + VALUES(order_count), " +
+            "sum_amount = sum_amount + VALUES(sum_amount), " +
+            "last_updated_at = NOW(3)" +
+            "</script>")
+    int upsertStatsBatch(@Param("stats") List<NumberStats> stats);
+
     @Select("<script>" +
             "SELECT number_zone, number, SUM(order_count) AS order_count, SUM(sum_amount) AS sum_amount " +
             "FROM t_number_stats " +

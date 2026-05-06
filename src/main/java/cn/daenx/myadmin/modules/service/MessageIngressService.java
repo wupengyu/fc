@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -121,7 +122,17 @@ public class MessageIngressService {
     }
 
     private String buildIngressFingerprint(RecvMsgReqVo vo, String source) {
-        return DigestUtil.sha256Hex(buildFingerprintSeed(source, vo));
+        String msgId = normalize(vo.getMsgId());
+        if (msgId != null) {
+            return DigestUtil.sha256Hex(safe(source) + "|MSG_ID|" + msgId);
+        }
+        // No upstream id means we cannot prove two same-content messages are transport duplicates.
+        // Treat them as independent raw WeChat messages so valid repeated orders are not swallowed.
+        return DigestUtil.sha256Hex(safe(source) + "|NO_ID|" +
+                safe(vo.getTimeStamp()) + "|" +
+                safe(vo.getFromWxid()) + "|" +
+                safe(vo.getFinalFromWxid()) + "|" +
+                UUID.randomUUID());
     }
 
     private String buildBusinessFingerprintSeed(RecvMsgReqVo vo) {
@@ -131,18 +142,6 @@ public class MessageIngressService {
                 safe(vo.getFromWxid()) + "|" +
                 safe(normalizeIdentity(vo.getFinalFromWxid())) + "|" +
                 safe(normalizeContent(vo.getMsg()));
-    }
-
-    private String buildFingerprintSeed(String source, RecvMsgReqVo vo) {
-        return safe(source) + "|" +
-                safe(vo.getMsgId()) + "|" +
-                safe(vo.getTimeStamp()) + "|" +
-                safe(vo.getFromWxid()) + "|" +
-                safe(vo.getFinalFromWxid()) + "|" +
-                safe(vo.getMsgType()) + "|" +
-                safe(vo.getMsgSource()) + "|" +
-                safe(vo.getSignature()) + "|" +
-                safe(vo.getMsg());
     }
 
     private String normalize(String value) {
