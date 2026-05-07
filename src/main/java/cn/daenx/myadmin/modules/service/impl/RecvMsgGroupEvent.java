@@ -1,6 +1,7 @@
 package cn.daenx.myadmin.modules.service.impl;
 
 import cn.daenx.myadmin.common.constant.EventConstant;
+import cn.daenx.myadmin.common.constant.OrderConstant;
 import cn.daenx.myadmin.entity.Message;
 import cn.daenx.myadmin.modules.domain.BaseEventVo;
 import cn.daenx.myadmin.modules.domain.dto.OrderMessage;
@@ -24,7 +25,7 @@ import java.time.LocalDateTime;
 @Service("event:" + EventConstant.recvMsgGroup)
 public class RecvMsgGroupEvent implements EventHandleService {
 
-    private static final String MESSAGE_SOURCE = "WECHAT_CALLBACK";
+    private static final String MESSAGE_SOURCE = OrderConstant.SOURCE_WECHAT_CALLBACK;
     private static final String HELLO = "\u4f60\u597d";
     private static final String HELLO_REPLY = " \uD83D\uDE00 \u4f60\u4e5f\u597d";
     private static final String HELLO_SUFFIX = "\u6700\u8fd1\u600e\u4e48\u6837\uff1f";
@@ -57,6 +58,10 @@ public class RecvMsgGroupEvent implements EventHandleService {
                 messageBufferService.addMessage(rawMessage);
                 log.warn("raw message insert failed, moved to retry buffer, msgId={}, fingerprint={}",
                         data.getMsgId(), rawMessage.getFingerprint());
+            } else if (ingestResult == MessageIngressService.IngestResult.REJECTED) {
+                log.warn("callback raw message rejected because Redis is the only active source, msgId={}",
+                        data.getMsgId());
+                return;
             } else if (ingestResult == MessageIngressService.IngestResult.DUPLICATE) {
                 log.info("duplicate raw message skipped, msgId={}, fingerprint={}",
                         data.getMsgId(), rawMessage.getFingerprint());

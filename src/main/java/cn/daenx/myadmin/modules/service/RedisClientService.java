@@ -1,5 +1,6 @@
 package cn.daenx.myadmin.modules.service;
 
+import cn.daenx.myadmin.common.constant.OrderConstant;
 import cn.daenx.myadmin.entity.Message;
 import cn.daenx.myadmin.modules.domain.dto.OrderMessage;
 import cn.daenx.myadmin.modules.domain.event.RecvMsgReqVo;
@@ -25,7 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class RedisClientService {
 
-    private static final String MESSAGE_SOURCE = "WECHAT_REDIS";
+    private static final String MESSAGE_SOURCE = OrderConstant.SOURCE_WECHAT_REDIS;
 
     @Value("${redis.queue-name:wechat_messages}")
     private String queueName;
@@ -166,6 +167,10 @@ public class RedisClientService {
                 log.warn("redis raw message insert failed, will requeue payload, msgId={}, fingerprint={}",
                         msgId, rawMessage.getFingerprint());
                 return ProcessResult.RETRY;
+            } else if (ingestResult == MessageIngressService.IngestResult.REJECTED) {
+                discardedCount.incrementAndGet();
+                log.warn("redis raw message rejected unexpectedly, msgId={}, source={}", msgId, MESSAGE_SOURCE);
+                return ProcessResult.ACK;
             } else if (ingestResult == MessageIngressService.IngestResult.DUPLICATE) {
                 duplicateMessageCount.incrementAndGet();
                 log.info("redis duplicate raw message skipped, msgId={}, fingerprint={}",

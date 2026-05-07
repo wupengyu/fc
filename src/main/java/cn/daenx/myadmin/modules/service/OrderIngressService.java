@@ -40,15 +40,20 @@ public class OrderIngressService {
     private boolean crossSourceMirrorCheckEnabled;
 
     private static final long RECENT_IDENTITY_TTL_SECONDS = 600L;
+    private static final Set<String> ALLOWED_ORDER_SOURCES = Set.of(
+            OrderConstant.SOURCE_WECHAT_REDIS
+    );
     private static final Set<String> DISABLED_LEGACY_ORDER_SOURCES = Set.of(
             OrderConstant.SOURCE_WECHAT,
-            "WECHAT_CALLBACK"
+            OrderConstant.SOURCE_WECHAT_CALLBACK,
+            OrderConstant.SOURCE_WECHAT_SSE,
+            OrderConstant.SOURCE_API
     );
     private static final Set<String> MIRROR_SOURCES = Set.of(
             OrderConstant.SOURCE_WECHAT,
-            "WECHAT_REDIS",
-            "WECHAT_CALLBACK",
-            "WECHAT_SSE"
+            OrderConstant.SOURCE_WECHAT_REDIS,
+            OrderConstant.SOURCE_WECHAT_CALLBACK,
+            OrderConstant.SOURCE_WECHAT_SSE
     );
 
     private final Object ingestLock = new Object();
@@ -60,14 +65,14 @@ public class OrderIngressService {
         Set<String> batchIdentityKeys = new HashSet<>();
         Map<String, String> batchMirrorSources = new LinkedHashMap<>();
         for (OrderMessage msg : orders) {
-            String fingerprint = generateFingerprint(msg);
             String source = resolveSource(msg);
-            if (isDisabledLegacyWechatSource(source)) {
-                log.info("legacy WECHAT order source skipped because callback channel is disabled, senderWxid={}, receivedAt={}",
-                        msg.getSenderWxid(), msg.getReceivedAt());
+            if (!isAllowedOrderSource(source)) {
+                log.warn("non-redis order source rejected, source={}, senderWxid={}, receivedAt={}",
+                        source, msg.getSenderWxid(), msg.getReceivedAt());
                 continue;
             }
 
+            String fingerprint = generateFingerprint(msg);
             String identityKey = fingerprint != null && !fingerprint.isBlank() ? "FP|" + fingerprint : null;
             if (identityKey != null && !batchIdentityKeys.add(identityKey)) {
                 log.info("duplicate order skipped within batch by message identity, senderWxid={}, receivedAt={}",
@@ -262,6 +267,10 @@ public class OrderIngressService {
 
     private boolean isDisabledLegacyWechatSource(String source) {
         return DISABLED_LEGACY_ORDER_SOURCES.contains(source);
+    }
+
+    private boolean isAllowedOrderSource(String source) {
+        return source != null && ALLOWED_ORDER_SOURCES.contains(source);
     }
 
     private String generateFingerprint(OrderMessage msg) {

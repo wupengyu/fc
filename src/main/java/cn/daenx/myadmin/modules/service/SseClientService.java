@@ -1,5 +1,6 @@
 package cn.daenx.myadmin.modules.service;
 
+import cn.daenx.myadmin.common.constant.OrderConstant;
 import cn.daenx.myadmin.entity.Message;
 import cn.daenx.myadmin.modules.domain.dto.OrderMessage;
 import cn.daenx.myadmin.modules.domain.event.RecvMsgReqVo;
@@ -24,12 +25,12 @@ import java.util.UUID;
 @Service
 public class SseClientService {
 
-    private static final String MESSAGE_SOURCE = "WECHAT_SSE";
+    private static final String MESSAGE_SOURCE = OrderConstant.SOURCE_WECHAT_SSE;
 
     @Value("${sse.url:http://localhost:5678/events}")
     private String sseUrl;
 
-    @Value("${sse.enabled:true}")
+    @Value("${sse.enabled:false}")
     private boolean sseEnabled;
 
     @Value("${target-group-wxid}")
@@ -134,6 +135,9 @@ public class SseClientService {
                 messageBufferService.addMessage(rawMessage);
                 log.warn("sse raw message insert failed, moved to retry buffer, msgId={}, fingerprint={}",
                         msgId, rawMessage.getFingerprint());
+            } else if (ingestResult == MessageIngressService.IngestResult.REJECTED) {
+                log.warn("sse raw message rejected because Redis is the only active source, msgId={}", msgId);
+                return;
             } else if (ingestResult == MessageIngressService.IngestResult.DUPLICATE) {
                 log.info("sse duplicate raw message skipped, msgId={}, fingerprint={}",
                         msgId, rawMessage.getFingerprint());

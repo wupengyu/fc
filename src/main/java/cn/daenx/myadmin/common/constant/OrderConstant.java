@@ -3,6 +3,9 @@ package cn.daenx.myadmin.common.constant;
 public class OrderConstant {
 
     public static final String SOURCE_WECHAT = "WECHAT";
+    public static final String SOURCE_WECHAT_REDIS = "WECHAT_REDIS";
+    public static final String SOURCE_WECHAT_SSE = "WECHAT_SSE";
+    public static final String SOURCE_WECHAT_CALLBACK = "WECHAT_CALLBACK";
     public static final String SOURCE_API = "API";
 
     public static final int PARSE_STATUS_SUCCESS = 1;

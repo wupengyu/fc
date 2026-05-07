@@ -450,6 +450,9 @@ public class AiParseService {
         if (options.applyPostCorrections()) {
             fastPathResults = tryParseExactPromptCaseFastPath(raw, forceTcByTargetGroupRule);
             if (fastPathResults.isEmpty()) {
+                fastPathResults = tryParseStopNoticeFastPath(raw);
+            }
+            if (fastPathResults.isEmpty()) {
                 fastPathResults = tryParseSimpleDirectListFastPath(raw, forceTcByTargetGroupRule);
             }
             if (fastPathResults.isEmpty()) {
@@ -457,6 +460,9 @@ public class AiParseService {
             }
             if (fastPathResults.isEmpty()) {
                 fastPathResults = tryParseLongDirectListFastPath(raw, forceTcByTargetGroupRule);
+            }
+            if (fastPathResults.isEmpty()) {
+                fastPathResults = tryParseEachDirectPermutationAmountFastPath(raw, forceTcByTargetGroupRule);
             }
             if (fastPathResults.isEmpty()) {
                 fastPathResults = tryParseAnnotatedLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
@@ -556,6 +562,8 @@ public class AiParseService {
                 results = applyExplicitSingleCategoryCorrection(raw, results);
                 results = applyTwoDigitOnlyNumberSkipCorrection(raw, results);
                 results = preferTrustedBaseIfPostCorrectionDegraded(raw, trustedBaseResults, results);
+                results = applyNoExplicitThreeDigitNumberSkipCorrection(raw, results);
+                results = applyTrailingAnnotatedSourceCountNumberCorrection(raw, results);
             }
 
             // 修正index为在整个rawList中的位置
@@ -3955,6 +3963,27 @@ public class AiParseService {
         return results;
     }
 
+    private List<AiParseResult> tryParseStopNoticeFastPath(OrderRaw raw) {
+        if (raw == null || raw.getRawText() == null || raw.getRawText().isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String compact = normalizeRawTextForCorrection(raw.getRawText())
+                .replaceAll("[\\s,，。.!！?？:：;；、/\\\\|\\-—－_]+", "");
+        if (!List.of("福停", "体停", "福彩停", "体彩停", "停收").contains(compact)) {
+            return Collections.emptyList();
+        }
+
+        AiParseResult result = new AiParseResult();
+        result.setIndex(1);
+        result.setValid(false);
+        result.setStatus("SKIP");
+        result.setReason("停收通知");
+        result.setRawAiResponse("[LOCAL_FAST_PATH] stop notice");
+        log.info("hit stop notice fast path, rawId={}, text={}", raw.getId(), compact);
+        return List.of(result);
+    }
+
     /**
      * 高频简单直单快路径：如“038 3单6米”、“141-749-950 5单1组”。
      * 复杂玩法仍交给 AI，避免为了速度牺牲准确率。
@@ -4195,6 +4224,60 @@ public class AiParseService {
         return results;
     }
 
+    private List<AiParseResult> tryParseEachDirectPermutationAmountFastPath(OrderRaw raw,
+                                                                            boolean forceTcByTargetGroupRule) {
+        if (raw == null || raw.getRawText() == null || raw.getRawText().isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String text = extractPrimaryOrderText(raw.getRawText());
+        if (text.isBlank() || !containsPermutationMarker(text)) {
+            return Collections.emptyList();
+        }
+
+        String normalized = text.replaceAll("[—－-]", " ");
+        Matcher matcher = EACH_DIRECT_PERMUTATION_EXPLICIT_MARKER.matcher(normalized);
+        if (!matcher.find()) {
+            return Collections.emptyList();
+        }
+
+        int directBet = parseNumericToken(matcher.group(1));
+        int permutationBet = parseNumericToken(matcher.group(2));
+        if (directBet <= 0 || permutationBet <= 0) {
+            return Collections.emptyList();
+        }
+
+        Integer hintedTotalAmount = extractTrailingTotalAmount(normalized.substring(matcher.end()));
+        if (hintedTotalAmount == null || hintedTotalAmount <= 0) {
+            return Collections.emptyList();
+        }
+
+        List<String> sourceNumbers = extractThreeDigitNumbersPreserveDuplicates(
+                normalized.substring(0, matcher.start()).trim());
+        if (sourceNumbers.size() < LONG_PERMUTATION_LIST_FAST_PATH_THRESHOLD) {
+            return Collections.emptyList();
+        }
+
+        List<CategoryGame> categories = forceTcByTargetGroupRule
+                ? List.of(new CategoryGame("TC", "P3"))
+                : detectCategories(text, raw);
+        List<AiParseResult> results = buildMixedDirectAndPermutationResults(
+                sourceNumbers,
+                directBet,
+                permutationBet,
+                categories,
+                "[LOCAL_FAST_PATH] each direct/permutation amount"
+        );
+        int computedAmount = sumAmounts(results);
+        if (computedAmount != hintedTotalAmount) {
+            return Collections.emptyList();
+        }
+
+        log.info("hit each direct/permutation amount fast path, rawId={}, sourceNumbers={}, directBet={}, permutationBet={}, amount={}, resultCount={}",
+                raw.getId(), sourceNumbers.size(), directBet, permutationBet, computedAmount, results.size());
+        return results;
+    }
+
     private List<AiParseResult> tryParseAnnotatedLongPermutationListFastPath(OrderRaw raw,
                                                                              boolean forceTcByTargetGroupRule) {
         if (raw == null || raw.getRawText() == null || raw.getRawText().isBlank()) {
@@ -4291,12 +4374,18 @@ public class AiParseService {
         }
 
         String prefix = text.substring(0, directBetMatch.start()).trim();
-        prefix = TRAILING_TOTAL_NOTE.matcher(prefix).replaceFirst("").trim();
+        SourceCountHint sourceCountHint = extractSourceCountHintFromPrefix(prefix);
+        prefix = sourceCountHint != null
+                ? sourceCountHint.sourceText()
+                : TRAILING_TOTAL_NOTE.matcher(prefix).replaceFirst("").trim();
         if (prefix.isBlank() || DIRECT_SINGLE_BLOCK_HINT.matcher(prefix).find()) {
             return Collections.emptyList();
         }
 
         List<String> numbers = extractThreeDigitNumbers(prefix);
+        if (sourceCountHint != null && numbers.size() != sourceCountHint.count()) {
+            return Collections.emptyList();
+        }
         if (numbers.size() < LONG_NUMBER_LIST_FAST_PATH_THRESHOLD) {
             return Collections.emptyList();
         }
@@ -4312,6 +4401,140 @@ public class AiParseService {
             }
         }
         return results;
+    }
+
+    private List<AiParseResult> applyNoExplicitThreeDigitNumberSkipCorrection(OrderRaw raw,
+                                                                              List<AiParseResult> results) {
+        if (raw == null || raw.getRawText() == null || results == null || results.isEmpty()) {
+            return results;
+        }
+
+        String text = extractPrimaryOrderText(raw.getRawText());
+        if (text.isBlank()
+                || containsThreeDigitNumber(text)
+                || LEOPARD_PACKAGE_HINT.matcher(text).find()) {
+            return results;
+        }
+
+        boolean hasSuccess = results.stream().anyMatch(AiParseResult::isSuccess);
+        if (!hasSuccess) {
+            return results;
+        }
+
+        AiParseResult skip = new AiParseResult();
+        skip.setIndex(1);
+        skip.setValid(false);
+        skip.setStatus("SKIP");
+        skip.setReason("号码格式不符，必须为三位数");
+        skip.setRawAiResponse(firstRawAiResponse(results, "[LOCAL_CORRECTION] no explicit three digit number"));
+        log.warn("skip AI result without explicit three-digit source number, rawId={}, text={}",
+                raw.getId(), previewForLog(text, 120));
+        return List.of(skip);
+    }
+
+    private String firstRawAiResponse(List<AiParseResult> results, String fallback) {
+        if (results != null) {
+            for (AiParseResult result : results) {
+                if (result != null && result.getRawAiResponse() != null && !result.getRawAiResponse().isBlank()) {
+                    return result.getRawAiResponse();
+                }
+            }
+        }
+        return fallback;
+    }
+
+    private List<AiParseResult> applyTrailingAnnotatedSourceCountNumberCorrection(OrderRaw raw,
+                                                                                  List<AiParseResult> results) {
+        if (raw == null || raw.getRawText() == null || results == null || results.isEmpty()) {
+            return results;
+        }
+
+        String text = extractPrimaryOrderText(raw.getRawText());
+        if (text.isBlank() || containsPermutationMarker(text)) {
+            return results;
+        }
+
+        List<DirectBetMatch> directBetMatches = extractExplicitDirectBetMatches(text);
+        if (directBetMatches.size() != 1) {
+            return results;
+        }
+
+        SourceCountHint hint = extractSourceCountHintFromPrefix(text.substring(0, directBetMatches.get(0).start()));
+        if (hint == null || hint.count() < LONG_NUMBER_LIST_FAST_PATH_THRESHOLD) {
+            return results;
+        }
+
+        String hintedNumber = String.format("%03d", hint.count());
+        if (hint.sourceNumbers().contains(hintedNumber)) {
+            return results;
+        }
+
+        long successCount = results.stream().filter(AiParseResult::isSuccess).count();
+        if (successCount <= hint.count()) {
+            return results;
+        }
+
+        List<AiParseResult> corrected = new ArrayList<>(results.size());
+        int removed = 0;
+        for (AiParseResult result : results) {
+            if (isSingleNumberSuccess(result, hintedNumber)) {
+                removed++;
+                continue;
+            }
+            corrected.add(result);
+        }
+        if (removed == 0) {
+            return results;
+        }
+
+        log.warn("remove trailing annotated source count misparsed as number, rawId={}, annotatedCount={}, removed={}",
+                raw.getId(), hint.count(), removed);
+        return corrected;
+    }
+
+    private boolean isSingleNumberSuccess(AiParseResult result, String number) {
+        if (result == null || !result.isSuccess() || result.getData() == null) {
+            return false;
+        }
+        List<String> numbers = result.getData().getNumbers();
+        return numbers != null && numbers.size() == 1 && number.equals(numbers.get(0));
+    }
+
+    private SourceCountHint extractSourceCountHintFromPrefix(String prefix) {
+        if (prefix == null || prefix.isBlank()) {
+            return null;
+        }
+
+        String countScope = stripTrailingCategoryMarkers(prefix);
+        Integer hintedSourceCount = extractTrailingAnnotatedSourceCount(countScope);
+        if (hintedSourceCount == null || hintedSourceCount <= 0) {
+            return null;
+        }
+
+        String sourceText = stripTrailingAnnotatedSourceCount(countScope);
+        List<String> sourceNumbers = extractThreeDigitNumbers(sourceText);
+        if (sourceNumbers.size() != hintedSourceCount) {
+            return null;
+        }
+        return new SourceCountHint(hintedSourceCount, sourceText, sourceNumbers);
+    }
+
+    private String stripTrailingCategoryMarkers(String text) {
+        if (text == null || text.isBlank()) {
+            return text;
+        }
+
+        String current = text.trim();
+        while (true) {
+            String next = current.replaceFirst(
+                    "(?i)\\s*(?:福彩|体彩|排列三|排三|3D|P3|福|体|各)\\s*$",
+                    ""
+            ).trim();
+            if (next.equals(current)) {
+                return current;
+            }
+            current = next;
+        }
     }
 
     private boolean hasAmountSuffix(String text, int endIndex) {
@@ -4560,6 +4783,9 @@ public class AiParseService {
     }
 
     private record DirectBetMatch(int bet, int start, int end) {
+    }
+
+    private record SourceCountHint(int count, String sourceText, List<String> sourceNumbers) {
     }
 
     private record NumberBetMatch(String number, int bet) {

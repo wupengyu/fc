@@ -1,5 +1,6 @@
 package cn.daenx.myadmin.modules.service;
 
+import cn.daenx.myadmin.common.constant.OrderConstant;
 import cn.daenx.myadmin.entity.Message;
 import cn.daenx.myadmin.mapper.MessageMapper;
 import cn.daenx.myadmin.modules.domain.event.RecvMsgReqVo;
@@ -24,6 +25,7 @@ public class MessageIngressService {
     public enum IngestResult {
         STORED,
         DUPLICATE,
+        REJECTED,
         FAILED
     }
 
@@ -48,6 +50,13 @@ public class MessageIngressService {
     }
 
     public IngestResult ingest(Message message) {
+        String source = normalize(message == null ? null : message.getSource());
+        if (!OrderConstant.SOURCE_WECHAT_REDIS.equals(source)) {
+            log.warn("non-redis raw message source rejected, source={}, msgId={}, senderWxid={}",
+                    source, message == null ? null : message.getMsgId(),
+                    message == null ? null : message.getSenderWxid());
+            return IngestResult.REJECTED;
+        }
         if (isDuplicate(message)) {
             return IngestResult.DUPLICATE;
         }
