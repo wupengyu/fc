@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -153,4 +154,18 @@ public interface AiParseResultMapper extends BaseMapper<AiParseResultRecord> {
     int countSuccessByIssue(@Param("issueKey") String issueKey,
                             @Param("category") String category,
                             @Param("game") String game);
+
+    @Select("SELECT COUNT(DISTINCT r.id) " +
+            "FROM t_order_raw r " +
+            "JOIN t_order_parse_batch b ON b.raw_id = r.id AND b.is_effective = 1 AND b.parse_status = 1 " +
+            "JOIN t_ai_parse_result a ON a.raw_id = r.id AND a.batch_id = b.id " +
+            "WHERE r.received_at >= #{start} AND r.received_at < #{end} " +
+            "AND r.source = 'WECHAT_REDIS' " +
+            "AND a.issue_key = #{issueKey} " +
+            "AND a.status = 'SUCCESS' AND a.valid = 1 " +
+            "AND (r.raw_text IS NULL OR r.raw_text NOT REGEXP '[0-9]{3}') " +
+            "AND (r.raw_text IS NULL OR r.raw_text NOT REGEXP '豹子|三批|三匹|组三|组六')")
+    int countSuspiciousSuccessWithoutExplicitThreeDigit(@Param("issueKey") String issueKey,
+                                                        @Param("start") LocalDateTime start,
+                                                        @Param("end") LocalDateTime end);
 }

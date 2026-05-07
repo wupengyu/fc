@@ -61,9 +61,6 @@ task:
 # target-group-wxid: "44567355795@chatroom"
 target-group-wxid: "49792312233@chatroom"
 
-message:
-  flush-interval: 5000
-
 order:
   window-start: "19:30:00"
   window-end: "21:35:00"
@@ -78,7 +75,6 @@ order:
   reparse-cooldown-seconds: 90
   reparse-require-window: true
   fast-reparse-allow-during-window: false
-  cross-source-mirror-check-enabled: false
   fc-stop:
     enabled: true
     start: "21:16:00"
@@ -123,24 +119,12 @@ stats:
   default-top-n: 20
   max-top-n: 500
 
-sse:
-  url: "http://10.8.0.110:5678/stream"
-  enabled: false
-
 redis:
   queue-name: "wechat_messages"
   processing-queue-name: "wechat_messages:processing"
   consumer-threads: 4
   requeue-backoff-ms: 1000
   recover-processing-on-startup: true
-
-wechat:
-  callback:
-    enabled: false
-
-qian-xun-pro:
-  enabled: false
-  url: ""
 
 api:
   auth:

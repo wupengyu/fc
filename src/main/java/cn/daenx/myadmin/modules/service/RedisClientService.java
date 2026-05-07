@@ -50,9 +50,6 @@ public class RedisClientService {
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private MessageBufferService messageBufferService;
-
-    @Autowired
     private MessageIngressService messageIngressService;
 
     @Autowired
@@ -192,7 +189,6 @@ public class RedisClientService {
                 orderMsg.setFromWxid(msg.getUsername());
                 orderMsg.setSenderWxid(msg.getSender());
                 orderMsg.setRawText(msg.getContent());
-                orderMsg.setFingerprint(messageIngressService.buildBusinessFingerprint(vo));
                 orderMsg.setReceivedAt(msgTime);
                 orderBufferService.add(orderMsg);
             } else {

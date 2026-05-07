@@ -16,12 +16,13 @@ import cn.daenx.myadmin.modules.domain.dto.StatsQueryRequest;
 import cn.daenx.myadmin.modules.domain.vo.StatsVO;
 import cn.daenx.myadmin.modules.domain.vo.TopSourceMessagePanelVO;
 import cn.daenx.myadmin.modules.service.AiParseService;
-import cn.daenx.myadmin.modules.service.MessageBufferService;
+import cn.daenx.myadmin.modules.service.DataAuditService;
 import cn.daenx.myadmin.modules.service.NormalizePersistService;
 import cn.daenx.myadmin.modules.service.OrderBufferService;
 import cn.daenx.myadmin.modules.service.OrderReparseService;
 import cn.daenx.myadmin.modules.service.OrderWindowService;
 import cn.daenx.myadmin.modules.service.RedisClientService;
+import cn.daenx.myadmin.modules.service.StatsRebuildService;
 import cn.daenx.myadmin.modules.service.StatsService;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -62,6 +63,12 @@ public class StatsController {
     private StatsService statsService;
 
     @Autowired
+    private DataAuditService dataAuditService;
+
+    @Autowired
+    private StatsRebuildService statsRebuildService;
+
+    @Autowired
     private OrderRawMapper orderRawMapper;
 
     @Autowired
@@ -78,9 +85,6 @@ public class StatsController {
 
     @Autowired
     private NormalizePersistService normalizePersistService;
-
-    @Autowired
-    private MessageBufferService messageBufferService;
 
     @Autowired
     private OrderBufferService orderBufferService;
@@ -235,7 +239,7 @@ public class StatsController {
         data.put("reparseWindow", orderReparseService.getRuntimeWindowText());
         data.put("reparseAllowedNow", orderReparseService.canRunReparseNow());
         data.put("fastReparseAllowedNow", orderReparseService.canRunFastReparseNow());
-        data.put("messageRetryBuffer", messageBufferService.pendingCount());
+        data.put("legacyMessageRetryBuffer", 0);
         data.put("orderBuffer", orderBufferService.pendingCount());
         data.put("redis", redisClientService.runtimeStatus());
         data.put("asyncParseExecutor", asyncParseExecutorStatus());
@@ -246,6 +250,26 @@ public class StatsController {
         data.put("parseFailedCount", countParseStatus(start, end, OrderConstant.PARSE_STATUS_FAILED));
         data.put("parseSkippedCount", countParseStatus(start, end, OrderConstant.PARSE_STATUS_SKIPPED));
         return Result.ok(data);
+    }
+
+    @GetMapping("/audit-date")
+    public Result auditDate(@RequestParam String date) {
+        try {
+            return Result.ok(dataAuditService.auditDate(date));
+        } catch (Exception e) {
+            log.error("数据链路审计失败, date={}", date, e);
+            return Result.error(500, "数据链路审计失败: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/rebuild-stats")
+    public Result rebuildStats(@RequestParam String date) {
+        try {
+            return Result.ok(statsRebuildService.rebuildIssue(date));
+        } catch (Exception e) {
+            log.error("统计表重建失败, date={}", date, e);
+            return Result.error(500, "统计表重建失败: " + e.getMessage());
+        }
     }
 
     @PostMapping("/reparse")

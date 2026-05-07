@@ -81,10 +81,6 @@ public class MessageIngressService {
         return failed;
     }
 
-    public String buildBusinessFingerprint(RecvMsgReqVo vo) {
-        return DigestUtil.sha256Hex(buildBusinessFingerprintSeed(vo));
-    }
-
     public LocalDateTime resolveReceivedAt(String timeStamp) {
         if (timeStamp == null || timeStamp.isBlank()) {
             return LocalDateTime.now();
@@ -144,66 +140,12 @@ public class MessageIngressService {
                 UUID.randomUUID());
     }
 
-    private String buildBusinessFingerprintSeed(RecvMsgReqVo vo) {
-        String normalizedDate = normalizeToDate(vo.getTimeStamp());
-        return "WECHAT_ORDER|" +
-                safe(normalizedDate) + "|" +
-                safe(vo.getFromWxid()) + "|" +
-                safe(normalizeIdentity(vo.getFinalFromWxid())) + "|" +
-                safe(normalizeContent(vo.getMsg()));
-    }
-
     private String normalize(String value) {
         if (value == null) {
             return null;
         }
         String trimmed = value.trim();
         return trimmed.isEmpty() ? null : trimmed;
-    }
-
-    private String normalizeToDate(String timeStamp) {
-        if (timeStamp == null || timeStamp.isBlank()) {
-            return "";
-        }
-        try {
-            long ts = Long.parseLong(timeStamp.trim());
-            if (String.valueOf(Math.abs(ts)).length() <= 10) {
-                ts = ts * 1000L;
-            }
-            return LocalDateTime.ofInstant(Instant.ofEpochMilli(ts), ZoneId.systemDefault())
-                    .toLocalDate()
-                    .toString();
-        } catch (Exception e) {
-            return timeStamp.trim();
-        }
-    }
-
-    private String normalizeContent(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value.replace("\r\n", "\n")
-                .replace('\r', '\n')
-                .trim();
-    }
-
-    private String normalizeIdentity(String value) {
-        String normalized = normalizeContent(value);
-        if (normalized.isEmpty()) {
-            return "";
-        }
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < normalized.length(); ) {
-            int codePoint = normalized.codePointAt(i);
-            i += Character.charCount(codePoint);
-            if (Character.isSupplementaryCodePoint(codePoint)
-                    || Character.getType(codePoint) == Character.NON_SPACING_MARK
-                    || Character.isISOControl(codePoint)) {
-                continue;
-            }
-            builder.appendCodePoint(codePoint);
-        }
-        return builder.toString().trim();
     }
 
     private String safe(Object value) {

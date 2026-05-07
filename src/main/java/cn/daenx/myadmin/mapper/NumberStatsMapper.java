@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface NumberStatsMapper extends BaseMapper<NumberStats> {
@@ -103,6 +104,62 @@ public interface NumberStatsMapper extends BaseMapper<NumberStats> {
 
     @Delete("DELETE FROM t_number_stats WHERE issue_key = #{issueKey}")
     int deleteByIssueKey(@Param("issueKey") String issueKey);
+
+    @Select("SELECT IFNULL(SUM(order_count),0) AS order_count, IFNULL(SUM(sum_amount),0) AS sum_amount " +
+            "FROM t_number_stats WHERE issue_key = #{issueKey}")
+    NumberStats queryIssueTotals(@Param("issueKey") String issueKey);
+
+    @Select("SELECT IFNULL(SUM(i.bet_count),0) AS order_count, IFNULL(SUM(n.amount_alloc),0) AS sum_amount " +
+            "FROM t_order_item i " +
+            "JOIN t_order_item_number n ON n.item_id = i.id " +
+            "JOIN t_order_parse_batch b ON b.id = i.batch_id AND b.raw_id = i.raw_id " +
+            "WHERE i.issue_key = #{issueKey} AND b.is_effective = 1 AND b.parse_status = 1")
+    NumberStats queryDetailNumberTotals(@Param("issueKey") String issueKey);
+
+    @Select("SELECT COUNT(*) FROM (" +
+            "  SELECT i.lottery_category, i.game_type, i.play_type, i.issue_key, n.number_zone, n.number, " +
+            "         SUM(i.bet_count) AS order_count, SUM(n.amount_alloc) AS sum_amount " +
+            "  FROM t_order_item i " +
+            "  JOIN t_order_item_number n ON n.item_id = i.id " +
+            "  JOIN t_order_parse_batch b ON b.id = i.batch_id AND b.raw_id = i.raw_id " +
+            "  WHERE i.issue_key = #{issueKey} AND b.is_effective = 1 AND b.parse_status = 1 " +
+            "  GROUP BY i.lottery_category, i.game_type, i.play_type, i.issue_key, n.number_zone, n.number" +
+            ") d LEFT JOIN t_number_stats s ON s.issue_key = d.issue_key " +
+            " AND s.lottery_category = d.lottery_category AND s.game_type = d.game_type " +
+            " AND s.play_type <=> d.play_type AND s.number_zone <=> d.number_zone AND s.number = d.number " +
+            "WHERE s.id IS NULL OR s.order_count <> d.order_count OR ABS(s.sum_amount - d.sum_amount) > 0.01")
+    int countMissingOrChangedStatsFromDetails(@Param("issueKey") String issueKey);
+
+    @Select("SELECT COUNT(*) FROM t_number_stats s LEFT JOIN (" +
+            "  SELECT i.lottery_category, i.game_type, i.play_type, i.issue_key, n.number_zone, n.number " +
+            "  FROM t_order_item i " +
+            "  JOIN t_order_item_number n ON n.item_id = i.id " +
+            "  JOIN t_order_parse_batch b ON b.id = i.batch_id AND b.raw_id = i.raw_id " +
+            "  WHERE i.issue_key = #{issueKey} AND b.is_effective = 1 AND b.parse_status = 1 " +
+            "  GROUP BY i.lottery_category, i.game_type, i.play_type, i.issue_key, n.number_zone, n.number" +
+            ") d ON d.issue_key = s.issue_key " +
+            " AND d.lottery_category = s.lottery_category AND d.game_type = s.game_type " +
+            " AND d.play_type <=> s.play_type AND d.number_zone <=> s.number_zone AND d.number = s.number " +
+            "WHERE s.issue_key = #{issueKey} AND d.issue_key IS NULL")
+    int countOrphanStatsWithoutDetails(@Param("issueKey") String issueKey);
+
+    @Select("SELECT lottery_category, game_type, IFNULL(play_type, 'ALL') AS play_type, " +
+            "SUM(order_count) AS order_count, SUM(sum_amount) AS sum_amount " +
+            "FROM t_number_stats WHERE issue_key = #{issueKey} " +
+            "GROUP BY lottery_category, game_type, IFNULL(play_type, 'ALL') " +
+            "ORDER BY lottery_category, game_type, play_type")
+    List<Map<String, Object>> queryStatsTotalsByGame(@Param("issueKey") String issueKey);
+
+    @Insert("INSERT INTO t_number_stats " +
+            "(lottery_category, game_type, play_type, issue_key, number_zone, number, order_count, sum_amount) " +
+            "SELECT i.lottery_category, i.game_type, i.play_type, i.issue_key, n.number_zone, n.number, " +
+            "       SUM(i.bet_count) AS order_count, SUM(n.amount_alloc) AS sum_amount " +
+            "FROM t_order_item i " +
+            "JOIN t_order_item_number n ON n.item_id = i.id " +
+            "JOIN t_order_parse_batch b ON b.id = i.batch_id AND b.raw_id = i.raw_id " +
+            "WHERE i.issue_key = #{issueKey} AND b.is_effective = 1 AND b.parse_status = 1 " +
+            "GROUP BY i.lottery_category, i.game_type, i.play_type, i.issue_key, n.number_zone, n.number")
+    int rebuildIssueFromItems(@Param("issueKey") String issueKey);
 
     @Update("UPDATE t_number_stats SET order_count = order_count - #{betCount}, sum_amount = sum_amount - #{amount} " +
             "WHERE lottery_category = #{lotteryCategory} AND game_type = #{gameType} AND play_type = #{playType} " +
