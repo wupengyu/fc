@@ -1,0 +1,1650 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI旅游攻略生成器</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --surface-soft: #eef3f7;
+      --line: #d8e0e7;
+      --line-strong: #b8c6d2;
+      --text: #1d2730;
+      --muted: #687684;
+      --accent: #0f7c80;
+      --accent-strong: #0a6669;
+      --accent-soft: #e3f4f3;
+      --warn: #9a5a00;
+      --danger: #b42318;
+      --ok: #177245;
+      --shadow: 0 14px 34px rgba(20, 37, 50, 0.12);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    button:disabled,
+    input:disabled,
+    textarea:disabled,
+    select:disabled {
+      cursor: not-allowed;
+      opacity: 0.62;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(390px, 470px) minmax(0, 1fr);
+      height: 100%;
+      min-height: 0;
+    }
+
+    .sidebar {
+      display: flex;
+      min-height: 0;
+      flex-direction: column;
+      border-right: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .brand .sub {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-pill {
+      flex: 0 0 auto;
+      max-width: 175px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--muted);
+      background: #fbfcfd;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-pill.ready {
+      border-color: rgba(23, 114, 69, 0.28);
+      color: var(--ok);
+      background: #edf8f1;
+    }
+
+    .status-pill.warn {
+      border-color: rgba(154, 90, 0, 0.28);
+      color: var(--warn);
+      background: #fff7e8;
+    }
+
+    .scroll {
+      min-height: 0;
+      overflow: auto;
+      padding: 16px 18px 20px;
+    }
+
+    .section {
+      padding: 0 0 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .cols-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .field label {
+      color: #41515f;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .control {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    textarea.control {
+      min-height: 86px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 124, 128, 0.13);
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 38px;
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #fff;
+      background: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+      transition: background 0.16s ease, transform 0.16s ease;
+    }
+
+    .btn:hover {
+      background: var(--accent-strong);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn.secondary {
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      background: #fff;
+      font-weight: 600;
+    }
+
+    .btn.secondary:hover {
+      background: var(--surface-soft);
+    }
+
+    .btn.ghost {
+      min-height: 31px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: #fff;
+      padding: 5px 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .btn.ghost:hover {
+      color: var(--text);
+      background: var(--surface-soft);
+    }
+
+    .icon-btn {
+      display: inline-grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      background: #fff;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .icon-btn:hover {
+      color: var(--text);
+      border-color: var(--line-strong);
+      background: var(--surface-soft);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: var(--muted);
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tab.active {
+      border-color: rgba(15, 124, 128, 0.32);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .day-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 11px;
+      background: #fff;
+      box-shadow: 0 1px 0 rgba(20, 37, 50, 0.03);
+      overflow: hidden;
+    }
+
+    .day-card.active {
+      border-color: rgba(15, 124, 128, 0.45);
+      box-shadow: 0 0 0 3px rgba(15, 124, 128, 0.08);
+    }
+
+    .day-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+
+    .day-head h3 {
+      min-width: 0;
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .day-meta {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .stops {
+      display: grid;
+      gap: 8px;
+      padding: 10px 11px 12px;
+    }
+
+    .stop {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 7px;
+      background: #fff;
+    }
+
+    .stop.dragging {
+      border-style: dashed;
+      opacity: 0.58;
+    }
+
+    .stop-index {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .stop-main {
+      min-width: 0;
+    }
+
+    .stop-name {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid transparent;
+      padding: 2px 0;
+      color: var(--text);
+      background: transparent;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .stop-name:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .stop-note {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .stop-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 8px;
+      padding: 0 11px 12px;
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 8px;
+      color: #3c4c59;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .time-row .time {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .route-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .route-summary {
+      display: grid;
+      gap: 5px;
+      padding: 11px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .route-summary strong {
+      color: var(--text);
+    }
+
+    .map-area {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      background: #dbe4ea;
+    }
+
+    #map {
+      position: absolute;
+      inset: 0;
+    }
+
+    .map-cover {
+      position: absolute;
+      inset: 18px auto auto 18px;
+      z-index: 5;
+      display: grid;
+      gap: 8px;
+      width: min(360px, calc(100% - 36px));
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .map-cover h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .map-cover p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .map-cover.hidden {
+      display: none;
+    }
+
+    .map-toolbar {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      z-index: 4;
+      display: flex;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 7px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 20;
+      max-width: min(560px, calc(100% - 32px));
+      transform: translateX(-50%) translateY(18px);
+      border-radius: 8px;
+      padding: 10px 13px;
+      color: #fff;
+      background: rgba(29, 39, 48, 0.92);
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      line-height: 1.45;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .empty {
+      border: 1px dashed var(--line-strong);
+      border-radius: 8px;
+      padding: 18px 12px;
+      color: var(--muted);
+      background: #fbfcfd;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .loading {
+      position: relative;
+      color: transparent !important;
+    }
+
+    .loading::after {
+      position: absolute;
+      content: "";
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.55);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .btn.secondary.loading::after,
+    .btn.ghost.loading::after {
+      border-color: rgba(15, 124, 128, 0.22);
+      border-top-color: var(--accent);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 54vh) minmax(520px, auto);
+        height: auto;
+        min-height: 100%;
+      }
+
+      .map-area {
+        grid-row: 1;
+        min-height: 54vh;
+      }
+
+      .sidebar {
+        grid-row: 2;
+        min-height: 520px;
+        border-top: 1px solid var(--line);
+        border-right: 0;
+      }
+
+      .scroll {
+        overflow: visible;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .app {
+        grid-template-rows: 47vh auto;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .status-pill {
+        max-width: 100%;
+      }
+
+      .cols-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        grid-template-columns: 1fr;
+      }
+
+      .map-toolbar {
+        right: 10px;
+        top: 10px;
+      }
+
+      .map-cover {
+        inset: 10px auto auto 10px;
+        width: calc(100% - 20px);
+      }
+
+      .time-row {
+        grid-template-columns: 1fr;
+        gap: 1px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="sidebar">
+      <header class="topbar">
+        <div class="brand">
+          <h1>AI旅游攻略生成器</h1>
+          <div class="sub">每日行程 + 高德连续路径 + 可交互调整</div>
+        </div>
+        <div id="statusPill" class="status-pill warn">待配置地图</div>
+      </header>
+
+      <div class="scroll">
+        <section class="section">
+          <div class="section-title">
+            <h2>接口配置</h2>
+            <button id="saveConfigBtn" class="btn ghost" type="button" title="保存到当前浏览器">保存</button>
+          </div>
+          <div class="form-grid">
+            <div class="cols-2 form-grid">
+              <div class="field">
+                <label for="amapKey">高德 Web JS Key</label>
+                <input id="amapKey" class="control" autocomplete="off" placeholder="必填">
+              </div>
+              <div class="field">
+                <label for="amapSecurity">高德安全密钥</label>
+                <input id="amapSecurity" class="control" autocomplete="off" placeholder="2021-12-02 后 Key 必填">
+              </div>
+            </div>
+            <div class="cols-2 form-grid">
+              <div class="field">
+                <label for="arkKey">火山方舟 API Key</label>
+                <input id="arkKey" class="control" autocomplete="off" type="password" placeholder="直接调用时填写">
+              </div>
+              <div class="field">
+                <label for="arkModel">Endpoint ID / Model</label>
+                <input id="arkModel" class="control" autocomplete="off" placeholder="例如 ep-xxxxxxxx">
+              </div>
+            </div>
+            <div class="field">
+              <label for="aiProxyUrl">AI代理地址（推荐）</label>
+              <input id="aiProxyUrl" class="control" autocomplete="off" placeholder="http://127.0.0.1:8787/api/chat">
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <h2>生成条件</h2>
+          </div>
+          <div class="form-grid">
+            <div class="cols-2 form-grid">
+              <div class="field">
+                <label for="cityInput">城市</label>
+                <input id="cityInput" class="control" value="长沙" placeholder="长沙">
+              </div>
+              <div class="field">
+                <label for="daysInput">天数</label>
+                <input id="daysInput" class="control" type="number" min="1" max="7" value="3">
+              </div>
+            </div>
+            <div class="cols-2 form-grid">
+              <div class="field">
+                <label for="travelMode">路线方式</label>
+                <select id="travelMode" class="control">
+                  <option value="driving">驾车</option>
+                  <option value="walking">步行</option>
+                  <option value="riding">骑行</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="paceInput">节奏</label>
+                <select id="paceInput" class="control">
+                  <option value="舒适">舒适</option>
+                  <option value="紧凑">紧凑</option>
+                  <option value="亲子">亲子</option>
+                  <option value="研学">研学</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="mustInput">必去景点 / 初步规划</label>
+              <textarea id="mustInput" class="control" placeholder="岳麓山、橘子洲、湖南博物院、太平老街；偏好历史文化和本地美食。">岳麓山、橘子洲、湖南博物院、太平老街；偏好历史文化和本地美食。</textarea>
+            </div>
+            <div class="button-row">
+              <button id="generateBtn" class="btn" type="button">生成AI详细行程+地图路线</button>
+              <button id="sampleBtn" class="btn secondary" type="button">示例</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <h2>每日行程</h2>
+            <button id="redrawBtn" class="btn ghost" type="button" title="按当前顺序重算路线">重算路线</button>
+          </div>
+          <div id="dayTabs" class="tabs"></div>
+          <div id="itineraryPanel">
+            <div class="empty">生成后会显示每天的时段、景点顺序和地图路线。</div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <h2>路线概览</h2>
+          </div>
+          <div id="routeSummary" class="route-summary">
+            <div>地图加载后会显示当前天的连续路径。</div>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <section class="map-area">
+      <div id="map"></div>
+      <div id="mapCover" class="map-cover">
+        <h2>等待地图配置</h2>
+        <p>填写高德 Web JS Key 和安全密钥后保存，页面会加载地图并绘制路线。</p>
+        <button id="loadMapBtn" class="btn secondary" type="button">加载地图</button>
+      </div>
+      <div class="map-toolbar">
+        <button id="fitMapBtn" class="icon-btn" type="button" title="适配视野">⌖</button>
+        <button id="clearMapBtn" class="icon-btn" type="button" title="清空覆盖物">×</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const ARK_CHAT_URL = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
+    const CONFIG_KEY = "aiTripMapDemo.config.v1";
+
+    const state = {
+      AMap: null,
+      map: null,
+      geocoder: null,
+      routeService: null,
+      overlays: [],
+      itinerary: null,
+      activeDay: 0,
+      isGenerating: false,
+      isDrawing: false,
+      dragIndex: null
+    };
+
+    const els = {
+      statusPill: document.getElementById("statusPill"),
+      amapKey: document.getElementById("amapKey"),
+      amapSecurity: document.getElementById("amapSecurity"),
+      arkKey: document.getElementById("arkKey"),
+      arkModel: document.getElementById("arkModel"),
+      aiProxyUrl: document.getElementById("aiProxyUrl"),
+      cityInput: document.getElementById("cityInput"),
+      daysInput: document.getElementById("daysInput"),
+      travelMode: document.getElementById("travelMode"),
+      paceInput: document.getElementById("paceInput"),
+      mustInput: document.getElementById("mustInput"),
+      generateBtn: document.getElementById("generateBtn"),
+      sampleBtn: document.getElementById("sampleBtn"),
+      saveConfigBtn: document.getElementById("saveConfigBtn"),
+      loadMapBtn: document.getElementById("loadMapBtn"),
+      redrawBtn: document.getElementById("redrawBtn"),
+      dayTabs: document.getElementById("dayTabs"),
+      itineraryPanel: document.getElementById("itineraryPanel"),
+      routeSummary: document.getElementById("routeSummary"),
+      mapCover: document.getElementById("mapCover"),
+      fitMapBtn: document.getElementById("fitMapBtn"),
+      clearMapBtn: document.getElementById("clearMapBtn"),
+      toast: document.getElementById("toast")
+    };
+
+    init();
+
+    function init() {
+      restoreConfig();
+      bindEvents();
+      loadSample(false);
+      if (els.amapKey.value.trim()) {
+        loadMap().catch((error) => notify(error.message, "warn"));
+      }
+    }
+
+    function bindEvents() {
+      els.saveConfigBtn.addEventListener("click", () => {
+        saveConfig();
+        loadMap().catch((error) => notify(error.message, "warn"));
+      });
+      els.loadMapBtn.addEventListener("click", () => loadMap().catch((error) => notify(error.message, "warn")));
+      els.generateBtn.addEventListener("click", generateItinerary);
+      els.sampleBtn.addEventListener("click", () => {
+        loadSample(true);
+        drawActiveRoute();
+      });
+      els.redrawBtn.addEventListener("click", drawActiveRoute);
+      els.travelMode.addEventListener("change", drawActiveRoute);
+      els.fitMapBtn.addEventListener("click", fitMap);
+      els.clearMapBtn.addEventListener("click", clearMap);
+    }
+
+    function restoreConfig() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(CONFIG_KEY) || "{}");
+        els.amapKey.value = saved.amapKey || "";
+        els.amapSecurity.value = saved.amapSecurity || "";
+        els.arkKey.value = saved.arkKey || "";
+        els.arkModel.value = saved.arkModel || "";
+        els.aiProxyUrl.value = saved.aiProxyUrl || "";
+      } catch (error) {
+        console.warn("配置读取失败", error);
+      }
+    }
+
+    function saveConfig() {
+      const payload = {
+        amapKey: els.amapKey.value.trim(),
+        amapSecurity: els.amapSecurity.value.trim(),
+        arkKey: els.arkKey.value.trim(),
+        arkModel: els.arkModel.value.trim(),
+        aiProxyUrl: els.aiProxyUrl.value.trim()
+      };
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(payload));
+      notify("配置已保存到当前浏览器");
+    }
+
+    async function loadMap() {
+      const key = els.amapKey.value.trim();
+      const security = els.amapSecurity.value.trim();
+      if (!key) {
+        setStatus("待配置地图", "warn");
+        throw new Error("请先填写高德 Web JS Key");
+      }
+
+      setStatus("地图加载中", "warn");
+      if (security) {
+        window._AMapSecurityConfig = { securityJsCode: security };
+      }
+
+      await loadAmapLoader();
+      const AMap = await window.AMapLoader.load({
+        key,
+        version: "2.0",
+        plugins: ["AMap.Scale", "AMap.ToolBar", "AMap.Geocoder", "AMap.Driving", "AMap.Walking", "AMap.Riding"]
+      });
+
+      state.AMap = AMap;
+      if (!state.map) {
+        state.map = new AMap.Map("map", {
+          zoom: 11,
+          center: [112.982279, 28.19409],
+          viewMode: "3D",
+          pitch: 35,
+          mapStyle: "amap://styles/normal"
+        });
+        state.map.addControl(new AMap.Scale());
+        state.map.addControl(new AMap.ToolBar({ position: { top: "72px", right: "18px" } }));
+      }
+      state.geocoder = new AMap.Geocoder({ city: els.cityInput.value.trim() || "全国" });
+      ensureRouteService();
+      setStatus("地图已就绪", "ready");
+      els.mapCover.classList.add("hidden");
+      drawActiveRoute();
+    }
+
+    function loadAmapLoader() {
+      if (window.AMapLoader) {
+        return Promise.resolve();
+      }
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector("script[data-amap-loader]");
+        if (existing) {
+          existing.addEventListener("load", resolve, { once: true });
+          existing.addEventListener("error", () => reject(new Error("高德 Loader 加载失败")), { once: true });
+          return;
+        }
+        const script = document.createElement("script");
+        script.src = "https://webapi.amap.com/loader.js";
+        script.async = true;
+        script.dataset.amapLoader = "true";
+        script.onload = resolve;
+        script.onerror = () => reject(new Error("高德 Loader 加载失败"));
+        document.head.appendChild(script);
+      });
+    }
+
+    function ensureRouteService() {
+      if (!state.AMap || !state.map) {
+        return null;
+      }
+      const mode = els.travelMode.value;
+      if (state.routeService && state.routeService._mode === mode) {
+        return state.routeService;
+      }
+      if (state.routeService && typeof state.routeService.clear === "function") {
+        state.routeService.clear();
+      }
+      const common = {
+        hideMarkers: true
+      };
+      if (mode === "walking") {
+        state.routeService = new state.AMap.Walking(common);
+      } else if (mode === "riding") {
+        state.routeService = new state.AMap.Riding(common);
+      } else {
+        state.routeService = new state.AMap.Driving({
+          ...common,
+          policy: state.AMap.DrivingPolicy.LEAST_TIME
+        });
+      }
+      state.routeService._mode = mode;
+      return state.routeService;
+    }
+
+    async function generateItinerary() {
+      if (state.isGenerating) {
+        return;
+      }
+      const model = els.arkModel.value.trim();
+      const hasDirectArk = els.arkKey.value.trim() && model;
+      const hasProxy = els.aiProxyUrl.value.trim();
+      if (!hasDirectArk && !hasProxy) {
+        notify("未配置 AI 接口，已载入示例行程");
+        loadSample(true);
+        drawActiveRoute();
+        return;
+      }
+
+      state.isGenerating = true;
+      setLoading(els.generateBtn, true);
+      setStatus("AI生成中", "warn");
+
+      try {
+        const plan = await requestAiPlan(model);
+        state.itinerary = normalizePlan(plan);
+        state.activeDay = 0;
+        renderItinerary();
+        setStatus("行程已生成", "ready");
+        notify("行程已生成，开始绘制路线");
+        await drawActiveRoute();
+      } catch (error) {
+        console.error(error);
+        setStatus("生成失败", "warn");
+        notify(error.message || "生成失败，已保留当前行程", "warn");
+      } finally {
+        state.isGenerating = false;
+        setLoading(els.generateBtn, false);
+      }
+    }
+
+    async function requestAiPlan(model) {
+      const messages = buildAiMessages();
+      const proxyUrl = els.aiProxyUrl.value.trim();
+      if (proxyUrl) {
+        const response = await fetch(proxyUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ model, messages })
+        });
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`AI代理请求失败：${response.status} ${safeMessage(text)}`);
+        }
+        const data = await response.json();
+        const content = data.content || data?.choices?.[0]?.message?.content;
+        if (!content) {
+          throw new Error("AI代理没有返回行程内容");
+        }
+        return parseJsonFromText(content);
+      }
+      return requestArkPlan(els.arkKey.value.trim(), model, messages);
+    }
+
+    function buildAiMessages() {
+      const city = els.cityInput.value.trim() || "长沙";
+      const days = clampNumber(Number(els.daysInput.value), 1, 7, 3);
+      const pace = els.paceInput.value;
+      const must = els.mustInput.value.trim();
+      const modeLabel = getModeLabel();
+      const prompt = [
+        "请生成一个适合教学演示的旅游攻略 JSON。",
+        `目的地：${city}`,
+        `天数：${days}`,
+        `节奏：${pace}`,
+        `路线方式：${modeLabel}`,
+        `用户要求：${must}`,
+        "必须严格输出 JSON，不要 Markdown，不要解释。",
+        "JSON 结构：",
+        "{",
+        '  "city": "城市名",',
+        '  "title": "行程标题",',
+        '  "days": [',
+        "    {",
+        '      "day": 1,',
+        '      "theme": "当天主题",',
+        '      "stops": [',
+        '        {"name": "景点或餐饮点全称", "time": "09:00-10:30", "note": "游玩亮点/餐饮/交通提示"}',
+        "      ],",
+        '      "tips": "当天提醒"',
+        "    }",
+        "  ]",
+        "}",
+        "每一天 stops 数量 3-5 个，name 用高德地图容易定位的标准名称。"
+      ].join("\n");
+      return [
+        {
+          role: "system",
+          content: "你是旅行规划助手，只返回可解析 JSON。"
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ];
+    }
+
+    async function requestArkPlan(apiKey, model, messages) {
+      const response = await fetch(ARK_CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          temperature: 0.35,
+          max_tokens: 2400
+        })
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`火山方舟请求失败：${response.status} ${safeMessage(text)}`);
+      }
+      const data = await response.json();
+      const content = data?.choices?.[0]?.message?.content;
+      if (!content) {
+        throw new Error("火山方舟没有返回行程内容");
+      }
+      return parseJsonFromText(content);
+    }
+
+    function parseJsonFromText(text) {
+      const clean = text
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/```$/i, "")
+        .trim();
+      try {
+        return JSON.parse(clean);
+      } catch (error) {
+        const start = clean.indexOf("{");
+        const end = clean.lastIndexOf("}");
+        if (start >= 0 && end > start) {
+          return JSON.parse(clean.slice(start, end + 1));
+        }
+        throw new Error("AI 返回内容不是有效 JSON");
+      }
+    }
+
+    function normalizePlan(plan) {
+      const city = String(plan.city || els.cityInput.value.trim() || "长沙").trim();
+      const title = String(plan.title || `${city}${els.daysInput.value || 3}日游`).trim();
+      const days = Array.isArray(plan.days) ? plan.days : [];
+      const normalizedDays = days.map((day, index) => {
+        const stops = Array.isArray(day.stops) ? day.stops : Array.isArray(day.places) ? day.places : [];
+        return {
+          day: Number(day.day) || index + 1,
+          theme: String(day.theme || day.title || `第${index + 1}天`).trim(),
+          tips: String(day.tips || "").trim(),
+          stops: stops
+            .map((stop) => {
+              if (typeof stop === "string") {
+                return { name: stop.trim(), time: "", note: "" };
+              }
+              return {
+                name: String(stop.name || stop.place || stop.title || "").trim(),
+                time: String(stop.time || stop.period || "").trim(),
+                note: String(stop.note || stop.desc || stop.description || "").trim()
+              };
+            })
+            .filter((stop) => stop.name)
+            .slice(0, 18)
+        };
+      }).filter((day) => day.stops.length);
+
+      if (!normalizedDays.length) {
+        throw new Error("AI 返回的 days/stops 为空");
+      }
+      return { city, title, days: normalizedDays };
+    }
+
+    function loadSample(showToast) {
+      state.itinerary = getSamplePlan();
+      state.activeDay = 0;
+      renderItinerary();
+      if (showToast) {
+        notify("示例行程已载入");
+      }
+    }
+
+    function getSamplePlan() {
+      return {
+        city: "长沙",
+        title: "长沙3日文化美食路线",
+        days: [
+          {
+            day: 1,
+            theme: "山水与城市地标",
+            tips: "橘子洲区域步行距离较长，建议穿舒适鞋。",
+            stops: [
+              { name: "岳麓山风景名胜区", time: "09:00-11:30", note: "登高看湘江和长沙城景。" },
+              { name: "湖南大学", time: "11:40-12:20", note: "顺路看书院片区和校园建筑。" },
+              { name: "橘子洲景区", time: "14:00-16:30", note: "适合讲解城市地理与红色文化。" },
+              { name: "太平老街", time: "18:00-20:00", note: "晚餐和本地小吃集中。" }
+            ]
+          },
+          {
+            day: 2,
+            theme: "博物馆与老城街巷",
+            tips: "湖南博物院热门时段需要提前预约。",
+            stops: [
+              { name: "湖南博物院", time: "09:00-12:00", note: "马王堆汉墓是研学重点。" },
+              { name: "烈士公园", time: "12:20-13:20", note: "午间休整，动线轻松。" },
+              { name: "潮宗街历史文化街区", time: "15:00-17:00", note: "老城更新案例，适合拍照。" },
+              { name: "坡子街", time: "18:00-20:00", note: "晚餐选择多，人流较密集。" }
+            ]
+          },
+          {
+            day: 3,
+            theme: "艺术空间与江景收尾",
+            tips: "下午留出返程时间，避免路线过满。",
+            stops: [
+              { name: "李自健美术馆", time: "09:30-11:00", note: "视觉艺术教学素材丰富。" },
+              { name: "谢子龙影像艺术馆", time: "11:10-12:10", note: "现代影像与建筑空间。" },
+              { name: "长沙IFS国金中心", time: "14:00-15:30", note: "城市商业地标。" },
+              { name: "杜甫江阁", time: "16:30-18:00", note: "傍晚看湘江景观。" }
+            ]
+          }
+        ]
+      };
+    }
+
+    function renderItinerary() {
+      if (!state.itinerary || !state.itinerary.days.length) {
+        els.dayTabs.innerHTML = "";
+        els.itineraryPanel.innerHTML = '<div class="empty">生成后会显示每天的时段、景点顺序和地图路线。</div>';
+        return;
+      }
+
+      els.dayTabs.innerHTML = state.itinerary.days.map((day, index) => (
+        `<button class="tab ${index === state.activeDay ? "active" : ""}" type="button" data-day="${index}">第${day.day}天</button>`
+      )).join("");
+
+      els.dayTabs.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          state.activeDay = Number(tab.dataset.day);
+          renderItinerary();
+          drawActiveRoute();
+        });
+      });
+
+      const day = state.itinerary.days[state.activeDay];
+      const stops = day.stops.map((stop, index) => renderStop(stop, index)).join("");
+      const timeline = day.stops.map((stop) => (
+        `<div class="time-row"><div class="time">${escapeHtml(stop.time || "待定")}</div><div>${escapeHtml(stop.note || stop.name)}</div></div>`
+      )).join("");
+
+      els.itineraryPanel.innerHTML = `
+        <article class="day-card active">
+          <div class="day-head">
+            <h3>${escapeHtml(day.theme || `第${day.day}天`)}</h3>
+            <div class="day-meta">${day.stops.length}站</div>
+          </div>
+          <div class="stops" id="stopsList">${stops}</div>
+          <div class="timeline">${timeline}</div>
+          ${day.tips ? `<div class="small" style="padding: 0 11px 12px;">${escapeHtml(day.tips)}</div>` : ""}
+        </article>
+        <div class="route-tools">
+          <button class="btn ghost" type="button" id="addStopBtn">新增景点</button>
+          <button class="btn ghost" type="button" id="reverseStopsBtn">反转顺序</button>
+          <button class="btn ghost" type="button" id="applyStopsBtn">应用到地图</button>
+        </div>
+      `;
+
+      bindStopEvents();
+    }
+
+    function renderStop(stop, index) {
+      return `
+        <div class="stop" draggable="true" data-index="${index}">
+          <div class="stop-index">${index + 1}</div>
+          <div class="stop-main">
+            <input class="stop-name" value="${escapeAttr(stop.name)}" data-index="${index}" aria-label="景点名称">
+            <div class="stop-note">${escapeHtml(stop.time || "待定")} ${escapeHtml(stop.note || "")}</div>
+          </div>
+          <div class="stop-actions">
+            <button class="icon-btn move-up" type="button" title="上移" data-index="${index}">↑</button>
+            <button class="icon-btn move-down" type="button" title="下移" data-index="${index}">↓</button>
+            <button class="icon-btn remove-stop" type="button" title="删除" data-index="${index}">×</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindStopEvents() {
+      const day = getActiveDay();
+      if (!day) {
+        return;
+      }
+
+      document.querySelectorAll(".stop-name").forEach((input) => {
+        input.addEventListener("change", () => {
+          const index = Number(input.dataset.index);
+          day.stops[index].name = input.value.trim();
+          drawActiveRoute();
+        });
+      });
+
+      document.querySelectorAll(".move-up").forEach((button) => {
+        button.addEventListener("click", () => {
+          moveStop(Number(button.dataset.index), -1);
+        });
+      });
+
+      document.querySelectorAll(".move-down").forEach((button) => {
+        button.addEventListener("click", () => {
+          moveStop(Number(button.dataset.index), 1);
+        });
+      });
+
+      document.querySelectorAll(".remove-stop").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.index);
+          day.stops.splice(index, 1);
+          renderItinerary();
+          drawActiveRoute();
+        });
+      });
+
+      document.querySelectorAll(".stop").forEach((item) => {
+        item.addEventListener("dragstart", () => {
+          state.dragIndex = Number(item.dataset.index);
+          item.classList.add("dragging");
+        });
+        item.addEventListener("dragend", () => {
+          state.dragIndex = null;
+          item.classList.remove("dragging");
+        });
+        item.addEventListener("dragover", (event) => {
+          event.preventDefault();
+        });
+        item.addEventListener("drop", (event) => {
+          event.preventDefault();
+          const targetIndex = Number(item.dataset.index);
+          if (state.dragIndex === null || state.dragIndex === targetIndex) {
+            return;
+          }
+          reorderStop(state.dragIndex, targetIndex);
+        });
+      });
+
+      const addStopBtn = document.getElementById("addStopBtn");
+      const reverseStopsBtn = document.getElementById("reverseStopsBtn");
+      const applyStopsBtn = document.getElementById("applyStopsBtn");
+
+      addStopBtn.addEventListener("click", () => {
+        day.stops.push({ name: `${state.itinerary.city}新景点`, time: "待定", note: "可直接编辑名称" });
+        renderItinerary();
+      });
+      reverseStopsBtn.addEventListener("click", () => {
+        day.stops.reverse();
+        renderItinerary();
+        drawActiveRoute();
+      });
+      applyStopsBtn.addEventListener("click", drawActiveRoute);
+    }
+
+    function moveStop(index, direction) {
+      const day = getActiveDay();
+      const target = index + direction;
+      if (!day || target < 0 || target >= day.stops.length) {
+        return;
+      }
+      const [item] = day.stops.splice(index, 1);
+      day.stops.splice(target, 0, item);
+      renderItinerary();
+      drawActiveRoute();
+    }
+
+    function reorderStop(from, to) {
+      const day = getActiveDay();
+      if (!day) {
+        return;
+      }
+      const [item] = day.stops.splice(from, 1);
+      day.stops.splice(to, 0, item);
+      renderItinerary();
+      drawActiveRoute();
+    }
+
+    async function drawActiveRoute() {
+      const day = getActiveDay();
+      if (!day) {
+        return;
+      }
+      if (!state.map || !state.AMap || !state.geocoder) {
+        renderRouteSummary("地图未加载，当前只显示行程。");
+        setStatus("待配置地图", "warn");
+        return;
+      }
+      if (state.isDrawing) {
+        return;
+      }
+
+      const names = day.stops.map((stop) => stop.name.trim()).filter(Boolean);
+      clearMap();
+      if (!names.length) {
+        renderRouteSummary("当前天没有有效景点。");
+        return;
+      }
+
+      state.isDrawing = true;
+      setStatus("路线规划中", "warn");
+      setLoading(els.redrawBtn, true);
+
+      try {
+        const points = await geocodeAll(names, state.itinerary.city);
+        renderMarkers(points);
+        if (points.length < 2) {
+          renderRouteSummary("至少需要 2 个可定位景点才能规划路线。");
+          setStatus("景点不足", "warn");
+          fitMap();
+          return;
+        }
+        const route = await searchRoute(points);
+        renderRouteLines(route);
+        renderRouteSummary(formatRouteSummary(route, points));
+        setStatus("路线已绘制", "ready");
+        fitMap();
+      } catch (error) {
+        console.error(error);
+        renderRouteSummary(escapeHtml(error.message || "路线规划失败。"));
+        setStatus("路线失败", "warn");
+        fitMap();
+      } finally {
+        state.isDrawing = false;
+        setLoading(els.redrawBtn, false);
+      }
+    }
+
+    function geocodeAll(names, city) {
+      const uniqueNames = names.map((name) => `${city}${name}`);
+      state.geocoder.setCity(city || "全国");
+      return Promise.all(uniqueNames.map((query, index) => geocodeOne(query, names[index], index)))
+        .then((results) => results.filter(Boolean));
+    }
+
+    function geocodeOne(query, originalName, index) {
+      return new Promise((resolve) => {
+        state.geocoder.getLocation(query, (status, result) => {
+          const geocode = result?.geocodes?.[0];
+          if (status === "complete" && result.info === "OK" && geocode?.location) {
+            resolve({
+              name: originalName,
+              index,
+              address: geocode.formattedAddress || query,
+              lnglat: [geocode.location.lng, geocode.location.lat]
+            });
+            return;
+          }
+          console.warn("地理编码失败", originalName, status, result);
+          resolve(null);
+        });
+      });
+    }
+
+    function renderMarkers(points) {
+      points.forEach((point, visualIndex) => {
+        const marker = new state.AMap.Marker({
+          position: point.lnglat,
+          title: point.name,
+          label: {
+            direction: "top",
+            content: `<div style="padding:2px 6px;border-radius:4px;background:#fff;border:1px solid #d8e0e7;color:#1d2730;font-size:12px;">${visualIndex + 1}. ${escapeHtml(point.name)}</div>`
+          }
+        });
+        state.map.add(marker);
+        state.overlays.push(marker);
+      });
+    }
+
+    async function searchRoute(points) {
+      const service = ensureRouteService();
+      if (!service) {
+        return Promise.reject(new Error("路线服务未初始化"));
+      }
+      const start = points[0].lnglat;
+      const end = points[points.length - 1].lnglat;
+      const waypoints = points.slice(1, -1).slice(0, 16).map((point) => point.lnglat);
+
+      if (els.travelMode.value === "driving") {
+        return searchFullRoute(service, start, end, { waypoints });
+      }
+      if (waypoints.length) {
+        return drawSegmentedRoute(service, points);
+      }
+      return searchFullRoute(service, start, end);
+    }
+
+    function searchFullRoute(service, start, end, opts) {
+      return new Promise((resolve, reject) => {
+        const done = (status, result) => {
+          if (status === "complete" && result) {
+            resolve(result);
+          } else {
+            reject(new Error(`路线规划失败：${status || "unknown"}`));
+          }
+        };
+        if (opts) {
+          service.search(start, end, opts, done);
+        } else {
+          service.search(start, end, done);
+        }
+      });
+    }
+
+    async function drawSegmentedRoute(service, points) {
+      let totalDistance = 0;
+      let totalTime = 0;
+      const paths = [];
+      for (let index = 0; index < points.length - 1; index += 1) {
+        const result = await searchSegment(service, points[index].lnglat, points[index + 1].lnglat);
+        const route = result.routes?.[0] || result.route;
+        totalDistance += Number(route?.distance || 0);
+        totalTime += Number(route?.time || 0);
+        const routePath = extractRoutePath(route);
+        if (routePath.length) {
+          paths.push(routePath);
+        }
+      }
+      return {
+        routes: [{ distance: totalDistance, time: totalTime }],
+        paths
+      };
+    }
+
+    function searchSegment(service, start, end) {
+      return new Promise((resolve, reject) => {
+        service.search(start, end, (status, result) => {
+          if (status === "complete" && result) {
+            resolve(result);
+          } else {
+            reject(new Error(`分段路线规划失败：${status || "unknown"}`));
+          }
+        });
+      });
+    }
+
+    function renderRouteLines(result) {
+      const paths = extractRouteResultPaths(result);
+      if (!paths.length) {
+        throw new Error("路线规划成功，但没有返回可绘制轨迹");
+      }
+      paths.forEach((path) => {
+        const line = new state.AMap.Polyline({
+          path,
+          showDir: true,
+          isOutline: true,
+          outlineColor: "#ffffff",
+          borderWeight: 2,
+          strokeColor: "#1677ff",
+          strokeWeight: 6,
+          strokeOpacity: 0.86,
+          lineJoin: "round",
+          lineCap: "round",
+          zIndex: 60
+        });
+        state.map.add(line);
+        state.overlays.push(line);
+      });
+    }
+
+    function extractRouteResultPaths(result) {
+      if (Array.isArray(result.paths)) {
+        return result.paths.filter((path) => path.length);
+      }
+      const routes = Array.isArray(result.routes) ? result.routes : result.route ? [result.route] : [];
+      return routes.slice(0, 1).map(extractRoutePath).filter((path) => path.length);
+    }
+
+    function extractRoutePath(route) {
+      if (!route) {
+        return [];
+      }
+      if (Array.isArray(route.path) && route.path.length) {
+        return route.path;
+      }
+      const collections = [route.steps, route.rides, route.rides_path].filter(Array.isArray);
+      const path = [];
+      collections.forEach((items) => {
+        items.forEach((item) => {
+          if (Array.isArray(item.path)) {
+            path.push(...item.path);
+          }
+        });
+      });
+      return path;
+    }
+
+    function formatRouteSummary(result, points) {
+      const route = result.routes?.[0] || result.route || {};
+      const distance = Number(route.distance || 0);
+      const time = Number(route.time || 0);
+      const failed = getActiveDay().stops.length - points.length;
+      const distanceText = distance ? `${(distance / 1000).toFixed(1)} 公里` : "已绘制";
+      const timeText = time ? `${Math.round(time / 60)} 分钟` : "以地图结果为准";
+      return `
+        <div><strong>${getModeLabel()}</strong>路线：${distanceText}，预计 ${timeText}</div>
+        <div>当前顺序：${points.map((point) => escapeHtml(point.name)).join(" → ")}</div>
+        ${failed > 0 ? `<div style="color: var(--warn);">${failed} 个景点未能定位，已跳过。</div>` : ""}
+      `;
+    }
+
+    function renderRouteSummary(html) {
+      els.routeSummary.innerHTML = html;
+    }
+
+    function clearMap() {
+      if (state.routeService && typeof state.routeService.clear === "function") {
+        state.routeService.clear();
+      }
+      if (state.map && state.overlays.length) {
+        state.overlays.forEach((overlay) => state.map.remove(overlay));
+      }
+      state.overlays = [];
+    }
+
+    function fitMap() {
+      if (!state.map) {
+        return;
+      }
+      const overlays = state.map.getAllOverlays ? state.map.getAllOverlays() : state.overlays;
+      if (overlays && overlays.length) {
+        state.map.setFitView(overlays, false, [70, 70, 70, 70]);
+      }
+    }
+
+    function getActiveDay() {
+      return state.itinerary?.days?.[state.activeDay] || null;
+    }
+
+    function getModeLabel() {
+      return els.travelMode.value === "walking" ? "步行" : els.travelMode.value === "riding" ? "骑行" : "驾车";
+    }
+
+    function setStatus(text, type) {
+      els.statusPill.textContent = text;
+      els.statusPill.classList.toggle("ready", type === "ready");
+      els.statusPill.classList.toggle("warn", type === "warn");
+    }
+
+    function setLoading(el, loading) {
+      el.classList.toggle("loading", loading);
+      el.disabled = loading;
+    }
+
+    function notify(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      window.clearTimeout(notify.timer);
+      notify.timer = window.setTimeout(() => els.toast.classList.remove("show"), 2600);
+    }
+
+    function clampNumber(value, min, max, fallback) {
+      if (!Number.isFinite(value)) {
+        return fallback;
+      }
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function safeMessage(text) {
+      return String(text || "").replace(/\s+/g, " ").slice(0, 160);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/`/g, "&#096;");
+    }
+  </script>
+</body>
+</html>
