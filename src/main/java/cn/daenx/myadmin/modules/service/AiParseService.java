@@ -2038,11 +2038,15 @@ public class AiParseService {
                 List<String> sourceNumbers = extractThreeDigitNumbersPreserveDuplicates(
                         line.substring(0, matcher.start()).trim());
                 List<CategoryGame> sourceCategories = categories;
-                if (sourceNumbers.isEmpty() && !pendingNumberLines.isEmpty()) {
-                    sourceNumbers = new ArrayList<>();
-                    sourceCategories = pendingNumberLines.get(0).categories();
+                if (!pendingNumberLines.isEmpty()) {
+                    List<String> combinedSourceNumbers = new ArrayList<>();
                     for (PendingNumberLine pending : pendingNumberLines) {
-                        sourceNumbers.addAll(pending.numbers());
+                        combinedSourceNumbers.addAll(pending.numbers());
+                    }
+                    combinedSourceNumbers.addAll(sourceNumbers);
+                    sourceNumbers = combinedSourceNumbers;
+                    if (explicitCategories.isEmpty()) {
+                        sourceCategories = pendingNumberLines.get(0).categories();
                     }
                 }
                 if (sourceNumbers.isEmpty()) {
@@ -4197,7 +4201,10 @@ public class AiParseService {
         Integer hintedTotalAmount = extractTrailingTotalAmount(normalized.substring(markerEnd));
         boolean amountVerified = hintedTotalAmount != null && hintedTotalAmount > 0;
         boolean sourceCountVerified = hintedSourceCount != null && hintedSourceCount == sourceNumbers.size();
-        if (!amountVerified && !sourceCountVerified && !hasExplicitCategoryMarker(text, raw)) {
+        boolean longExplicitPermutationStake = sourceNumbers.size() >= LONG_PERMUTATION_LIST_FAST_PATH_THRESHOLD
+                && hasExplicitPermutationStakeUnit(normalized.substring(markerStart, markerEnd));
+        if (!amountVerified && !sourceCountVerified && !hasExplicitCategoryMarker(text, raw)
+                && !longExplicitPermutationStake) {
             return Collections.emptyList();
         }
 
@@ -4551,6 +4558,10 @@ public class AiParseService {
                 || text.contains("3D")
                 || text.contains("3d")
                 || text.contains("福");
+    }
+
+    private boolean hasExplicitPermutationStakeUnit(String markerText) {
+        return markerText != null && (markerText.contains("单") || markerText.contains("倍"));
     }
 
     private boolean hasExplicitCategoryMarker(String text, OrderRaw raw) {
