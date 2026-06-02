@@ -66,6 +66,15 @@ public class AiParseService {
             "包豹子|豹子全包|三匹全包|三批全包|包三匹|包三批|三匹包|三批包|三匹包团|三批包团";
     private static final Pattern LEOPARD_PACKAGE_HINT = Pattern.compile(LEOPARD_PACKAGE_PHRASE);
     private static final Pattern EXPLICIT_MULTIPLE = Pattern.compile("([零一二三四五六七八九十百两\\d]{1,3})\\s*倍");
+    private static final Pattern SHARED_MULTIPLE_DIRECT_MARKER = Pattern.compile(
+            "(?:各\\s*)?([零一二三四五六七八九十百两\\d]{1,3})\\s*倍\\s*(?:[.。…]+)?$"
+    );
+    private static final Pattern TWO_DIGIT_UNSUPPORTED_BEFORE_KEYWORD = Pattern.compile(
+            "(?:(?<!\\d)\\d{2}(?!\\d)[\\s.。…·、,，;；:：\\-/\\\\]*)+(?:两码|二码|两位|二位)\\s*(?:各)?\\s*[零一二三四五六七八九十百两\\d]{1,6}\\s*(?:米|元|块|钱|单|注|倍)?"
+    );
+    private static final Pattern TWO_DIGIT_UNSUPPORTED_AFTER_KEYWORD = Pattern.compile(
+            "(?:两码|二码|两位|二位)\\s*(?:(?<!\\d)\\d{2}(?!\\d)[\\s.。…·、,，;；:：\\-/\\\\]*)+\\s*(?:各)?\\s*[零一二三四五六七八九十百两\\d]{1,6}\\s*(?:米|元|块|钱|单|注|倍)?"
+    );
     private static final Pattern LEOPARD_PACKAGE_AMOUNT = Pattern.compile(
             "(?:" + LEOPARD_PACKAGE_PHRASE + ")\\s*(?:共|合计|金额)?\\s*([零一二三四五六七八九十百两\\d]{1,5})\\s*(?:米|元|块|钱)?\\s*$"
     );
@@ -463,6 +472,9 @@ public class AiParseService {
             }
             if (fastPathResults.isEmpty()) {
                 fastPathResults = tryParseEachDirectPermutationAmountFastPath(raw, forceTcByTargetGroupRule);
+            }
+            if (fastPathResults.isEmpty()) {
+                fastPathResults = tryParseSegmentedSupportedFastPath(raw, forceTcByTargetGroupRule);
             }
             if (fastPathResults.isEmpty()) {
                 fastPathResults = tryParseAnnotatedLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
@@ -4229,6 +4241,139 @@ public class AiParseService {
         log.info("hit long permutation list fast path, rawId={}, sourceNumbers={}, hintedSourceCount={}, bet={}, amountVerified={}, amount={}, resultCount={}",
                 raw.getId(), sourceNumbers.size(), hintedSourceCount, bet, amountVerified, computedAmount, results.size());
         return results;
+    }
+
+    /**
+     * 分段快路径：一条消息里既有可解析的长复式/共享倍数片段，也夹杂两码等不支持片段时，
+     * 只跳过不支持片段，继续计入后续三位号片段。
+     */
+    private List<AiParseResult> tryParseSegmentedSupportedFastPath(OrderRaw raw,
+                                                                   boolean forceTcByTargetGroupRule) {
+        if (raw == null || raw.getRawText() == null || raw.getRawText().isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String text = extractPrimaryOrderText(raw.getRawText());
+        if (text.isBlank() || (!containsPermutationMarker(text) && !EXPLICIT_MULTIPLE.matcher(text).find())) {
+            return Collections.emptyList();
+        }
+
+        List<AiParseResult> results = new ArrayList<>();
+        boolean sawUnsupportedSegment = false;
+        for (String rawSegment : splitSentenceSegments(text)) {
+            String segment = stripUnsupportedTwoDigitParts(rawSegment);
+            if (!segment.equals(rawSegment.trim())) {
+                sawUnsupportedSegment = true;
+            }
+            if (segment.isBlank()) {
+                continue;
+            }
+
+            List<AiParseResult> parsed = tryParseSupportedSegment(segment, raw, forceTcByTargetGroupRule);
+            if (!parsed.isEmpty()) {
+                results.addAll(parsed);
+            } else if (containsThreeDigitNumber(segment)) {
+                return Collections.emptyList();
+            }
+        }
+
+        if (results.isEmpty() || !sawUnsupportedSegment) {
+            return Collections.emptyList();
+        }
+
+        log.info("hit segmented supported fast path, rawId={}, records={}, amount={}",
+                raw.getId(), results.size(), sumAmounts(results));
+        return results;
+    }
+
+    private List<AiParseResult> tryParseSupportedSegment(String segment,
+                                                         OrderRaw raw,
+                                                         boolean forceTcByTargetGroupRule) {
+        if (segment == null || segment.isBlank()) {
+            return Collections.emptyList();
+        }
+        String normalized = segment.replaceAll("[—－-]", " ");
+        List<CategoryGame> categories = forceTcByTargetGroupRule
+                ? List.of(new CategoryGame("TC", "P3"))
+                : detectCategories(segment, raw);
+
+        Matcher permutationMarker = EXPLICIT_PERMUTATION_LIST_MARKER.matcher(normalized);
+        int markerStart = -1;
+        int markerEnd = -1;
+        int permutationBet = 0;
+        while (permutationMarker.find()) {
+            int parsedBet = parseNumericToken(permutationMarker.group(1));
+            if (parsedBet > 0) {
+                markerStart = permutationMarker.start();
+                markerEnd = permutationMarker.end();
+                permutationBet = parsedBet;
+            }
+        }
+        if (markerStart >= 0 && permutationBet > 0) {
+            String sourceText = normalized.substring(0, markerStart);
+            List<String> sourceNumbers = extractThreeDigitNumbersPreserveDuplicates(sourceText);
+            String tail = normalized.substring(markerEnd).trim();
+            if (sourceNumbers.size() >= LONG_PERMUTATION_LIST_FAST_PATH_THRESHOLD
+                    && hasExplicitPermutationStakeUnit(normalized.substring(markerStart, markerEnd))
+                    && !containsThreeDigitNumber(tail)
+                    && !GROUP_PLAY_HINT.matcher(sourceText).find()) {
+                return buildExpandedPermutationResults(
+                        sourceNumbers,
+                        permutationBet,
+                        categories,
+                        "[LOCAL_FAST_PATH] segmented permutation list"
+                );
+            }
+        }
+
+        Matcher multipleMarker = SHARED_MULTIPLE_DIRECT_MARKER.matcher(normalized);
+        if (multipleMarker.find() && !containsPermutationMarker(normalized) && !GROUP_PLAY_HINT.matcher(normalized).find()) {
+            int directBet = parseNumericToken(multipleMarker.group(1));
+            if (directBet <= 0) {
+                return Collections.emptyList();
+            }
+            String sourceText = normalized.substring(0, multipleMarker.start()).trim();
+            if (!isSimpleDirectNumberScope(sourceText)) {
+                return Collections.emptyList();
+            }
+            List<String> numbers = extractThreeDigitNumbers(sourceText);
+            if (numbers.isEmpty()) {
+                return Collections.emptyList();
+            }
+            List<AiParseResult> directResults = new ArrayList<>();
+            for (CategoryGame category : categories) {
+                for (String number : numbers) {
+                    directResults.add(buildDirectResult(number, directBet, category,
+                            "[LOCAL_FAST_PATH] segmented shared multiple"));
+                }
+            }
+            return directResults;
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<String> splitSentenceSegments(String text) {
+        if (text == null || text.isBlank()) {
+            return Collections.emptyList();
+        }
+        List<String> segments = new ArrayList<>();
+        for (String rawSegment : text.split("[。；;\\r\\n]+")) {
+            String segment = rawSegment.trim();
+            if (!segment.isEmpty()) {
+                segments.add(segment);
+            }
+        }
+        return segments;
+    }
+
+    private String stripUnsupportedTwoDigitParts(String segment) {
+        if (segment == null || segment.isBlank()) {
+            return "";
+        }
+        String stripped = TWO_DIGIT_UNSUPPORTED_BEFORE_KEYWORD.matcher(segment.trim()).replaceAll(" ");
+        stripped = TWO_DIGIT_UNSUPPORTED_AFTER_KEYWORD.matcher(stripped).replaceAll(" ");
+        return stripped.trim();
     }
 
     private List<AiParseResult> tryParseEachDirectPermutationAmountFastPath(OrderRaw raw,
