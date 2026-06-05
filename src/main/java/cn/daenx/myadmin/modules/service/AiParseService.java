@@ -161,6 +161,12 @@ public class AiParseService {
     @Value("${ai.fast-path-simple-direct-enabled:true}")
     private boolean fastPathSimpleDirectEnabled;
 
+    @Value("${ai.prompt-first-enabled:false}")
+    private boolean promptFirstEnabled;
+
+    @Value("${ai.prompt-first-failure-cooldown-ms:300000}")
+    private long promptFirstFailureCooldownMs;
+
     @Value("${ai.save-call-log:false}")
     private boolean saveCallLogEnabled;
 
@@ -183,6 +189,7 @@ public class AiParseService {
     private volatile LocalDateTime lastRealtimeCompletedAt;
     private volatile LocalDateTime lastReparseSubmittedAt;
     private volatile LocalDateTime lastReparseCompletedAt;
+    private volatile long promptFirstDisabledUntilMillis;
 
     @PostConstruct
     public void initParseExecutors() {
@@ -438,7 +445,8 @@ public class AiParseService {
         ParseExecutionOptions options = new ParseExecutionOptions(
                 resolveModelName(overrideModel),
                 false,
-                applyPostCorrections
+                applyPostCorrections,
+                promptFirstEnabled
         );
         SingleResult singleResult = parseSingle(raw, 1, options);
         return new ModelPreview(options.modelName(), singleResult.results);
@@ -455,41 +463,15 @@ public class AiParseService {
     private SingleResult parseSingle(OrderRaw raw, int index, ParseExecutionOptions options) {
         String effectiveModel = options.modelName();
         boolean forceTcByTargetGroupRule = shouldForceTcByContext(raw);
+        boolean promptFirstActive = options.applyPostCorrections()
+                && options.promptFirst()
+                && !isPromptFirstTemporarilyDisabled();
         List<AiParseResult> fastPathResults = Collections.emptyList();
-        if (options.applyPostCorrections()) {
-            fastPathResults = tryParseExactPromptCaseFastPath(raw, forceTcByTargetGroupRule);
-            if (fastPathResults.isEmpty()) {
-                fastPathResults = tryParseStopNoticeFastPath(raw);
-            }
-            if (fastPathResults.isEmpty()) {
-                fastPathResults = tryParseSimpleDirectListFastPath(raw, forceTcByTargetGroupRule);
-            }
-            if (fastPathResults.isEmpty()) {
-                fastPathResults = tryParseLongHalfDirectListFastPath(raw, forceTcByTargetGroupRule);
-            }
-            if (fastPathResults.isEmpty()) {
-                fastPathResults = tryParseLongDirectListFastPath(raw, forceTcByTargetGroupRule);
-            }
-            if (fastPathResults.isEmpty()) {
-                fastPathResults = tryParseEachDirectPermutationAmountFastPath(raw, forceTcByTargetGroupRule);
-            }
-            if (fastPathResults.isEmpty()) {
-                fastPathResults = tryParseSegmentedSupportedFastPath(raw, forceTcByTargetGroupRule);
-            }
-            if (fastPathResults.isEmpty()) {
-                fastPathResults = tryParseAnnotatedLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
-            }
-            if (fastPathResults.isEmpty()) {
-                fastPathResults = tryParseLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
-            }
+        if (options.applyPostCorrections() && !promptFirstActive) {
+            fastPathResults = tryParseLocalFastPath(raw, forceTcByTargetGroupRule);
         }
         if (!fastPathResults.isEmpty()) {
-            for (AiParseResult result : fastPathResults) {
-                result.setIndex(index);
-            }
-            log.info("[解析][{}] 命中本地快路径, rawId={}, model={}, resultCount={}",
-                    index, raw.getId(), effectiveModel, fastPathResults.size());
-            return new SingleResult(raw, fastPathResults);
+            return buildLocalFastPathSingleResult(raw, index, effectiveModel, fastPathResults, "before_prompt");
         }
 
         String normalizedPromptText = normalizeRawTextForCorrection(raw.getRawText());
@@ -583,6 +565,15 @@ public class AiParseService {
                 r.setIndex(index);
             }
 
+            if (promptFirstActive && !hasSuccessfulResult(results)) {
+                List<AiParseResult> fallbackResults = tryParseLocalFastPath(raw, forceTcByTargetGroupRule);
+                if (!fallbackResults.isEmpty()) {
+                    log.warn("[解析][{}] AI未产出有效结果，改用本地快路径兜底, rawId={}, model={}, aiResultCount={}, fallbackCount={}",
+                            index, raw.getId(), effectiveModel, results.size(), fallbackResults.size());
+                    return buildLocalFastPathSingleResult(raw, index, effectiveModel, fallbackResults, "prompt_empty_fallback");
+                }
+            }
+
             long successItems = results.stream().filter(AiParseResult::isSuccess).count();
             long skipItems = results.stream().filter(AiParseResult::isSkip).count();
             long failItems = results.stream().filter(AiParseResult::isFailed).count();
@@ -609,6 +600,16 @@ public class AiParseService {
                         latency, 0, 0, 0, issueKey, false, e.getMessage());
             }
 
+            if (promptFirstActive) {
+                markPromptFirstFailure(e);
+                List<AiParseResult> fallbackResults = tryParseLocalFastPath(raw, forceTcByTargetGroupRule);
+                if (!fallbackResults.isEmpty()) {
+                    log.warn("[解析][{}] AI调用失败，改用本地快路径兜底, rawId={}, model={}, reason={}, fallbackCount={}",
+                            index, raw.getId(), effectiveModel, e.getMessage(), fallbackResults.size());
+                    return buildLocalFastPathSingleResult(raw, index, effectiveModel, fallbackResults, "prompt_error_fallback");
+                }
+            }
+
             AiParseResult r = new AiParseResult();
             r.setIndex(index);
             r.setValid(false);
@@ -618,6 +619,67 @@ public class AiParseService {
             r.setError(e.getMessage());
             return new SingleResult(raw, List.of(r));
         }
+    }
+
+    private List<AiParseResult> tryParseLocalFastPath(OrderRaw raw, boolean forceTcByTargetGroupRule) {
+        List<AiParseResult> fastPathResults = tryParseExactPromptCaseFastPath(raw, forceTcByTargetGroupRule);
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParseStopNoticeFastPath(raw);
+        }
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParseSimpleDirectListFastPath(raw, forceTcByTargetGroupRule);
+        }
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParseLongHalfDirectListFastPath(raw, forceTcByTargetGroupRule);
+        }
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParseLongDirectListFastPath(raw, forceTcByTargetGroupRule);
+        }
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParseEachDirectPermutationAmountFastPath(raw, forceTcByTargetGroupRule);
+        }
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParseSegmentedSupportedFastPath(raw, forceTcByTargetGroupRule);
+        }
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParseAnnotatedLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
+        }
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParseLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
+        }
+        return fastPathResults;
+    }
+
+    private SingleResult buildLocalFastPathSingleResult(OrderRaw raw,
+                                                        int index,
+                                                        String effectiveModel,
+                                                        List<AiParseResult> fastPathResults,
+                                                        String mode) {
+        for (AiParseResult result : fastPathResults) {
+            result.setIndex(index);
+        }
+        log.info("[解析][{}] 命中本地快路径, rawId={}, model={}, mode={}, resultCount={}",
+                index, raw.getId(), effectiveModel, mode, fastPathResults.size());
+        return new SingleResult(raw, fastPathResults);
+    }
+
+    private boolean hasSuccessfulResult(List<AiParseResult> results) {
+        return results != null && results.stream().anyMatch(AiParseResult::isSuccess);
+    }
+
+    private boolean isPromptFirstTemporarilyDisabled() {
+        long disabledUntil = promptFirstDisabledUntilMillis;
+        return disabledUntil > 0 && System.currentTimeMillis() < disabledUntil;
+    }
+
+    private void markPromptFirstFailure(Exception e) {
+        long cooldownMs = Math.max(0, promptFirstFailureCooldownMs);
+        if (cooldownMs <= 0) {
+            return;
+        }
+        promptFirstDisabledUntilMillis = System.currentTimeMillis() + cooldownMs;
+        log.warn("prompt-first temporarily disabled for {}ms after AI failure: {}",
+                cooldownMs, e.getMessage());
     }
 
     /** AI调用结果（内部传递用） */
@@ -4893,7 +4955,7 @@ public class AiParseService {
     }
 
     private ParseExecutionOptions defaultOptions() {
-        return new ParseExecutionOptions(model, saveCallLogEnabled, true);
+        return new ParseExecutionOptions(model, saveCallLogEnabled, true, promptFirstEnabled);
     }
 
     private String resolveModelName(String overrideModel) {
@@ -4950,7 +5012,10 @@ public class AiParseService {
     private record PendingNumberLine(List<String> numbers, List<CategoryGame> categories) {
     }
 
-    private record ParseExecutionOptions(String modelName, boolean saveCallLog, boolean applyPostCorrections) {
+    private record ParseExecutionOptions(String modelName,
+                                         boolean saveCallLog,
+                                         boolean applyPostCorrections,
+                                         boolean promptFirst) {
     }
 
     public record ModelPreview(String modelName, List<AiParseResult> results) {

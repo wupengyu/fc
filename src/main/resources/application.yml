@@ -102,6 +102,10 @@ ai:
   parallel: 16
   realtime-parallel: 16
   reparse-parallel: 2
+  # true: 先让AI按提示词解析；AI失败或无成功结果时再走本地快路径兜底
+  prompt-first-enabled: true
+  # AI超时/额度失败后，短时间内回到本地快路径优先，避免实时收单被反复卡住
+  prompt-first-failure-cooldown-ms: 300000
   fast-path-simple-direct-enabled: true
   save-call-log: false
   thinking-mode: "off"
