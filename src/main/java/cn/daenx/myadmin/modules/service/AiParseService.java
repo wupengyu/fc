@@ -542,6 +542,7 @@ public class AiParseService {
                 results = applyLineScopedGroupAndLeopardPackageCorrection(raw, results);
                 results = applyNumberBetPairCorrection(raw, results);
                 results = applyExplicitPermutationExpansionCorrection(raw, results);
+                results = applyPurePermutationAmountGuardCorrection(raw, results);
                 results = applyMissingMixedDirectLineCorrection(raw, results);
                 results = applySimplePermutationCorrection(raw, results);
                 results = applyExpandedPermutationListCorrection(raw, results);
@@ -640,6 +641,9 @@ public class AiParseService {
         }
         if (fastPathResults.isEmpty()) {
             fastPathResults = tryParseSegmentedSupportedFastPath(raw, forceTcByTargetGroupRule);
+        }
+        if (fastPathResults.isEmpty()) {
+            fastPathResults = tryParsePurePermutationAmountFastPath(raw, forceTcByTargetGroupRule);
         }
         if (fastPathResults.isEmpty()) {
             fastPathResults = tryParseAnnotatedLongPermutationListFastPath(raw, forceTcByTargetGroupRule);
@@ -2163,6 +2167,32 @@ public class AiParseService {
         log.info("apply explicit permutation expansion correction, rawId={}, permutationRecords={}, preservedNonPermutation={}",
                 raw.getId(), expandedPermutationResults.size(), corrected.size() - expandedPermutationResults.size());
         return corrected;
+    }
+
+    /**
+     * 纯复式片段如果展开金额已经和尾部总额闭环，则丢弃AI额外补出的直选基数。
+     * 例如：180，789，678，567复试五倍240 只能是复式24条，总额240。
+     */
+    private List<AiParseResult> applyPurePermutationAmountGuardCorrection(OrderRaw raw,
+                                                                          List<AiParseResult> aiResults) {
+        if (raw == null || raw.getRawText() == null || aiResults == null || aiResults.isEmpty()) {
+            return aiResults;
+        }
+
+        String text = extractPrimaryOrderText(raw.getRawText());
+        String rawAiResponse = aiResults.get(0) == null ? null : aiResults.get(0).getRawAiResponse();
+        PurePermutationScope scope = resolvePurePermutationScope(text, raw, shouldForceTcByContext(raw), rawAiResponse);
+        if (scope == null || scope.results().isEmpty()) {
+            return aiResults;
+        }
+
+        if (resultsMatchExpected(aiResults, scope.results())) {
+            return aiResults;
+        }
+
+        log.info("apply pure permutation amount guard correction, rawId={}, sourceNumbers={}, bet={}, amount={}, records={}",
+                raw.getId(), scope.sourceNumbers().size(), scope.bet(), scope.amount(), scope.results().size());
+        return scope.results();
     }
 
     /**
@@ -4438,6 +4468,105 @@ public class AiParseService {
         return stripped.trim();
     }
 
+    private List<AiParseResult> tryParsePurePermutationAmountFastPath(OrderRaw raw,
+                                                                      boolean forceTcByTargetGroupRule) {
+        if (raw == null || raw.getRawText() == null || raw.getRawText().isBlank()) {
+            return Collections.emptyList();
+        }
+
+        PurePermutationScope scope = resolvePurePermutationScope(
+                extractPrimaryOrderText(raw.getRawText()),
+                raw,
+                forceTcByTargetGroupRule,
+                "[LOCAL_FAST_PATH] pure permutation amount"
+        );
+        if (scope == null || scope.results().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        log.info("hit pure permutation amount fast path, rawId={}, sourceNumbers={}, bet={}, amount={}, resultCount={}",
+                raw.getId(), scope.sourceNumbers().size(), scope.bet(), scope.amount(), scope.results().size());
+        return scope.results();
+    }
+
+    private PurePermutationScope resolvePurePermutationScope(String text,
+                                                             OrderRaw raw,
+                                                             boolean forceTcByTargetGroupRule,
+                                                             String rawAiResponse) {
+        if (text == null || text.isBlank() || !containsPermutationMarker(text)) {
+            return null;
+        }
+        if (MIXED_DIRECT_PERMUTATION_MARKER.matcher(text).find()
+                || DIRECT_THEN_PERMUTATION_HINT.matcher(text).find()
+                || PERMUTATION_THEN_DIRECT_HINT.matcher(text).find()
+                || GROUP_PLAY_HINT.matcher(text).find()
+                || LEOPARD_PACKAGE_HINT.matcher(text).find()) {
+            return null;
+        }
+
+        String normalized = text.replaceAll("[—－-]", " ");
+        Matcher marker = EXPLICIT_PERMUTATION_LIST_MARKER.matcher(normalized);
+        int markerStart = -1;
+        int markerEnd = -1;
+        int bet = 0;
+        while (marker.find()) {
+            int parsedBet = parseNumericToken(marker.group(1));
+            if (parsedBet > 0) {
+                markerStart = marker.start();
+                markerEnd = marker.end();
+                bet = parsedBet;
+            }
+        }
+        if (markerStart < 0 || markerEnd < 0 || bet <= 0) {
+            return null;
+        }
+        if (hasExplicitDirectBetOutsidePermutationMarker(normalized, markerStart, markerEnd)) {
+            return null;
+        }
+
+        String sourceText = normalized.substring(0, markerStart).trim();
+        List<String> sourceNumbers = extractThreeDigitNumbersPreserveDuplicates(sourceText);
+        if (sourceNumbers.isEmpty()) {
+            return null;
+        }
+
+        String tail = normalized.substring(markerEnd).trim();
+        if (extractExplicitDirectBetMatch(tail) != null
+                || containsPermutationMarker(tail)
+                || GROUP_PLAY_HINT.matcher(tail).find()) {
+            return null;
+        }
+        Integer hintedTotalAmount = extractTrailingTotalAmount(tail);
+        if (hintedTotalAmount == null || hintedTotalAmount <= 0) {
+            return null;
+        }
+
+        List<CategoryGame> categories = forceTcByTargetGroupRule
+                ? List.of(new CategoryGame("TC", "P3"))
+                : detectCategories(text, raw);
+        List<AiParseResult> results = buildExpandedPermutationResults(
+                sourceNumbers,
+                bet,
+                categories,
+                rawAiResponse
+        );
+        int computedAmount = sumAmounts(results);
+        if (results.isEmpty() || computedAmount != hintedTotalAmount) {
+            return null;
+        }
+        return new PurePermutationScope(sourceNumbers, bet, computedAmount, results);
+    }
+
+    private boolean hasExplicitDirectBetOutsidePermutationMarker(String normalized,
+                                                                 int markerStart,
+                                                                 int markerEnd) {
+        if (normalized == null || markerStart < 0 || markerEnd < markerStart) {
+            return false;
+        }
+        String outside = normalized.substring(0, markerStart) + " " + normalized.substring(markerEnd);
+        return extractExplicitDirectBetMatch(outside) != null;
+    }
+
     private List<AiParseResult> tryParseEachDirectPermutationAmountFastPath(OrderRaw raw,
                                                                             boolean forceTcByTargetGroupRule) {
         if (raw == null || raw.getRawText() == null || raw.getRawText().isBlank()) {
@@ -5010,6 +5139,12 @@ public class AiParseService {
     }
 
     private record PendingNumberLine(List<String> numbers, List<CategoryGame> categories) {
+    }
+
+    private record PurePermutationScope(List<String> sourceNumbers,
+                                        int bet,
+                                        int amount,
+                                        List<AiParseResult> results) {
     }
 
     private record ParseExecutionOptions(String modelName,
