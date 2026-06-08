@@ -80,6 +80,7 @@ order:
     start: "21:16:00"
     end: "21:35:00"
     keyword: "福停"
+    force-from-start: true
     cache-seconds: 30
 
 ai:

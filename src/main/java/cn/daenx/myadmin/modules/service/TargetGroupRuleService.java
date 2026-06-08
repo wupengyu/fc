@@ -3,6 +3,7 @@ package cn.daenx.myadmin.modules.service;
 import cn.daenx.myadmin.entity.Message;
 import cn.daenx.myadmin.entity.OrderRaw;
 import cn.daenx.myadmin.mapper.MessageMapper;
+import cn.daenx.myadmin.mapper.OrderRawMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class TargetGroupRuleService {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final MessageMapper messageMapper;
+    private final OrderRawMapper orderRawMapper;
     private final OrderTextNormalizationService orderTextNormalizationService;
 
     @Value("${target-group-wxid:}")
@@ -38,6 +40,9 @@ public class TargetGroupRuleService {
     @Value("${order.fc-stop.keyword:福停}")
     private String fcStopKeyword;
 
+    @Value("${order.fc-stop.force-from-start:true}")
+    private boolean fcStopForceFromStart;
+
     @Value("${order.fc-stop.cache-seconds:30}")
     private long cacheSeconds;
 
@@ -45,14 +50,21 @@ public class TargetGroupRuleService {
     private final Object stopSignalLock = new Object();
 
     public TargetGroupRuleService(MessageMapper messageMapper,
+                                  OrderRawMapper orderRawMapper,
                                   OrderTextNormalizationService orderTextNormalizationService) {
         this.messageMapper = messageMapper;
+        this.orderRawMapper = orderRawMapper;
         this.orderTextNormalizationService = orderTextNormalizationService;
     }
 
     public boolean shouldForceTc(OrderRaw raw) {
         if (!fcStopEnabled || raw == null || raw.getReceivedAt() == null || !isTargetGroup(raw.getFromWxid())) {
             return false;
+        }
+
+        LocalDateTime configuredStartAt = raw.getReceivedAt().toLocalDate().atTime(getFcStopStart());
+        if (fcStopForceFromStart && raw.getReceivedAt().isAfter(configuredStartAt)) {
+            return true;
         }
 
         LocalDateTime stopAt = resolveFcStopAt(raw.getReceivedAt().toLocalDate());
@@ -68,13 +80,13 @@ public class TargetGroupRuleService {
         LocalTime stopEnd = getFcStopEnd();
         return """
                 [群聊业务规则]
-                这条消息来自设定的目标群。该群在当晚 %s-%s 期间已出现“%s”通知，当前消息时间晚于该通知。
-                因此从该通知之后到当晚收单结束，后续报单一律按体彩排列三处理。
+                这条消息来自设定的目标群。该群配置为当晚 %s 起执行“%s后转体彩”规则，当前消息时间晚于该时间。
+                因此从该时间之后到当晚 %s 收单结束，后续报单一律按体彩排列三处理。
                 即使消息正文里出现“福彩”“3D”“福”等福彩字样，也必须全部忽略，仍然按体彩排列三处理，不得按福彩3D处理。
                 """.formatted(
                 TIME_FORMATTER.format(stopStart),
-                TIME_FORMATTER.format(stopEnd),
-                fcStopKeyword
+                fcStopKeyword,
+                TIME_FORMATTER.format(stopEnd)
         ).trim();
     }
 
@@ -118,15 +130,44 @@ public class TargetGroupRuleService {
         wrapper.le(Message::getReceivedAt, to);
         wrapper.orderByAsc(Message::getReceivedAt);
 
+        LocalDateTime stopAt = null;
+
         List<Message> messages = messageMapper.selectList(wrapper);
         if (messages != null) {
             for (Message message : messages) {
                 if (orderTextNormalizationService.containsNormalizedKeyword(message.getMsg(), fcStopKeyword)) {
-                    return message.getReceivedAt();
+                    stopAt = earliest(stopAt, message.getReceivedAt());
+                    break;
                 }
             }
         }
-        return null;
+
+        LambdaQueryWrapper<OrderRaw> rawWrapper = new LambdaQueryWrapper<>();
+        rawWrapper.eq(OrderRaw::getFromWxid, targetGroupWxid);
+        rawWrapper.ge(OrderRaw::getReceivedAt, from);
+        rawWrapper.le(OrderRaw::getReceivedAt, to);
+        rawWrapper.orderByAsc(OrderRaw::getReceivedAt);
+
+        List<OrderRaw> raws = orderRawMapper.selectList(rawWrapper);
+        if (raws != null) {
+            for (OrderRaw raw : raws) {
+                if (orderTextNormalizationService.containsNormalizedKeyword(raw.getRawText(), fcStopKeyword)) {
+                    stopAt = earliest(stopAt, raw.getReceivedAt());
+                    break;
+                }
+            }
+        }
+        return stopAt;
+    }
+
+    private LocalDateTime earliest(LocalDateTime current, LocalDateTime candidate) {
+        if (candidate == null) {
+            return current;
+        }
+        if (current == null || candidate.isBefore(current)) {
+            return candidate;
+        }
+        return current;
     }
 
     private LocalTime getFcStopStart() {
