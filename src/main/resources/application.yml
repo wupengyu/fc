@@ -77,7 +77,7 @@ order:
   fast-reparse-allow-during-window: false
   fc-stop:
     enabled: true
-    start: "21:16:00"
+    start: "21:19:00"
     end: "21:35:00"
     keyword: "福停"
     force-from-start: true

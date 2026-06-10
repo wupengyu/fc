@@ -80,12 +80,11 @@ public class TargetGroupRuleService {
         LocalTime stopEnd = getFcStopEnd();
         return """
                 [群聊业务规则]
-                这条消息来自设定的目标群。该群配置为当晚 %s 起执行“%s后转体彩”规则，当前消息时间晚于该时间。
+                这条消息来自设定的目标群。该群配置为当晚 %s 起执行“转体彩”规则，当前消息时间晚于该时间。
                 因此从该时间之后到当晚 %s 收单结束，后续报单一律按体彩排列三处理。
                 即使消息正文里出现“福彩”“3D”“福”等福彩字样，也必须全部忽略，仍然按体彩排列三处理，不得按福彩3D处理。
                 """.formatted(
                 TIME_FORMATTER.format(stopStart),
-                fcStopKeyword,
                 TIME_FORMATTER.format(stopEnd)
         ).trim();
     }
