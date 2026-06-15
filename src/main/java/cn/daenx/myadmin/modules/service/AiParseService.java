@@ -89,6 +89,8 @@ public class AiParseService {
             Pattern.compile("^\\s*(?:[零一二三四五六七八九十百两\\d]+组\\s*)+(\\d{2,4})(?:[米元块毛角钱])?\\s*$");
     private static final Pattern TRAILING_ANNOTATED_SOURCE_COUNT =
             Pattern.compile("[（(]?\\s*([零一二三四五六七八九十百两\\d]{1,6})\\s*注\\s*[）)]?\\s*$");
+    private static final Pattern TRAILING_DIRECT_BET_WITH_SOURCE_COUNT =
+            Pattern.compile("([零一二三四五六七八九十百两\\d]{1,3})\\s*单(?!选)\\s*([零一二三四五六七八九十百两\\d]{1,6})\\s*注\\s*(?:福彩|体彩|排列三|排三|3D|3d|P3|p3|福|体)?\\s*$");
     private static final Pattern TRAILING_LINE_AMOUNT =
             Pattern.compile("(?:(?<!\\d)(\\d{1,6})|([零一二三四五六七八九十百两]{1,6}))\\s*(?:米|元|块|钱)\\s*$");
     private static final Pattern TOTAL_MARKER_GUARD_AMOUNT =
@@ -549,6 +551,7 @@ public class AiParseService {
                 // 始终执行通用兜底纠偏（不受exactCase影响）
                 results = applyEachDirectPermutationAmountCorrection(raw, results);
                 results = applyEachBetPermutationCorrection(raw, results);
+                results = applyTrailingDirectBetWithSourceCountCorrection(raw, results);
                 results = applyAdjacentLineSharedDirectBetCorrection(raw, results);
                 results = applyCrossLineSharedBetCorrection(raw, results);
                 results = applyExplicitCategoryDirectLineCompletion(raw, results);
@@ -1650,6 +1653,60 @@ public class AiParseService {
 
         log.info("apply cross-line shared bet correction, rawId={}, numbers={}, bet={}",
                 raw.getId(), numbers.size(), sharedBet);
+        return corrected;
+    }
+
+    /**
+     * 长号码列表尾部的“X单N注体/福”中，N注通常是号码数量提示，不是每号注数。
+     * 例如 89 个号码后写“三单88注体”，应按每号 3 单解析。
+     */
+    private List<AiParseResult> applyTrailingDirectBetWithSourceCountCorrection(OrderRaw raw,
+                                                                                List<AiParseResult> aiResults) {
+        if (raw == null || raw.getRawText() == null || aiResults == null || aiResults.isEmpty()) {
+            return aiResults;
+        }
+
+        String text = normalizeRawTextForCorrection(raw.getRawText());
+        if (text.isBlank() || containsPermutationMarker(text) || GROUP_PLAY_HINT.matcher(text).find()) {
+            return aiResults;
+        }
+
+        Matcher matcher = TRAILING_DIRECT_BET_WITH_SOURCE_COUNT.matcher(text.trim());
+        if (!matcher.find()) {
+            return aiResults;
+        }
+
+        int directBet = parseNumericToken(matcher.group(1));
+        int hintedSourceCount = parseNumericToken(matcher.group(2));
+        if (directBet <= 0 || hintedSourceCount <= 0) {
+            return aiResults;
+        }
+
+        String sourceText = text.substring(0, matcher.start()).trim();
+        List<String> numbers = extractThreeDigitNumbers(sourceText);
+        if (numbers.size() < LONG_NUMBER_LIST_FAST_PATH_THRESHOLD) {
+            return aiResults;
+        }
+
+        int sourceCountDiff = Math.abs(numbers.size() - hintedSourceCount);
+        if (sourceCountDiff > 1) {
+            return aiResults;
+        }
+
+        List<CategoryGame> categories = detectCategories(text, raw);
+        List<AiParseResult> corrected = buildDirectResults(numbers, directBet, categories, aiResults);
+        if (corrected.isEmpty() || resultsMatchExpected(aiResults, corrected)) {
+            return aiResults;
+        }
+
+        int currentAmount = sumAmounts(aiResults);
+        int correctedAmount = sumAmounts(corrected);
+        if (currentAmount <= correctedAmount) {
+            return aiResults;
+        }
+
+        log.info("apply trailing direct-bet source-count correction, rawId={}, numbers={}, hintedSourceCount={}, bet={}, amountBefore={}, amountAfter={}",
+                raw.getId(), numbers.size(), hintedSourceCount, directBet, currentAmount, correctedAmount);
         return corrected;
     }
 
